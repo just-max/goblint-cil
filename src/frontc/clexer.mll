@@ -467,7 +467,7 @@ let ident = (letter|'_'|'$'|universal_escape)(letter|decdigit|'_'|'$'|universal_
 
 (* Pragmas that are not parsed by CIL.  We lex them as PRAGMA_LINE tokens *)
 let no_parse_pragma =
-               "warning" | "GCC" | "STDC" | "clang"
+               "warning" | "GCC" | "STDC" | "clang" | "omp"
              (* Solaris-style pragmas:  *)
              | "ident" | "section" | "option" | "asm" | "use_section" | "weak"
              | "redefine_extname"
