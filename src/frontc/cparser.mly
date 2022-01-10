@@ -944,6 +944,8 @@ statement_no_null:
 |   block               {BLOCK (fst3 $1, joinLoc (snd3 $1) (trd3 $1))}
 |   IF paren_comma_expression location statement location                   %prec IF
                 	{IF (smooth_expression (fst $2), $4, NOP $1, joinLoc $1 $5, joinLoc (snd $2) $3)}
+|   IF paren_comma_expression pragma location statement location                   %prec IF
+                	{IF (smooth_expression (fst $2), $5, NOP $1, joinLoc $1 $6, joinLoc (snd $2) $4)}
 |   IF paren_comma_expression location statement location ELSE statement location
 	                {IF (smooth_expression (fst $2), $4, $7, joinLoc $1 $8, joinLoc (snd $2) $3)}
 |   SWITCH paren_comma_expression location statement location
