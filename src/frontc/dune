@@ -1,2 +1,0 @@
-(ocamllex clexer)
-(ocamlyacc cparser)
