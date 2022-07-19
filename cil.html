@@ -80,7 +80,7 @@ function loadTop(url) {
 <title>cilpp</title>
 </head>
 <body >
-<!--HEVEA command line is: hevea -exec xxdate.exe ../../cilpp -->
+<!--HEVEA command line is: /home/runner/work/cil/cil/_opam/bin/hevea -exec xxdate.exe ../../cilpp -->
 <!--CUT STYLE article--><!--CUT DEF section 1 --><table class="title"><tr><td style="padding:1ex"></td></tr>
 </table>
 <!--TOC section id="sec1" Introduction-->
@@ -505,34 +505,32 @@ at <a href="javascript:loadTop('http://caml.inria.fr/ocaml/')">http://caml.inria
 to write your analysis and transformation.</p>
 <!--TOC section id="sec7" CIL API Documentation-->
 <h2 id="sec7" class="section">5&#X2003;CIL API Documentation</h2><!--SEC END --><p><a id="sec-api"></a></p><p>The CIL API is documented in the file <span style="font-family:monospace">src/cil.mli</span>. We also have an
-<a href="api/index.html">online documentation</a> extracted from
+<a href="api/goblint-cil/index.html">online documentation</a> extracted from
 <span style="font-family:monospace">cil.mli</span> and other useful modules. We
 index below the main types that are used to represent C programs in CIL:</p><ul class="itemize"><li class="li-itemize">
-<a href="api/index_types.html">An index of all types</a>
-</li><li class="li-itemize"><a href="api/index_values.html">An index of all values</a>
-</li><li class="li-itemize"><a href="api/Cil.html#TYPEfile">Cil.file</a> is the representation of a file.
-</li><li class="li-itemize"><a href="api/Cil.html#TYPEglobal">Cil.global</a> is the representation of a global declaration or
-definitions. Values for <a href="api/Cil.html#VALemptyFunction">operating on globals</a>.
-</li><li class="li-itemize"><a href="api/Cil.html#TYPEtyp">Cil.typ</a> is the representation of a type.
-Values for <a href="api/Cil.html#VALvoidType">operating on types</a>.
-</li><li class="li-itemize"><a href="api/Cil.html#TYPEcompinfo">Cil.compinfo</a> is the representation of a structure or a union
+<a href="api/goblint-cil/Cil/index.html#type-file">Cil.file</a> is the representation of a file.
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#type-global">Cil.global</a> is the representation of a global declaration or
+definitions. Values for <a href="api/goblint-cil/Cil/index.html#val-emptyFunction">operating on globals</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#type-typ">Cil.typ</a> is the representation of a type.
+Values for <a href="api/goblint-cil/Cil/index.html#val-voidType">operating on types</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#type-compinfo">Cil.compinfo</a> is the representation of a structure or a union
 type
-</li><li class="li-itemize"><a href="api/Cil.html#TYPEfieldinfo">Cil.fieldinfo</a> is the representation of a field in a structure
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#type-fieldinfo">Cil.fieldinfo</a> is the representation of a field in a structure
 or a union
-</li><li class="li-itemize"><a href="api/Cil.html#TYPEenuminfo">Cil.enuminfo</a> is the representation of an enumeration type.
-</li><li class="li-itemize"><a href="api/Cil.html#TYPEvarinfo">Cil.varinfo</a> is the representation of a variable
-</li><li class="li-itemize"><a href="api/Cil.html#TYPEfundec">Cil.fundec</a> is the representation of a function
-</li><li class="li-itemize"><a href="api/Cil.html#TYPElval">Cil.lval</a> is the representation of an lvalue.
-Values for <a href="api/Cil.html#VALmakeVarinfo">operating on lvalues</a>.
-</li><li class="li-itemize"><a href="api/Cil.html#TYPEexp">Cil.exp</a> is the representation of an expression without
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#type-enuminfo">Cil.enuminfo</a> is the representation of an enumeration type.
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#type-varinfo">Cil.varinfo</a> is the representation of a variable
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#type-fundec">Cil.fundec</a> is the representation of a function
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#type-lval">Cil.lval</a> is the representation of an lvalue.
+Values for <a href="api/goblint-cil/Cil/index.html#val-makeVarinfo">operating on lvalues</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#type-exp">Cil.exp</a> is the representation of an expression without
 side-effects.
-Values for <a href="api/Cil.html#VALzero">operating on expressions</a>.
-</li><li class="li-itemize"><a href="api/Cil.html#TYPEinstr">Cil.instr</a> is the representation of an instruction (with
+Values for <a href="api/goblint-cil/Cil/index.html#val-zero">operating on expressions</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#type-instr">Cil.instr</a> is the representation of an instruction (with
 side-effects but without control-flow)
-</li><li class="li-itemize"><a href="api/Cil.html#TYPEstmt">Cil.stmt</a> is the representation of a control-flow statements.
-Values for <a href="api/Cil.html#VALmkStmt">operating on statements</a>.
-</li><li class="li-itemize"><a href="api/Cil.html#TYPEattribute">Cil.attribute</a> is the representation of attributes.
-Values for <a href="api/Cil.html#TYPEattributeClass">operating on attributes</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#type-stmt">Cil.stmt</a> is the representation of a control-flow statements.
+Values for <a href="api/goblint-cil/Cil/index.html#val-mkStmt">operating on statements</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#type-attribute">Cil.attribute</a> is the representation of attributes.
+Values for <a href="api/goblint-cil/Cil/index.html#type-attributeClass">operating on attributes</a>.
 </li></ul>
 <!--TOC subsection id="sec8" Using the visitor-->
 <h3 id="sec8" class="subsection">5.1&#X2003;Using the visitor</h3><!--SEC END --><p><a id="sec-visitor"></a></p><p>One of the most useful tools exported by the CIL API is an implementation of
@@ -552,28 +550,28 @@ instruction or statement being visited.
 </li></ul><p>By writing visitors you can customize the program traversal and
 transformation. One major limitation of the visiting engine is that it does
 not propagate information from one node to another. Each visitor must use its
-own private data to achieve this effect if necessary.</p><p>Each visitor is an object that is an instance of a class of type <a href="api/Cil.cilVisitor.html#.">Cil.cilVisitor..</a>
+own private data to achieve this effect if necessary.</p><p>Each visitor is an object that is an instance of a class of type <a href="api/goblint-cil/Cil/index.html#class-type-cilVisitor">Cil.cilVisitor</a>.
 The most convenient way to obtain such classes is to specialize the
-<a href="api/Cil.nopCilVisitor.html#c">Cil.nopCilVisitor.c</a>lass (which just traverses the tree doing
+<a href="api/goblint-cil/Cil/index.html#class-nopCilVisitor">Cil.nopCilVisitor</a> class (which just traverses the tree doing
 nothing). Any given specialization typically overrides only a few of the
 methods. Take a look for example at the
 [copyFunctionVisitor] defined in <span style="font-family:monospace">cil.ml</span>.</p><p>Once you have defined a visitor you can invoke it with one of the functions:
 </p><ul class="itemize"><li class="li-itemize">
-<a href="api/Cil.html#VALvisitCilFile">Cil.visitCilFile</a> or <a href="api/Cil.html#VALvisitCilFileSameGlobals">Cil.visitCilFileSameGlobals</a> - visit a file
-</li><li class="li-itemize"><a href="api/Cil.html#VALvisitCilGlobal">Cil.visitCilGlobal</a> - visit a global
-</li><li class="li-itemize"><a href="api/Cil.html#VALvisitCilFunction">Cil.visitCilFunction</a> - visit a function definition
-</li><li class="li-itemize"><a href="api/Cil.html#VALvisitCilExp">Cil.visitCilExp</a> - visit an expression
-</li><li class="li-itemize"><a href="api/Cil.html#VALvisitCilLval">Cil.visitCilLval</a> - visit an lvalue
-</li><li class="li-itemize"><a href="api/Cil.html#VALvisitCilInstr">Cil.visitCilInstr</a> - visit an instruction
-</li><li class="li-itemize"><a href="api/Cil.html#VALvisitCilStmt">Cil.visitCilStmt</a> - visit a statement
-</li><li class="li-itemize"><a href="api/Cil.html#VALvisitCilType">Cil.visitCilType</a> - visit a type. Note that this does not visit
+<a href="api/goblint-cil/Cil/index.html#val-visitCilFile">Cil.visitCilFile</a> or <a href="api/goblint-cil/Cil/index.html#val-visitCilFileSameGlobals">Cil.visitCilFileSameGlobals</a> - visit a file
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-visitCilGlobal">Cil.visitCilGlobal</a> - visit a global
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-visitCilFunction">Cil.visitCilFunction</a> - visit a function definition
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-visitCilExp">Cil.visitCilExp</a> - visit an expression
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-visitCilLval">Cil.visitCilLval</a> - visit an lvalue
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-visitCilInstr">Cil.visitCilInstr</a> - visit an instruction
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-visitCilStmt">Cil.visitCilStmt</a> - visit a statement
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-visitCilType">Cil.visitCilType</a> - visit a type. Note that this does not visit
 the files of a composite type. use visitGlobal to visit the [GCompTag] that
 defines the fields.
 </li></ul><p>Some transformations may want to use visitors to insert additional
 instructions before statements and instructions. To do so, pass a list of
-instructions to the <a href="api/Cil.html#VALqueueInstr">Cil.queueInstr</a> method of the specialized
+instructions to the <a href="api/goblint-cil/Cil/index.html#val-queueInstr">Cil.queueInstr</a> method of the specialized
 object. The instructions will automatically be inserted before that
-instruction in the transformed code. The <a href="api/Cil.html#VALunqueueInstr">Cil.unqueueInstr</a> method
+instruction in the transformed code. The <a href="api/goblint-cil/Cil/index.html#val-unqueueInstr">Cil.unqueueInstr</a> method
 should not normally be called by the user.</p>
 <!--TOC subsection id="sec9" Interpreted Constructors and Deconstructors-->
 <h3 id="sec9" class="subsection">5.2&#X2003;Interpreted Constructors and Deconstructors</h3><!--SEC END --><p>Interpreted constructors and deconstructors are a facility for constructing
@@ -603,7 +601,7 @@ code constructs an increment instruction at location <span style="font-family:mo
     BinOp(PlusA, Lval (Var some_varinfo, NoOffset),
           some_exp, intType),
     loc)
-</span></pre><p>See <a href="api/Cil.html#TYPEformatArg">Cil.formatArg</a> for a definition of the placeholders that are
+</span></pre><p>See <a href="api/goblint-cil/Cil/index.html#type-formatArg">Cil.formatArg</a> for a definition of the placeholders that are
 understood.</p><p>A dual feature is the interpreted deconstructors. This can be used to test
 whether a CIL construct has a certain form:
 </p><pre class="verbatim"><span style="color:blue">Formatcil.dType "void * const (*)(int x)" t
@@ -703,10 +701,10 @@ List of instructions
 In the grammar description above non-terminals are written with
 uppercase initial</li><li class="li-itemize">All of the patterns consist of the <span style="font-family:monospace">%</span> character followed by one or
 two letters, followed by &#X201C;:&#X201D; and an indentifier. For each such
-pattern there is a corresponding constructor of the <a href="api/Cil.html#TYPEformatArg">Cil.formatArg</a>
+pattern there is a corresponding constructor of the <a href="api/goblint-cil/Cil/index.html#type-formatArg">Cil.formatArg</a>
 type, whose name is the letter &#X2019;F&#X2019; followed by the same one or two letters as
 in the pattern. That constructor is used by the user code to pass a
-<a href="api/Cil.html#TYPEformatArg">Cil.formatArg</a> actual argument to the interpreted constructor and by
+<a href="api/goblint-cil/Cil/index.html#type-formatArg">Cil.formatArg</a> actual argument to the interpreted constructor and by
 the interpreted deconstructor to return what was matched for a pattern.</li><li class="li-itemize">If the pattern name is uppercase, it designates a list of the elements
 designated by the corresponding lowercase pattern. E.g. %E designated lists
 of expressions (as in the actual arguments of a call).</li><li class="li-itemize">The two-letter patterns whose second letter is &#X201C;o&#X201D; designate an
@@ -739,15 +737,15 @@ refer to that temporary by name in the rest of the pattern.</li><li class="li-it
 </li></ul><p>The following function are defined in the <span style="font-family:monospace">Formatcil</span> module for
 constructing and deconstructing:
 </p><ul class="itemize"><li class="li-itemize">
-<a href="api/Formatcil.html#VALcExp">Formatcil.cExp</a> constructs <a href="api/Cil.html#TYPEexp">Cil.exp</a>.
-</li><li class="li-itemize"><a href="api/Formatcil.html#VALcType">Formatcil.cType</a> constructs <a href="api/Cil.html#TYPEtyp">Cil.typ</a>.
-</li><li class="li-itemize"><a href="api/Formatcil.html#VALcLval">Formatcil.cLval</a> constructs <a href="api/Cil.html#TYPElval">Cil.lval</a>.
-</li><li class="li-itemize"><a href="api/Formatcil.html#VALcInstr">Formatcil.cInstr</a> constructs <a href="api/Cil.html#TYPEinstr">Cil.instr</a>.
-</li><li class="li-itemize"><a href="api/Formatcil.html#VALcStmt">Formatcil.cStmt</a> and <a href="api/Formatcil.html#VALcStmts">Formatcil.cStmts</a> construct <a href="api/Cil.html#TYPEstmt">Cil.stmt</a>.
-</li><li class="li-itemize"><a href="api/Formatcil.html#VALdExp">Formatcil.dExp</a> deconstructs <a href="api/Cil.html#TYPEexp">Cil.exp</a>.
-</li><li class="li-itemize"><a href="api/Formatcil.html#VALdType">Formatcil.dType</a> deconstructs <a href="api/Cil.html#TYPEtyp">Cil.typ</a>.
-</li><li class="li-itemize"><a href="api/Formatcil.html#VALdLval">Formatcil.dLval</a> deconstructs <a href="api/Cil.html#TYPElval">Cil.lval</a>.
-</li><li class="li-itemize"><a href="api/Formatcil.html#VALdInstr">Formatcil.dInstr</a> deconstructs <a href="api/Cil.html#TYPEinstr">Cil.instr</a>.
+<a href="api/goblint-cil/Formatcil/index.html#val-cExp">Formatcil.cExp</a> constructs <a href="api/goblint-cil/Cil/index.html#type-exp">Cil.exp</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Formatcil/index.html#val-cType">Formatcil.cType</a> constructs <a href="api/goblint-cil/Cil/index.html#type-typ">Cil.typ</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Formatcil/index.html#val-cLval">Formatcil.cLval</a> constructs <a href="api/goblint-cil/Cil/index.html#type-lval">Cil.lval</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Formatcil/index.html#val-cInstr">Formatcil.cInstr</a> constructs <a href="api/goblint-cil/Cil/index.html#type-instr">Cil.instr</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Formatcil/index.html#val-cStmt">Formatcil.cStmt</a> and <a href="api/goblint-cil/Formatcil/index.html#val-cStmts">Formatcil.cStmts</a> construct <a href="api/goblint-cil/Cil/index.html#type-stmt">Cil.stmt</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Formatcil/index.html#val-dExp">Formatcil.dExp</a> deconstructs <a href="api/goblint-cil/Cil/index.html#type-exp">Cil.exp</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Formatcil/index.html#val-dType">Formatcil.dType</a> deconstructs <a href="api/goblint-cil/Cil/index.html#type-typ">Cil.typ</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Formatcil/index.html#val-dLval">Formatcil.dLval</a> deconstructs <a href="api/goblint-cil/Cil/index.html#type-lval">Cil.lval</a>.
+</li><li class="li-itemize"><a href="api/goblint-cil/Formatcil/index.html#val-dInstr">Formatcil.dInstr</a> deconstructs <a href="api/goblint-cil/Cil/index.html#type-instr">Cil.instr</a>.
 </li></ul><p>Below is an example using interpreted constructors. This example generates
 the CIL representation of code that scans an array backwards and initializes
 every even-index element with an expression:
@@ -781,40 +779,40 @@ process would be one order of magnitude slower.) However, the convenience of
 interpreted constructor might make them a viable choice in many situations
 when performance is not paramount (e.g. prototyping).</p>
 <!--TOC subsection id="sec11" Printing and Debugging support-->
-<h3 id="sec11" class="subsection">5.3&#X2003;Printing and Debugging support</h3><!--SEC END --><p>The Modules <a href="api/Pretty.html">Pretty</a> and <a href="api/Errormsg.html">Errormsg</a> contain respectively
+<h3 id="sec11" class="subsection">5.3&#X2003;Printing and Debugging support</h3><!--SEC END --><p>The Modules <a href="api/goblint-cil/Pretty/index.html">Pretty</a> and <a href="api/goblint-cil/Errormsg/index.html">Errormsg</a> contain respectively
 utilities for pretty printing and reporting errors and provide a convenient
 <span style="font-family:monospace">printf</span>-like interface.</p><p>Additionally, CIL defines for each major type a pretty-printing function that
-you can use in conjunction with the <a href="api/Pretty.html">Pretty</a> interface. The
+you can use in conjunction with the <a href="api/goblint-cil/Pretty/index.html">Pretty</a> interface. The
 following are some of the pretty-printing functions:
 </p><ul class="itemize"><li class="li-itemize">
-<a href="api/Cil.html#VALd_exp">Cil.d_exp</a> - print an expression
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_type">Cil.d_type</a> - print a type
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_lval">Cil.d_lval</a> - print an lvalue
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_global">Cil.d_global</a> - print a global
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_stmt">Cil.d_stmt</a> - print a statment
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_instr">Cil.d_instr</a> - print an instruction
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_init">Cil.d_init</a> - print an initializer
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_attr">Cil.d_attr</a> - print an attribute
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_attrlist">Cil.d_attrlist</a> - print a set of attributes
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_loc">Cil.d_loc</a> - print a location
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_ikind">Cil.d_ikind</a> - print an integer kind
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_fkind">Cil.d_fkind</a> - print a floating point kind
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_const">Cil.d_const</a> - print a constant
-</li><li class="li-itemize"><a href="api/Cil.html#VALd_storage">Cil.d_storage</a> - print a storage specifier
+<a href="api/goblint-cil/Cil/index.html#val-d_exp">Cil.d_exp</a> - print an expression
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_type">Cil.d_type</a> - print a type
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_lval">Cil.d_lval</a> - print an lvalue
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_global">Cil.d_global</a> - print a global
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_stmt">Cil.d_stmt</a> - print a statment
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_instr">Cil.d_instr</a> - print an instruction
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_init">Cil.d_init</a> - print an initializer
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_attr">Cil.d_attr</a> - print an attribute
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_attrlist">Cil.d_attrlist</a> - print a set of attributes
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_loc">Cil.d_loc</a> - print a location
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_ikind">Cil.d_ikind</a> - print an integer kind
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_fkind">Cil.d_fkind</a> - print a floating point kind
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_const">Cil.d_const</a> - print a constant
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-d_storage">Cil.d_storage</a> - print a storage specifier
 </li></ul><p>You can even customize the pretty-printer by creating instances of
-<a href="api/Cil.cilPrinter.html#.">Cil.cilPrinter..</a> Typically such an instance extends
-<a href="api/Cil.html#VALdefaultCilPrinter">Cil.defaultCilPrinter</a>. Once you have a customized pretty-printer you
+<a href="api/goblint-cil/Cil/index.html#class-type-cilPrinter">Cil.cilPrinter</a>. Typically such an instance extends
+<a href="api/goblint-cil/Cil/index.html#val-defaultCilPrinter">Cil.defaultCilPrinter</a>. Once you have a customized pretty-printer you
 can use the following printing functions:
 </p><ul class="itemize"><li class="li-itemize">
-<a href="api/Cil.html#VALprintExp">Cil.printExp</a> - print an expression
-</li><li class="li-itemize"><a href="api/Cil.html#VALprintType">Cil.printType</a> - print a type
-</li><li class="li-itemize"><a href="api/Cil.html#VALprintLval">Cil.printLval</a> - print an lvalue
-</li><li class="li-itemize"><a href="api/Cil.html#VALprintGlobal">Cil.printGlobal</a> - print a global
-</li><li class="li-itemize"><a href="api/Cil.html#VALprintStmt">Cil.printStmt</a> - print a statment
-</li><li class="li-itemize"><a href="api/Cil.html#VALprintInstr">Cil.printInstr</a> - print an instruction
-</li><li class="li-itemize"><a href="api/Cil.html#VALprintInit">Cil.printInit</a> - print an initializer
-</li><li class="li-itemize"><a href="api/Cil.html#VALprintAttr">Cil.printAttr</a> - print an attribute
-</li><li class="li-itemize"><a href="api/Cil.html#VALprintAttrs">Cil.printAttrs</a> - print a set of attributes
+<a href="api/goblint-cil/Cil/index.html#val-printExp">Cil.printExp</a> - print an expression
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-printType">Cil.printType</a> - print a type
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-printLval">Cil.printLval</a> - print an lvalue
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-printGlobal">Cil.printGlobal</a> - print a global
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-printStmt">Cil.printStmt</a> - print a statment
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-printInstr">Cil.printInstr</a> - print an instruction
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-printInit">Cil.printInit</a> - print an initializer
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-printAttr">Cil.printAttr</a> - print an attribute
+</li><li class="li-itemize"><a href="api/goblint-cil/Cil/index.html#val-printAttrs">Cil.printAttrs</a> - print a set of attributes
 </li></ul><p>CIL has certain internal consistency invariants. For example, all references
 to a global variable must point to the same <span style="font-family:monospace">varinfo</span> structure. This
 ensures that one can rename the variable by changing the name in the
@@ -826,22 +824,22 @@ is run after each transformation.</p>
 <!--TOC subsection id="sec12" Attributes-->
 <h3 id="sec12" class="subsection">5.4&#X2003;Attributes</h3><!--SEC END --><p><a id="sec-attrib"></a></p><!--NAME attributes.html-->
 <p>In CIL you can attach attributes to types and to names (variables, functions
-and fields). Attributes are represented using the type <a href="api/Cil.html#TYPEattribute">Cil.attribute</a>.
+and fields). Attributes are represented using the type <a href="api/goblint-cil/Cil/index.html#type-attribute">Cil.attribute</a>.
 An attribute consists of a name and a number of arguments (represented using
-the type <a href="api/Cil.html#TYPEattrparam">Cil.attrparam</a>). Almost any expression can be used as an
+the type <a href="api/goblint-cil/Cil/index.html#type-attrparam">Cil.attrparam</a>). Almost any expression can be used as an
 attribute argument. Attributes are stored in lists sorted by the name of the
 attribute. To maintain list ordering, use the functions
-<a href="api/Cil.html#VALtypeAttrs">Cil.typeAttrs</a> to retrieve the attributes of a type and the functions
-<a href="api/Cil.html#VALaddAttribute">Cil.addAttribute</a> and <a href="api/Cil.html#VALaddAttributes">Cil.addAttributes</a> to add attributes.
-Alternatively you can use <a href="api/Cil.html#VALtypeAddAttributes">Cil.typeAddAttributes</a> to add an attribute to
+<a href="api/goblint-cil/Cil/index.html#val-typeAttrs">Cil.typeAttrs</a> to retrieve the attributes of a type and the functions
+<a href="api/goblint-cil/Cil/index.html#val-addAttribute">Cil.addAttribute</a> and <a href="api/goblint-cil/Cil/index.html#val-addAttributes">Cil.addAttributes</a> to add attributes.
+Alternatively you can use <a href="api/goblint-cil/Cil/index.html#val-typeAddAttributes">Cil.typeAddAttributes</a> to add an attribute to
 a type (and return the new type).</p><p>GCC already has extensive support for attributes, and CIL extends this
 support to user-defined attributes. A GCC attribute has the syntax:</p><pre class="verbatim"> gccattribute ::= __attribute__((attribute))    (Note the double parentheses)
 </pre><p>We first strip ALL leading and trailing _
 from the attribute name (but not the identified in [ACons] parameters in
-<a href="api/Cil.html#TYPEattrparam">Cil.attrparam</a>). When we print attributes, we add two leading
+<a href="api/goblint-cil/Cil/index.html#type-attrparam">Cil.attrparam</a>). When we print attributes, we add two leading
 and two trailing _.</p><p>There is support in CIL so that you can control the printing of attributes
-(see <a href="api/Cil.html#VALsetCustomPrintAttribute">Cil.setCustomPrintAttribute</a> and
-<a href="api/Cil.html#VALsetCustomPrintAttributeScope">Cil.setCustomPrintAttributeScope</a>). This custom-printing support is now
+(see <a href="api/goblint-cil/Cil/index.html#val-setCustomPrintAttribute">Cil.setCustomPrintAttribute</a> and
+<a href="api/goblint-cil/Cil/index.html#val-setCustomPrintAttributeScope">Cil.setCustomPrintAttributeScope</a>). This custom-printing support is now
 used to print the "const" qualifier as "<span style="font-family:monospace">const</span>" and not as
 "<span style="font-family:monospace">__attribute__((const))</span>".</p><p>The attributes are specified in declarations. This is unfortunate since the C
 syntax for declarations is already quite complicated and after writing the
@@ -1212,7 +1210,7 @@ an x86-based Mac OS X machine:
 <h2 id="sec19" class="section">7&#X2003;Library of CIL Modules</h2><!--SEC END --><p> <a id="sec-Extension"></a></p><!--NAME ext.html-->
 
 <!--TOC subsection id="sec20" Control-Flow Graphs-->
-<h3 id="sec20" class="subsection">7.1&#X2003;Control-Flow Graphs</h3><!--SEC END --><p> <a id="sec-cfg"></a></p><p>The <a href="api/Cil.html#TYPEstmt">Cil.stmt</a> datatype includes fields for intraprocedural
+<h3 id="sec20" class="subsection">7.1&#X2003;Control-Flow Graphs</h3><!--SEC END --><p> <a id="sec-cfg"></a></p><p>The <a href="api/goblint-cil/Cil/index.html#type-stmt">Cil.stmt</a> datatype includes fields for intraprocedural
 control-flow information: the predecessor and successor statements of
 the current statement. This information is not computed by default.
 If you want to use the control-flow graph, or any of the extensions in
@@ -1220,7 +1218,7 @@ this section that require it, you have to explicitly ask CIL to
 compute the CFG using one of these two methods:</p>
 <!--TOC subsubsection id="sec21" The CFG module (new in CIL 1.3.5)-->
 <h4 id="sec21" class="subsubsection">7.1.1&#X2003;The CFG module (new in CIL 1.3.5)</h4><!--SEC END --><p>The best way to compute the CFG is with the CFG module. Just invoke
-<a href="api/Cfg.html#VALcomputeFileCFG">Cfg.computeFileCFG</a> on your file. The <a href="api/Cfg.html">Cfg</a> API
+<a href="api/goblint-cil/Cfg/index.html#val-computeFileCFG">Cfg.computeFileCFG</a> on your file. The <a href="api/goblint-cil/Cfg/index.html">Cfg</a> API
 describes the rest of actions you can take with this module, including
 computing the CFG for one function at a time, or printing the CFG in
 <span style="font-family:monospace">dot</span> form.</p>
@@ -1229,8 +1227,8 @@ computing the CFG for one function at a time, or printing the CFG in
 <span style="font-family:monospace">continue</span> to lower-level <span style="font-family:monospace">goto</span>s. This completely eliminates some
 possible classes of statements from the program and may make the result
 easier to analyze (e.g., it simplifies data-flow analysis).</p><p>You can invoke this transformation on the command line with
-<span style="font-family:monospace">--domakeCFG</span> or programatically with <a href="api/Cil.html#VALprepareCFG">Cil.prepareCFG</a>.
-After calling Cil.prepareCFG, you can use <a href="api/Cil.html#VALcomputeCFGInfo">Cil.computeCFGInfo</a>
+<span style="font-family:monospace">--domakeCFG</span> or programatically with <a href="api/goblint-cil/Cil/index.html#val-prepareCFG">Cil.prepareCFG</a>.
+After calling Cil.prepareCFG, you can use <a href="api/goblint-cil/Cil/index.html#val-computeCFGInfo">Cil.computeCFGInfo</a>
 to compute the CFG information and find the successor and predecessor
 of each statement.</p><p>For a concrete example, you can see how <span style="font-family:monospace">cilly --domakeCFG</span>
 transforms the following code (note the fall-through in case 1):</p><pre class="verbatim"><span style="color:blue">  int foo (int predicate) {
@@ -1248,14 +1246,14 @@ transforms the following code (note the fall-through in case 1):</p><pre class="
 See the <a href="examples/ex23.txt">CIL output</a> for this
 code fragment</p>
 <!--TOC subsection id="sec23" Data flow analysis framework-->
-<h3 id="sec23" class="subsection">7.2&#X2003;Data flow analysis framework</h3><!--SEC END --><p>The <a href="api/Dataflow.html">Dataflow</a> module (click for the ocamldoc) contains a
+<h3 id="sec23" class="subsection">7.2&#X2003;Data flow analysis framework</h3><!--SEC END --><p>The <a href="api/goblint-cil/Dataflow/index.html">Dataflow</a> module (click for the ocamldoc) contains a
 parameterized framework for forward and backward data flow
 analyses. You provide the transfer functions and this module does the
 analysis. You must compute control-flow information (Section&#X2004;&#X200D;<a href="#sec-cfg">7.1</a>)
 before invoking the Dataflow module.</p>
 <!--TOC subsection id="sec24" Dominators-->
-<h3 id="sec24" class="subsection">7.3&#X2003;Dominators</h3><!--SEC END --><p>The module <a href="api/Dominators.html">Dominators</a> contains the computation of immediate
-dominators. It uses the <a href="api/Dataflow.html">Dataflow</a> module.</p>
+<h3 id="sec24" class="subsection">7.3&#X2003;Dominators</h3><!--SEC END --><p>The module <a href="api/goblint-cil/Dominators/index.html">Dominators</a> contains the computation of immediate
+dominators. It uses the <a href="api/goblint-cil/Dataflow/index.html">Dataflow</a> module.</p>
 <!--TOC subsection id="sec25" Points-to Analysis-->
 <h3 id="sec25" class="subsection">7.4&#X2003;Points-to Analysis</h3><!--SEC END --><p>The module <span style="font-family:monospace">ptranal.ml</span> contains two interprocedural points-to
 analyses for CIL: <span style="font-family:monospace">Olf</span> and <span style="font-family:monospace">Golf</span>. <span style="font-family:monospace">Olf</span> is the default.
