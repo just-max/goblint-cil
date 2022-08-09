@@ -22,7 +22,7 @@ function loadTop(url) {
 <h2 id="sec19" class="section">7&#X2003;Library of CIL Modules</h2>
 <p> <a id="sec-Extension"></a></p>
 <h3 id="sec20" class="subsection">7.1&#X2003;Control-Flow Graphs</h3>
-<p> <a id="sec-cfg"></a></p><p>The <a href="api/goblint-cil/Cil/index.html#type-stmt">Cil.stmt</a> datatype includes fields for intraprocedural
+<p> <a id="sec-cfg"></a></p><p>The <a href="api/goblint-cil/GoblintCil/index.html#type-stmt">GoblintCil.stmt</a> datatype includes fields for intraprocedural
 control-flow information: the predecessor and successor statements of
 the current statement. This information is not computed by default.
 If you want to use the control-flow graph, or any of the extensions in
@@ -30,7 +30,7 @@ this section that require it, you have to explicitly ask CIL to
 compute the CFG using one of these two methods:</p>
 <h4 id="sec21" class="subsubsection">7.1.1&#X2003;The CFG module (new in CIL 1.3.5)</h4>
 <p>The best way to compute the CFG is with the CFG module. Just invoke
-<a href="api/goblint-cil/Cfg/index.html#val-computeFileCFG">Cfg.computeFileCFG</a> on your file. The <a href="api/goblint-cil/Cfg/index.html">Cfg</a> API
+<a href="api/goblint-cil/GoblintCil/Cfg/index.html#val-computeFileCFG">Cfg.computeFileCFG</a> on your file. The <a href="api/goblint-cil/GoblintCil/Cfg/index.html">Cfg</a> API
 describes the rest of actions you can take with this module, including
 computing the CFG for one function at a time, or printing the CFG in
 <span style="font-family:monospace">dot</span> form.</p>
@@ -39,8 +39,8 @@ computing the CFG for one function at a time, or printing the CFG in
 <span style="font-family:monospace">continue</span> to lower-level <span style="font-family:monospace">goto</span>s. This completely eliminates some
 possible classes of statements from the program and may make the result
 easier to analyze (e.g., it simplifies data-flow analysis).</p><p>You can invoke this transformation on the command line with
-<span style="font-family:monospace">--domakeCFG</span> or programatically with <a href="api/goblint-cil/Cil/index.html#val-prepareCFG">Cil.prepareCFG</a>.
-After calling Cil.prepareCFG, you can use <a href="api/goblint-cil/Cil/index.html#val-computeCFGInfo">Cil.computeCFGInfo</a>
+<span style="font-family:monospace">--domakeCFG</span> or programatically with <a href="api/goblint-cil/GoblintCil/index.html#val-prepareCFG">GoblintCil.prepareCFG</a>.
+After calling Cil.prepareCFG, you can use <a href="api/goblint-cil/GoblintCil/index.html#val-computeCFGInfo">GoblintCil.computeCFGInfo</a>
 to compute the CFG information and find the successor and predecessor
 of each statement.</p><p>For a concrete example, you can see how <span style="font-family:monospace">cilly --domakeCFG</span>
 transforms the following code (note the fall-through in case 1):</p><pre class="verbatim"><span style="color:blue">  int foo (int predicate) {
@@ -58,14 +58,14 @@ transforms the following code (note the fall-through in case 1):</p><pre class="
 See the <a href="examples/ex23.txt">CIL output</a> for this
 code fragment</p>
 <h3 id="sec23" class="subsection">7.2&#X2003;Data flow analysis framework</h3>
-<p>The <a href="api/goblint-cil/Dataflow/index.html">Dataflow</a> module (click for the ocamldoc) contains a
+<p>The <a href="api/goblint-cil/GoblintCil/Dataflow/index.html">Dataflow</a> module (click for the ocamldoc) contains a
 parameterized framework for forward and backward data flow
 analyses. You provide the transfer functions and this module does the
 analysis. You must compute control-flow information (Section&#X2004;&#X200D;<a href="#sec-cfg">7.1</a>)
 before invoking the Dataflow module.</p>
 <h3 id="sec24" class="subsection">7.3&#X2003;Dominators</h3>
-<p>The module <a href="api/goblint-cil/Dominators/index.html">Dominators</a> contains the computation of immediate
-dominators. It uses the <a href="api/goblint-cil/Dataflow/index.html">Dataflow</a> module.</p>
+<p>The module <a href="api/goblint-cil/GoblintCil/Dominators/index.html">Dominators</a> contains the computation of immediate
+dominators. It uses the <a href="api/goblint-cil/GoblintCil/Dataflow/index.html">Dataflow</a> module.</p>
 <h3 id="sec25" class="subsection">7.4&#X2003;Points-to Analysis</h3>
 <p>The module <span style="font-family:monospace">ptranal.ml</span> contains two interprocedural points-to
 analyses for CIL: <span style="font-family:monospace">Olf</span> and <span style="font-family:monospace">Golf</span>. <span style="font-family:monospace">Olf</span> is the default.
