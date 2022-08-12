@@ -21,16 +21,13 @@ function loadTop(url) {
 <h2 id="sec1" class="section">1&#X2003;Introduction</h2>
 <p><span style="font-weight:bold">This a fork of the CIL tool</span> maintained by the team behind the static analyzer <a href="javascript:loadTop('https://goblint.in.tum.de')">Goblint</a>, <span style="font-weight:bold">which we refer to as goblint-CIL (CIL for short).</span></p><p>CIL (<span style="font-weight:bold">C</span> <span style="font-weight:bold">I</span>ntermediate <span style="font-weight:bold">L</span>anguage) is a high-level representation along with a set of tools that permit easy analysis and source-to-source
 transformation of C programs.</p><p>The original CIL has a Source Forge page: <a href="javascript:loadTop('http://sourceforge.net/projects/cil')">http://sourceforge.net/projects/cil</a>.</p><p>goblint-cil is developed on Github: <a href="javascript:loadTop('https://github.com/goblint/cil/')">https://github.com/goblint/cil/</a>.</p><p>Compared with the original CIL there are some <em>breaking</em> changes:</p><ul class="itemize"><li class="li-itemize">
-Proper support for C99 and VLAs in particular
-</li><li class="li-itemize">It uses Zarith instead of the deprecated Num
-</li><li class="li-itemize">Support for more recent OCaml versions (&gt;= 4.06)
-</li><li class="li-itemize">Large integer constants are represented by Zarith
-</li><li class="li-itemize">Syntactic search extension
-</li><li class="li-itemize">More precise locations (with columns)
-</li><li class="li-itemize">Some warnings were made optional
-</li><li class="li-itemize">Unmaintained extensions were removed
-</li><li class="li-itemize">Dropped MSVC support
-</li><li class="li-itemize">Many bug fixes
+Support for C99 and C11.
+</li><li class="li-itemize">Compatibility with modern OCaml versions.
+</li><li class="li-itemize">Use Zarith instead of Num and use that for integer constants.
+</li><li class="li-itemize">Improved locations with columns and spans.
+</li><li class="li-itemize">Removal of unmaintained extensions and MSVC support.
+</li><li class="li-itemize">Use dune instead of make and ocamlbuild.
+</li><li class="li-itemize">Many bug fixes.
 </li></ul><p>CIL is both lower-level than abstract-syntax trees, by clarifying ambiguous
 constructs and removing redundant ones, and also higher-level than typical
 intermediate languages designed for compilation, by maintaining types and a
