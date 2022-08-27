@@ -266,9 +266,9 @@ class zraCilPrinterClass : cilPrinter = object (self)
 	   let _ = printComments := false in
 	   let c = match unrollType (typeOf e) with
 	     TFun(rt,_,_,_) when not (Util.equals (typeSig rt) (typeSig v.vtype)) ->
-	       text "(" ++ self#pType None () v.vtype ++ text ")"
+	       text "(" ++ (fun ppf -> self#pType None ppf v.vtype) ++ text ")"
 	   | _ -> nil in
-	   let d = self#pInstr () (Call(None,e,el,l,eloc)) in
+	   let d ppf = self#pInstr ppf (Call(None,e,el,l,eloc)) in
 	   let _ = super#setPrintInstrTerminator oldpit in
 	   let _ = printComments := opc in
 	   c ++ d
@@ -297,7 +297,7 @@ class zraCilPrinterClass : cilPrinter = object (self)
 	   text v.vname)
 
  (* variable declaration *)
-  method! pVDecl () (v:varinfo) =
+  method! pVDecl ppf (v:varinfo) =
     (* See if the name is already in the environment with a
        different varinfo. If so, give a warning.
        If not, add the name to the environment *)
@@ -311,13 +311,14 @@ class zraCilPrinterClass : cilPrinter = object (self)
     else
       (if !debug then ignore(E.log "zrapp: adding %s to global pp envirnoment\n" v.vname);
        H.add genvHtbl v.vname v) in
+    ppf |>
     (* First the storage modifiers *)
     self#pLineDirective v.vdecl ++
     text (if v.vinline then "__inline " else "")
-      ++ d_storage () v.vstorage
-      ++ (self#pType (Some (text v.vname)) () v.vtype)
+      ++ (fun ppf -> d_storage ppf v.vstorage)
+      ++ (fun ppf -> self#pType (Some (text v.vname)) ppf v.vtype)
       ++ text " "
-      ++ self#pAttrs () v.vattr
+      ++ (fun ppf -> self#pAttrs ppf v.vattr)
 
   (* For printing deputy annotations *)
   method! pAttr (Attr (an, args) : attribute) : doc * bool =
@@ -382,7 +383,8 @@ class zraCilPrinterClass : cilPrinter = object (self)
 
 
   (*** GLOBALS ***)
-  method! pGlobal () (g:global) : doc =       (* global (vars, types, etc.) *)
+  method! pGlobal ppf (g:global) : unit =       (* global (vars, types, etc.) *)
+    ppf |>
     match g with
     | GFun (fundec, l) ->
         (* If the function has attributes then print a prototype because
@@ -391,7 +393,7 @@ class zraCilPrinterClass : cilPrinter = object (self)
         (* Always pring the file name before function declarations *)
         let proto =
           if oldattr <> [] then
-            (self#pLineDirective l) ++ (self#pVDecl () fundec.svar)
+            (self#pLineDirective l) ++ (fun ppf -> self#pVDecl ppf fundec.svar)
               ++ chr ';' ++ line
           else nil in
         (* Temporarily remove the function attributes *)
@@ -404,18 +406,18 @@ class zraCilPrinterClass : cilPrinter = object (self)
     | GType (typ, l) ->
         self#pLineDirective ~forcefile:true l ++
           text "typedef "
-          ++ (self#pType (Some (text typ.tname)) () typ.ttype)
+          ++ (fun ppf -> self#pType (Some (text typ.tname)) ppf typ.ttype)
           ++ text ";\n"
 
     | GEnumTag (enum, l) ->
         self#pLineDirective l ++
           text "enum" ++ align ++ text (" " ^ enum.ename) ++
-          self#pAttrs () enum.eattr ++ text " {" ++ line
-          ++ (docList ~sep:(chr ',' ++ line)
+          (fun ppf -> self#pAttrs ppf enum.eattr) ++ text " {" ++ line
+          ++ (fun ppf -> docList ~sep:(chr ',' ++ line)
                 (fun (n,i, loc) ->
                   text (n ^ " = ")
-                    ++ self#pExp () i)
-                () enum.eitems)
+                    ++ (fun ppf -> self#pExp ppf i))
+                ppf enum.eitems)
           ++ unalign ++ line ++ text "};\n"
 
     | GEnumTagDecl (enum, l) -> (* This is a declaration of a tag *)
@@ -432,11 +434,11 @@ class zraCilPrinterClass : cilPrinter = object (self)
           text su1 ++ (align ++ text su2 ++ chr ' '
                          ++ text n
                          ++ text " {" ++ line
-                         ++ ((docList ~sep:line (self#pFieldDecl ())) ()
-                               comp.cfields)
+                         ++ (fun ppf -> ((docList ~sep:line (fun f ppf -> self#pFieldDecl ppf f)) ppf
+                               comp.cfields))
                          ++ unalign)
           ++ line ++ text "}" ++
-          (self#pAttrs () comp.cattr) ++ text ";\n"
+          (fun ppf -> self#pAttrs ppf comp.cattr) ++ text ";\n"
 
     | GCompTagDecl (comp, l) -> (* This is a declaration of a tag *)
         self#pLineDirective l ++
@@ -444,7 +446,7 @@ class zraCilPrinterClass : cilPrinter = object (self)
 
     | GVar (vi, io, l) ->
         self#pLineDirective ~forcefile:true l ++
-          self#pVDecl () vi
+          (fun ppf -> self#pVDecl ppf vi)
           ++ chr ' '
           ++ (match io.init with
             None -> nil
@@ -457,7 +459,7 @@ class zraCilPrinterClass : cilPrinter = object (self)
                 if islong then
                   line ++ self#pLineDirective l ++ text "  "
                 else nil) ++
-                (self#pInit () i))
+                (fun ppf -> self#pInit ppf i))
           ++ text ";\n"
 
     (* print global variable 'extern' declarations, and function prototypes *)
@@ -467,12 +469,12 @@ class zraCilPrinterClass : cilPrinter = object (self)
           (* Compiler builtins need no prototypes. Just print them in
              comments. *)
           text "/* compiler builtin: \n   " ++
-            (self#pVDecl () vi)
+            (fun ppf -> self#pVDecl ppf vi)
             ++ text ";  */\n"
 
         end else
           self#pLineDirective l ++
-            (self#pVDecl () vi)
+            (fun ppf -> self#pVDecl ppf vi)
             ++ text ";\n"
 
     | GAsm (s, l) ->
@@ -498,7 +500,7 @@ class zraCilPrinterClass : cilPrinter = object (self)
 	      text "weak " ++ text symbol
 	  | _ ->
             text (an ^ "(")
-              ++ docList ~sep:(chr ',') (self#pAttrParam ()) () args
+              ++ (fun ppf -> docList ~sep:(chr ',') (fun a ppf -> self#pAttrParam ppf a) ppf args)
               ++ text ")"
         in
         self#pLineDirective l
@@ -524,7 +526,7 @@ class zraCilPrinterClass : cilPrinter = object (self)
          let oldattr = fdec.svar.vattr in
          let proto =
            if oldattr <> [] then
-             (self#pLineDirective l) ++ (self#pVDecl () fdec.svar)
+             (self#pLineDirective l) ++ (fun ppf -> self#pVDecl ppf fdec.svar)
                ++ chr ';' ++ line
            else nil in
          fprint out ~width:80 (proto ++ (self#pLineDirective ~forcefile:true l));
@@ -537,7 +539,7 @@ class zraCilPrinterClass : cilPrinter = object (self)
      | GVar (vi, {init = Some i}, l) -> begin
          fprint out ~width:80
            (self#pLineDirective ~forcefile:true l ++
-              self#pVDecl () vi
+              (fun ppf -> self#pVDecl ppf vi)
               ++ text " = "
               ++ (let islong =
                 match i with
@@ -551,18 +553,19 @@ class zraCilPrinterClass : cilPrinter = object (self)
          output_string out ";\n"
      end
 
-     | g -> fprint out ~width:80 (self#pGlobal () g)
+     | g -> fprint out ~width:80 (fun ppf -> self#pGlobal ppf g)
 
-  method! pFieldDecl () fi =
+  method! pFieldDecl ppf fi =
+    ppf |>
     self#pLineDirective fi.floc ++
-    (self#pType
+    (fun ppf -> self#pType
        (Some (text (if fi.fname = missingFieldName then "" else fi.fname)))
-       ()
+       ppf
        fi.ftype)
       ++ text " "
       ++ (match fi.fbitfield with None -> nil
       | Some i -> text ": " ++ num i ++ text " ")
-      ++ self#pAttrs () fi.fattr
+      ++ (fun ppf -> self#pAttrs ppf fi.fattr)
       ++ text ";"
 
   method private pFunDecl () f =
@@ -574,9 +577,9 @@ class zraCilPrinterClass : cilPrinter = object (self)
       if !doElimTemps
       then RCT.eliminate_temps f
       else f in
-    let decls = docList ~sep:line (fun vi -> self#pVDecl () vi ++ text ";")
-	() nf.slocals in
-    self#pVDecl () nf.svar
+    let decls ppf = docList ~sep:line (fun vi -> (fun ppf -> self#pVDecl ppf vi) ++ text ";")
+	ppf nf.slocals in
+    (fun ppf -> self#pVDecl ppf nf.svar)
       ++  line
       ++ text "{ "
       ++ (align
@@ -585,41 +588,42 @@ class zraCilPrinterClass : cilPrinter = object (self)
 	    ++ line ++ line
 	    (* the body *)
 	    ++ ((* remember the declaration *) super#setCurrentFormals nf.sformals;
-          let body = self#pBlock () nf.sbody in
+          let body ppf = self#pBlock ppf nf.sbody in
           super#setCurrentFormals [];
           body))
       ++ line
       ++ text "}"
 
-  method! private pStmtKind (next : stmt) () (sk : stmtkind) =
+  method! private pStmtKind (next : stmt) ppf (sk : stmtkind) =
     match sk with
     | Loop(b,l,el,_,_) -> begin
 	(* See if we can turn this into a while(e) {} *)
 	(* TODO: See if we can turn this into a do { } while(e); *)
 	let co, bodystmts = get_loop_condition b in
 	match co with
-	| None -> super#pStmtKind next () sk
+	| None -> super#pStmtKind next ppf sk
 	| Some c -> begin
+      ppf |>
 	    self#pLineDirective l
 	      ++ text "wh"
 	      ++ (align
 		    ++ text "ile ("
-		    ++ self#pExp () (simpl_cond (UnOp(LNot,c,intType)))
+		    ++ (fun ppf -> self#pExp ppf (simpl_cond (UnOp(LNot,c,intType))))
 		    ++ text ") "
-		    ++ self#pBlock () {bstmts=bodystmts; battrs=b.battrs})
+		    ++ (fun ppf -> self#pBlock ppf {bstmts=bodystmts; battrs=b.battrs}))
 	end
     end
-    | _ -> super#pStmtKind next () sk
+    | _ -> super#pStmtKind next ppf sk
 
 end (* class zraCilPrinterClass *)
 
 let zraCilPrinter = new zraCilPrinterClass
 
 (* pretty print an expression *)
-let pp_exp (fd : fundec) () (e : exp) =
+let pp_exp (fd : fundec) ppf (e : exp) =
   deputyAttrs := true;
   ignore(RCT.eliminateTempsForExpPrinting fd);
-  let d = zraCilPrinter#pExp () e in
+  let d = zraCilPrinter#pExp ppf e in
   deputyAttrs := false;
   d
 

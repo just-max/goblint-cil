@@ -52,7 +52,7 @@ module type ForwardsTransfer = sig
      table means nothing is known about the state at this point. At the end
      of the analysis this means that the block is not reachable. *)
 
-  val pretty: unit -> t -> Pretty.doc
+  val pretty: Format.formatter -> t -> unit
   (** Pretty-print the state *)
 
   val computeFirstPredecessor: Cil.stmt -> t -> t
@@ -106,8 +106,8 @@ module ForwardsDataFlow =
       if loc != locUnknown then
         currentLoc := get_stmtLoc s.skind;
       (* see if we know about it already *)
-      E.pushContext (fun _ -> dprintf "Reached statement %d with %a"
-          s.sid T.pretty d);
+      E.pushContext (fun ppf -> dprintf "Reached statement %d with %a"
+          s.sid T.pretty d ppf);
       let newdata: T.t option =
         try
           let old = IH.find T.stmtStartData s.sid in
@@ -318,7 +318,7 @@ module type BackwardsTransfer = sig
              a block has many exceptional ends. So we maintain the data for
              the statement start. *)
 
-  val pretty: unit -> t -> Pretty.doc (** Pretty-print the state *)
+  val pretty: Format.formatter -> t -> unit (** Pretty-print the state *)
 
   val stmtStartData: t Inthash.t
   (** For each block id, the data at the start. This data structure must be

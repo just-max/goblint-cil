@@ -35,6 +35,8 @@
 
  *)
 
+[@@@ocaml.warning "-unused-value-declaration"]
+
 (******************************************************************************)
 (* Pretty printer
    This module contains several fast, but sub-optimal heuristics to pretty-print
@@ -56,8 +58,8 @@ let flattenBeforePrint = ref true
 (******************************************************************************)
 (* The doc type and constructors *)
 
-type doc =
-    Nil
+type doc = Format.formatter -> unit
+    (* Nil
   | Text     of string
   | Concat   of doc * doc
   | CText    of doc * string
@@ -67,10 +69,10 @@ type doc =
   | Align
   | Unalign
   | Mark
-  | Unmark
+  | Unmark *)
 
 (* Break a string at \n *)
-let rec breakString (acc: doc) (str: string) : doc =
+(* let rec breakString (acc: doc) (str: string) : doc =
   (* Printf.printf "breaking string %s\n" str; *)
   match (try Some (String.index str '\n') with Not_found -> None) with
   | None -> if acc = Nil then Text str else CText (acc, str)
@@ -89,28 +91,28 @@ let rec breakString (acc: doc) (str: string) : doc =
       end
     end else (* The first is a newline *)
       breakString (Concat(acc, Line))
-        (String.sub str (r + 1) (len - r - 1))
+        (String.sub str (r + 1) (len - r - 1)) *)
 
 
-let nil           = Nil
-let text s        = breakString nil s
+let nil           = Format.dprintf ""
+let text s        = Format.dprintf "%s" s
 let num  i        = text (string_of_int i)
 let num64 i       = text (Int64.to_string i)
 let real f        = text (string_of_float f)
 let chr  c        = text (String.make 1 c)
-let align         = Align
-let unalign       = Unalign
-let line          = Line
-let leftflush     = LeftFlush
-let break         = Break
-let mark          = Mark
-let unmark        = Unmark
+let align         = Format.dprintf "@[<hov 0>"
+let unalign       = Format.dprintf "@]"
+let line          = Format.dprintf "\n"
+let leftflush     = Format.dprintf "@\n" (* TODO: right? *)
+let break         = Format.dprintf "@ "
+let mark          = Format.dprintf "" (* TODO: ? *)
+let unmark        = Format.dprintf "" (* TODO: ? *)
 
 let d_int32 (i: int32) = text (Int32.to_string i)
-let f_int32 () i = d_int32 i
+let f_int32 ppf i = d_int32 i ppf
 
 let d_int64 (i: int64) = text (Int64.to_string i)
-let f_int64 () i = d_int64 i
+let f_int64 ppf i = d_int64 i ppf
 
 
 (* Note that the ++ operator in Ocaml are left-associative. This means
@@ -118,8 +120,8 @@ let f_int64 () i = d_int64 i
    towards the left side. This is the worst possible case since scanning the
    left side of a Concat is the non-tail recursive case. *)
 
-let (++) d1 d2 = Concat (d1, d2)
-let concat d1 d2 = Concat (d1, d2)
+let (++) d1 d2 = Format.dprintf "%t%t" d1 d2
+let concat d1 d2 = Format.dprintf "%t%t" d1 d2
 
 (* Ben Liblit fix *)
 let indent n d = text (String.make n ' ') ++ (align ++ (d ++ unalign))
@@ -159,17 +161,17 @@ let docOpt delem () = function
 
 
 
-let docList ?(sep=chr ',') (doit:'a -> doc) () (elements:'a list) =
-  seq ~sep:sep ~doit:doit ~elements:elements
+let docList ?(sep=chr ',') (doit:'a -> doc) ppf (elements:'a list) =
+  seq ~sep:sep ~doit:doit ~elements:elements ppf
 
-let insert () d = d
+let insert (ppf: Format.formatter) (d: doc) = d ppf
 
 
-let d_list (sep:string) (doit:unit -> 'a -> doc) () (elts:'a list) : doc =
+let d_list (sep:string) (doit:Format.formatter -> 'a -> unit) ppf (elts:'a list) : unit =
   (* thunk 'doit' to match docList's interface *)
-  let internalDoit (elt:'a) =
-    (doit () elt) in
-  (docList ~sep:(text sep) internalDoit () elts)
+  let internalDoit (elt:'a) ppf =
+    (doit ppf elt) in
+  (docList ~sep:(text sep) internalDoit ppf elts)
 
 (** Format maps *)
 module MakeMapPrinter =
@@ -229,11 +231,11 @@ let dbgprintf x = Printf.fprintf stderr x
    the fact that constructors such as docList construct from the let of a
    sequence. We would prefer to shift the imbalance to the right to avoid
    consuming a lot of stack when we traverse the document *)
-let rec flatten (acc: doc) = function
+(* let rec flatten (acc: doc) = function
   | Concat (d1, d2) -> flatten (flatten acc d2) d1
   | CText (d, s) -> flatten (Concat(Text s, acc)) d
   | Nil -> acc (* Get rid of Nil *)
-  | d -> Concat(d, acc)
+  | d -> Concat(d, acc) *)
 
 (* We keep a stack of active aligns. *)
 type align =
@@ -385,7 +387,7 @@ let shallowAlign () =
 
 
 (* Pass the current absolute column and compute the new column *)
-let rec scan (abscol: int) (d: doc) : int =
+(* let rec scan (abscol: int) (d: doc) : int =
   match d with
     Nil -> abscol
   | Concat (d1, d2) -> scan (scan abscol d1) d2
@@ -451,7 +453,7 @@ let rec scan (abscol: int) (d: doc) : int =
       | [] -> failwith "Too many unmark"
   end
 
-  | _ -> (* Align level is too deep *) abscol
+  | _ -> (* Align level is too deep *) abscol *)
 
 
 (** Keep a running counter of the newlines we are taking. You can read and
@@ -459,7 +461,7 @@ let rec scan (abscol: int) (d: doc) : int =
 let countNewLines = ref 0
 
 (* The actual function that takes a document and prints it *)
-let emitDoc
+(* let emitDoc
     (emitString: string -> int -> unit) (* emit a number of copies of a
                                            string *)
     (d: doc) =
@@ -559,11 +561,11 @@ let emitDoc
         cont abscol
   in
 
-  loopCont 0 d (fun x -> ())
+  loopCont 0 d (fun x -> ()) *)
 
 
 (* Print a document on a channel *)
-let fprint (chn: out_channel) ~(width: int) doc =
+(* let fprint (chn: out_channel) ~(width: int) doc =
   let doc = if !flattenBeforePrint then flatten Nil doc else doc in
   (* Save some parameters, to allow for nested calls of these routines. *)
   maxCol := width;
@@ -584,10 +586,13 @@ let fprint (chn: out_channel) ~(width: int) doc =
   alignDepth := old_alignDepth;
   breaks := old_breaks (* We must do this especially if we don't do emit
                           (which consumes breaks) because otherwise we waste
-                          memory *)
+                          memory *) *)
+let fprint (chn: out_channel) ~(width: int) doc =
+  let ppf = Format.formatter_of_out_channel chn in
+  Format.fprintf ppf "%t" doc
 
 (* Print the document to a string *)
-let sprint ~(width : int)  doc : string =
+(* let sprint ~(width : int)  doc : string =
   let doc = if !flattenBeforePrint then flatten Nil doc else doc in
   maxCol := width;
   let old_breaks = !breaks in
@@ -607,7 +612,9 @@ let sprint ~(width : int)  doc : string =
   breaks  := old_breaks;
   activeMarkups := old_activeMarkups;
   alignDepth := old_alignDepth;
-  Buffer.contents buf
+  Buffer.contents buf *)
+let sprint ~(width: int) doc =
+  Format.asprintf "%a" (fun ppf f -> f ppf) doc
 
 
                                         (* The rest is based on printf.ml *)
@@ -616,7 +623,7 @@ external format_float: string -> float -> string = "caml_format_float"
 
 
 
-let gprintf (finish : doc -> 'b)
+(* let gprintf (finish : doc -> 'b)
             (format : ('a, unit, doc, 'b) format4) : 'a =
   let format = string_of_format format in
 
@@ -800,7 +807,8 @@ let gprintf (finish : doc -> 'b)
     | c -> j
 
   in
-  collect Nil 0
+  collect Nil 0 *)
+let gprintf = Format.kdprintf
 
 let withPrintDepth dp thunk =
   let opd = !printDepth in
@@ -812,7 +820,7 @@ let withPrintDepth dp thunk =
 
 let flushOften = ref false
 
-let dprintf format     = gprintf (fun x -> x) format
+(* let dprintf format     = gprintf (fun x -> x) format
 let fprintf chn format =
   let f d = fprint chn ~width:80 d; d in
 	(* weimeric hack begins -- flush output to streams *)
@@ -822,10 +830,16 @@ let fprintf chn format =
            *)
   if !flushOften then flush chn;
   res
-	(* weimeric hack ends *)
+	(* weimeric hack ends *) *)
+let dprintf = Format.dprintf
+let fprintf oc fmt =
+  let ppf = Format.formatter_of_out_channel oc in
+  Format.fprintf ppf fmt
 
-let printf format = fprintf stdout format
-let eprintf format = fprintf stderr format
+(* let printf format = fprintf stdout format
+let eprintf format = fprintf stderr format *)
+let printf = Format.printf
+let eprintf = Format.eprintf
 
 
 (************************************************)

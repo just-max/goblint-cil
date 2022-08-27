@@ -384,8 +384,8 @@ let may_alias (e1 : exp) (e2 : exp) : bool =
   let result = A.may_alias tau1 tau2 in
     if !debug_may_aliases then
       begin
-        let doc1 = d_exp () e1 in
-        let doc2 = d_exp () e2 in
+        let doc1 = fun ppf -> d_exp ppf e1 in
+        let doc2 = fun ppf -> d_exp ppf e2 in
         let s1 = Pretty.sprint ~width:30 doc1 in
         let s2 = Pretty.sprint ~width:30 doc2 in
           Printf.printf
@@ -542,7 +542,7 @@ let absloc_e_transitive_points_to (e : Cil.exp) : absloc list =
 
 let absloc_eq a b = A.absloc_eq (a, b)
 
-let d_absloc: unit -> absloc -> Pretty.doc = A.d_absloc
+let d_absloc: Format.formatter -> absloc -> unit = A.d_absloc
 
 
 let ptrResults = ref false

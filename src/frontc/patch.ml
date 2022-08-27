@@ -270,8 +270,8 @@ begin
   result
 end
 
-let d_loc (_:unit) (loc: cabsloc) : doc =
-  text loc.filename ++ chr ':' ++ num loc.lineno
+let d_loc ppf (loc: cabsloc) : unit =
+  ppf |> text loc.filename ++ chr ':' ++ num loc.lineno
 
 
 (* class to describe how to modify the tree when looking for places *)

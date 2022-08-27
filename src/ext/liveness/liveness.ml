@@ -41,18 +41,18 @@ let live_func = ref ""
 
 module VS = UD.VS
 
-let debug_print () vs = (VS.fold
+let debug_print ppf vs = (VS.fold
     (fun vi d ->
       d ++ text "name: " ++ text vi.vname
 	++ text " id: " ++ num vi.vid ++ text " ")
-    vs nil) ++ line
+    vs nil) ++ line @@ ppf
 
-let min_print () vs = (VS.fold
+let min_print ppf vs = (VS.fold
     (fun vi d ->
       d ++ text vi.vname
-	++ text "(" ++ d_type () vi.vtype ++ text ")"
+	++ text "(" ++ (fun ppf -> d_type ppf vi.vtype) ++ text ")"
 	++ text ",")
-    vs nil) ++ line
+    vs nil) ++ line @@ ppf
 
 let printer = ref debug_print
 
@@ -61,9 +61,9 @@ module LiveFlow = struct
   let debug = debug
   type t = VS.t
 
-  let pretty () vs =
+  let pretty ppf vs =
     let fn = !printer in
-    fn () vs
+    fn ppf vs
 
   let stmtStartData = IH.create 32
 
@@ -282,10 +282,10 @@ class deadnessVisitorClass = object(self)
 end
 
 let print_everything () =
-  let d = IH.fold (fun i vs d ->
-    d ++ num i ++ text ": " ++ LiveFlow.pretty () vs)
-      LiveFlow.stmtStartData nil in
-  ignore(printf "%t" (fun () -> d))
+  let d ppf = IH.fold (fun i vs d ->
+    d ++ num i ++ text ": " ++ (fun ppf -> LiveFlow.pretty ppf vs))
+      LiveFlow.stmtStartData nil @@ ppf in
+  ignore(printf "%t" d)
 
 let match_label lbl = match lbl with
   Label(str,_,b) ->

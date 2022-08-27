@@ -32,7 +32,7 @@ let find_in_globals list name =
       | GVar (info, _, _) ->
           if
             String.compare name
-              (String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)))
+              (String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf info.vtype)))
             = 0
           then Some info.vid
           else None
@@ -44,7 +44,7 @@ let find_in_varinfos list name =
     (fun info ->
       if
         String.compare name
-          (String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)))
+          (String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf info.vtype)))
         = 0
       then Some info.vid
       else None)

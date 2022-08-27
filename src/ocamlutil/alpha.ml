@@ -167,8 +167,8 @@ let undoAlphaChanges ~(alphaTable: (string, 'a alphaTableData ref) H.t)
           H.remove alphaTable name)
     undolist
 
-let docAlphaTable () (alphaTable: (string, 'a alphaTableData ref) H.t) = 
+let docAlphaTable ppf (alphaTable: (string, 'a alphaTableData ref) H.t) = 
   let acc : (string * (int * (string * 'a) list)) list ref = ref [] in
   H.iter (fun k d -> acc := (k, !d) :: !acc) alphaTable;
-  docList ~sep:line (fun (k, (d, _)) -> dprintf "  %s -> %d" k d) () !acc
+  docList ~sep:line (fun (k, (d, _)) -> dprintf "  %s -> %d" k d) ppf !acc
 

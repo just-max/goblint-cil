@@ -70,13 +70,13 @@ exception Error
 
 (** Prints an error message of the form [Error: ...].
     Use in conjunction with s, for example: [E.s (E.error ... )]. *)
-val error:         ('a,unit,Pretty.doc,unit) format4 -> 'a
+val error:         ('a,Format.formatter,unit,unit) format4 -> 'a
 
 (** Similar to [error] except that its output has the form [Bug: ...] *)
-val bug:           ('a,unit,Pretty.doc,unit) format4 -> 'a
+val bug:           ('a,Format.formatter,unit,unit) format4 -> 'a
 
 (** Similar to [error] except that its output has the form [Unimplemented: ...] *)
-val unimp:         ('a,unit,Pretty.doc,unit) format4 -> 'a
+val unimp:         ('a,Format.formatter,unit,unit) format4 -> 'a
 
 (** Stop the execution by raising an Error. *)
 val s:             'a -> 'b
@@ -87,17 +87,17 @@ val hadErrors: bool ref
 
 (** Like {!Errormsg.error} but does not raise the {!Errormsg.Error}
    exception. Return type is unit. *)
-val warn:    ('a,unit,Pretty.doc,unit) format4 -> 'a
+val warn:    ('a,Format.formatter,unit,unit) format4 -> 'a
 
 (** Like {!Errormsg.warn} but optional. Printed only if the
    {!Errormsg.warnFlag} is set *)
-val warnOpt: ('a,unit,Pretty.doc,unit) format4 -> 'a
+val warnOpt: ('a,Format.formatter,unit,unit) format4 -> 'a
 
 (** Print something to [logChannel] *)
-val log:           ('a,unit,Pretty.doc,unit) format4 -> 'a
+val log:           ('a,Format.formatter,unit,unit) format4 -> 'a
 
 (** same as {!Errormsg.log} but do not wrap lines *)
-val logg:          ('a,unit,Pretty.doc,unit) format4 -> 'a
+val logg:          ('a,Format.formatter,unit,unit) format4 -> 'a
 
    (* All of the error and warning reporting functions can also print a
       context. To register a context printing function use "pushContext". To
@@ -106,10 +106,10 @@ val logg:          ('a,unit,Pretty.doc,unit) format4 -> 'a
       context reporting functions in the reverse order they were registered. *)
 
 (** Do not actually print (i.e. print to /dev/null) *)
-val null : ('a,unit,Pretty.doc,unit) format4 -> 'a
+val null : ('a,Format.formatter,unit,unit) format4 -> 'a
 
 (** Registers a context printing function *)
-val pushContext  : (unit -> Pretty.doc) -> unit
+val pushContext  : (Pretty.doc) -> unit
 
 (** Removes the last registered context printing function *)
 val popContext   : unit -> unit
@@ -119,7 +119,7 @@ val showContext : unit -> unit
 
 (** To ensure that the context is registered and removed properly, use the
     function below *)
-val withContext  : (unit -> Pretty.doc) -> ('a -> 'b) -> 'a -> 'b
+val withContext  : (Pretty.doc) -> ('a -> 'b) -> 'a -> 'b
 
 
 
@@ -145,8 +145,8 @@ type location =
       hline: int;    (** The high-level line number, or 0 if not present *)
     }
 
-val d_loc: unit -> location -> Pretty.doc
-val d_hloc: unit -> location -> Pretty.doc
+val d_loc: Format.formatter -> location -> unit
+val d_hloc: Format.formatter -> location -> unit
 
 val getLocation: unit -> location
 

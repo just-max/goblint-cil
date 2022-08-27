@@ -295,7 +295,7 @@ let getDefRhs didstmh stmdat defId =
   | _ -> E.s (E.error "getDefRhs: defining statement not an instruction list %d" defId)
 	(*None*)
 
-let prettyprint didstmh stmdat () (_,s,iosh) = (*text ""*)
+let prettyprint didstmh stmdat ppf (_,s,iosh) = (*text ""*)
   seq ~sep:line ~doit:(fun (vid,ios) ->
     num vid ++ text ": " ++
       IOS.fold (fun io d -> match io with
@@ -305,11 +305,11 @@ let prettyprint didstmh stmdat () (_,s,iosh) = (*text ""*)
 	  match getDefRhs didstmh stmdat i with
 	    None -> d ++ num i
 	  | Some(RDExp(e),_,_) ->
-	      d ++ num i ++ text " " ++ (d_exp () e)
+	      d ++ num i ++ text " " ++ (fun ppf -> d_exp ppf e)
 	  | Some(RDCall(c),_,_) ->
-	      d ++ num i ++ text " " ++ (d_instr () c))
+	      d ++ num i ++ text " " ++ (fun ppf -> d_instr ppf c))
       ios nil)
-    ~elements:(IH.tolist iosh)
+    ~elements:(IH.tolist iosh) ppf
 
 module ReachingDef =
   struct
@@ -510,7 +510,7 @@ let isDefInstr i defId =
 let ppFdec fdec =
   seq ~sep:line ~doit:(fun stm ->
     let ivih = IH.find ReachingDef.stmtStartData stm.sid in
-    ReachingDef.pretty () ivih) ~elements:fdec.sbody.bstmts
+    fun ppf -> ReachingDef.pretty ppf ivih) ~elements:fdec.sbody.bstmts
 
 
 (* If this class is extended with a visitor on expressions,

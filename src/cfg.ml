@@ -254,10 +254,10 @@ and fasStmt (todo) (s : stmt) =
 (**************************************************************)
 (* printing the control flow graph - you have to compute it first *)
 
-let d_cfgnodename () (s : stmt) =
-  dprintf "%d" s.sid
+let d_cfgnodename ppf (s : stmt) =
+  dprintf "%d" s.sid ppf
 
-let d_cfgnodelabel () (s : stmt) =
+let d_cfgnodelabel ppf (s : stmt) =
   let label =
   begin
     match s.skind with
@@ -271,18 +271,19 @@ let d_cfgnodelabel () (s : stmt) =
       | Block _ -> "block"
       | Return _ -> "return"
   end in
-    dprintf "%d: %s" s.sid label
+    dprintf "%d: %s" s.sid label ppf
 
-let d_cfgedge (src) () (dest) =
+let d_cfgedge (src) ppf (dest) =
   dprintf "%a -> %a"
     d_cfgnodename src
-    d_cfgnodename dest
+    d_cfgnodename dest ppf
 
-let d_cfgnode () (s : stmt) =
+let d_cfgnode ppf (s : stmt) =
     dprintf "%a [label=\"%a\"]\n\t%a"
     d_cfgnodename s
     d_cfgnodelabel s
     (d_list "\n\t" (d_cfgedge s)) s.succs
+    ppf
 
 (**********************************************************************)
 (* entry points *)

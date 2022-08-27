@@ -10,6 +10,6 @@ class zraCilPrinterClass : Cil.cilPrinter
 
 val zraCilPrinter : Cil.cilPrinter
 
-val pp_exp : Cil.fundec -> unit -> Cil.exp -> Pretty.doc
+val pp_exp : Cil.fundec -> Format.formatter -> Cil.exp -> unit
 
 val feature : Feature.t

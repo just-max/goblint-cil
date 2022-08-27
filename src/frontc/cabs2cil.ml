@@ -799,10 +799,10 @@ module BlockChunk =
                                              visible at the outer level *)
       }
 
-    let d_chunk () (c: chunk) =
+    let d_chunk ppf (c: chunk) =
       dprintf "@[{ @[%a@] };@?%a@]"
-           (docList ~sep:(chr ';') (d_stmt ())) c.stmts
-           (docList ~sep:(chr ';') (d_instr ())) (List.rev c.postins)
+           (docList ~sep:(chr ';') (fun s ppf -> d_stmt ppf s)) c.stmts
+           (docList ~sep:(chr ';') (fun i ppf -> d_instr ppf i)) (List.rev c.postins) ppf
 
     let empty =
       { stmts = []; postins = []; cases = []; }
@@ -4040,7 +4040,7 @@ and doExp (asconst: bool)   (* This expression is used as a constant *)
              let tresult, opresult = doBinOp uop' e' t one intType in
              let se', result =
                if what <> ADrop && what <> AType then
-                 let descr = (dd_exp () e')
+                 let descr = (fun ppf -> dd_exp ppf e')
                              ++ (if uop = A.POSINCR then text "++" else text "--") in
                  let tmp = newTempVar descr true t in
                  se +++ (Set(var tmp, e', !currentLoc, !currentExpLoc)), Lval(var tmp)
@@ -4098,7 +4098,7 @@ and doExp (asconst: bool)   (* This expression is used as a constant *)
              in
              let tmplv, se3 =
                if needsTemp then
-                 let descr = (dd_lval () lv) in
+                 let descr = (fun ppf -> dd_lval ppf lv) in
                  let tmp = newTempVar descr true lvt in
                  var tmp, i2c (Set(lv, Lval(var tmp), !currentLoc, !currentExpLoc))
                else
@@ -4178,7 +4178,7 @@ and doExp (asconst: bool)   (* This expression is used as a constant *)
              in
              (* The type of the result is the type of the left-hand side  *)
              if needsTemp then
-               let descr = (dd_lval () lv1) in
+               let descr = (fun ppf -> dd_lval ppf lv1) in
                let tmp = var (newTempVar descr true tresult') in
                finishExp (se1 @@ se2 +++
                (Set(tmp, result', !currentLoc, !currentExpLoc)) +++
@@ -4306,7 +4306,7 @@ and doExp (asconst: bool)   (* This expression is used as a constant *)
           (* constants don't need to be pulled out *)
           if (!forceRLArgEval && (not (isConstant e)) && (not isSpecialBuiltin)) then
             (* create a temporary *)
-            let tmp = newTempVar (dd_exp () e) true t in
+            let tmp = newTempVar (fun ppf -> dd_exp ppf e) true t in
             (* create an instruction to give the e to the temporary *)
             let i = Set(var tmp, e, !currentLoc, !currentExpLoc) in
             (* add the instruction to the chunk *)
@@ -4656,7 +4656,7 @@ and doExp (asconst: bool)   (* This expression is used as a constant *)
                 | ASet (_, t) when !pis__builtin_va_arg -> t
                 | _ -> !resType'
               in
-              let descr = dprintf "%a(%a)" dd_exp !pf (docList ~sep:(text ", ") (dd_exp ())) !pargs in
+              let descr = dprintf "%a(%a)" dd_exp !pf (docList ~sep:(text ", ") (fun e ppf -> dd_exp ppf e)) !pargs in
               let tmp = newTempVar descr false restype'' in
               (* Remember that this variable has been created for this
                  specific call. We will use this in collapseCallCast. *)
@@ -5192,7 +5192,7 @@ and doInit
     (* Return the resulting chunk along with some unused initializers *)
   : chunk * (A.initwhat * A.init_expression) list =
 
-  let whoami () = d_lval () (Var so.host, so.soOff) in
+  let whoami ppf = d_lval ppf (Var so.host, so.soOff) in
 
   let initl1 =
     match initl with
@@ -5998,7 +5998,7 @@ and doDecl (isglobal: bool) : A.definition -> chunk = function
       currentLoc := funloc;
       currentExpLoc := funloc; (* TODO: location just for declaration *)
       E.withContext
-        (fun _ -> dprintf "2cil: %s" n)
+        (dprintf "2cil: %s" n)
         (fun _ ->
           try
             IH.clear callTempVars;

@@ -38,7 +38,7 @@ class fun_find_returns funname funid result : nopCilVisitor =
             @ [
                 ( "",
                   loc,
-                  String.trim (Pretty.sprint ~width:1 (d_type () (typeOf exp))),
+                  String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf (typeOf exp))),
                   -1 );
               ];
           DoChildren
@@ -78,7 +78,7 @@ class fun_find_sig funname funid result : nopCilVisitor =
             @ [
                 ( "",
                   loc,
-                  String.trim (Pretty.sprint ~width:1 (d_type () (typeOf exp))),
+                  String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf (typeOf exp))),
                   -1 );
               ];
           SkipChildren
@@ -105,9 +105,9 @@ let create_sig fundec file =
   let rec input_type list =
     match list with
     | [ x ] ->
-        String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)) ^ " " ^ x.vname
+        String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf x.vtype)) ^ " " ^ x.vname
     | x :: xs ->
-        String.trim (Pretty.sprint ~width:1 (d_type () x.vtype))
+        String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf x.vtype))
         ^ " " ^ x.vname ^ ", " ^ input_type xs
     | [] -> ""
   in

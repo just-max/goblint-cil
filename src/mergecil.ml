@@ -108,10 +108,10 @@
           the node of this name *)
  }
 
- let d_nloc () (lo : (location * int) option) : P.doc =
+ let d_nloc ppf (lo : (location * int) option) : unit =
    match lo with
-   | None -> P.text "None"
-   | Some (l, idx) -> P.dprintf "Some(%d at %a)" idx d_loc l
+   | None -> P.text "None" ppf
+   | Some (l, idx) -> P.dprintf "Some(%d at %a)" idx d_loc l ppf
 
  (* Make a node with a self loop. This is quite tricky. *)
  let mkSelfNode (eq : (int * string, 'a node) H.t) (* The equivalence table *)
@@ -1300,7 +1300,7 @@
      (* Now do the locals *)
      List.iter renameOne fdec'.slocals);
    (* Now print it *)
-   let res = d_global () g' in
+   let res ppf = d_global ppf g' in
    lineDirectiveStyle := oldprintln;
    fdec'.svar.vname <- newname;
    if mergeInlinesWithAlphaConvert () then (

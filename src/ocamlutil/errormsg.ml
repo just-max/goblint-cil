@@ -106,7 +106,7 @@ let cyanEscStr = "\027[36m"
 let whiteEscStr = "\027[37m"
 let resetEscStr = "\027[m"
 
-let bug (fmt : ('a,unit,doc,unit) format4) : 'a =
+let bug (fmt : ('a,Format.formatter,unit,unit) format4) : 'a =
   let f d =
     hadErrors := true;
     if !colorFlag then output_string !logChannel greenEscStr;
@@ -116,7 +116,7 @@ let bug (fmt : ('a,unit,doc,unit) format4) : 'a =
   in
   Pretty.gprintf f fmt
 
-let error (fmt : ('a,unit,doc,unit) format4) : 'a =
+let error (fmt : ('a,Format.formatter,unit,unit) format4) : 'a =
   let f d =
     hadErrors := true;
     if !colorFlag then output_string !logChannel redEscStr;
@@ -126,13 +126,13 @@ let error (fmt : ('a,unit,doc,unit) format4) : 'a =
   in
   Pretty.gprintf f fmt
 
-let unimp (fmt : ('a,unit,doc,unit) format4) : 'a =
+let unimp (fmt : ('a,Format.formatter,unit,unit) format4) : 'a =
   let f d = hadErrors := true; contextMessage "Unimplemented" d;
     flush !logChannel
   in
   Pretty.gprintf f fmt
 
-let warn (fmt : ('a,unit,doc,unit) format4) : 'a =
+let warn (fmt : ('a,Format.formatter,unit,unit) format4) : 'a =
   let f d =
     if !colorFlag then output_string !logChannel yellowEscStr;
     contextMessage "Warning" d;
@@ -141,7 +141,7 @@ let warn (fmt : ('a,unit,doc,unit) format4) : 'a =
   in
   Pretty.gprintf f fmt
 
-let warnOpt (fmt : ('a,unit,doc,unit) format4) : 'a =
+let warnOpt (fmt : ('a,Format.formatter,unit,unit) format4) : 'a =
     let f d =
       if !warnFlag then begin
         if !colorFlag then output_string !logChannel yellowEscStr;
@@ -152,15 +152,15 @@ let warnOpt (fmt : ('a,unit,doc,unit) format4) : 'a =
     Pretty.gprintf f fmt
 
 
-let log (fmt : ('a,unit,doc,unit) format4) : 'a =
+let log (fmt : ('a,Format.formatter,unit,unit) format4) : 'a =
   let f d = fprint !logChannel ~width:80 d; flush !logChannel in
   Pretty.gprintf f fmt
 
-let logg (fmt : ('a,unit,doc,unit) format4) : 'a =
+let logg (fmt : ('a,Format.formatter,unit,unit) format4) : 'a =
   let f d = fprint !logChannel ~width:10000000 d; flush !logChannel in
   Pretty.gprintf f fmt
 
-let null (fmt : ('a,unit,doc,unit) format4) : 'a =
+let null (fmt : ('a,Format.formatter,unit,unit) format4) : 'a =
   let f d = () in
   Pretty.gprintf f fmt
 
@@ -349,12 +349,12 @@ type location =
       hline: int;    (** The high-level line number, or 0 if not present *)
     }
 
-let d_loc () l =
-  text (l.file ^ ":" ^ string_of_int l.line)
+let d_loc ppf l =
+  text (l.file ^ ":" ^ string_of_int l.line) ppf
 
-let d_hloc () (l: location) =
+let d_hloc ppf (l: location) =
   dprintf "%s:%d%a" l.file l.line
-    insert (if l.hline > 0 then dprintf " (%s:%d)" l.hfile l.hline else nil)
+    insert (if l.hline > 0 then dprintf " (%s:%d)" l.hfile l.hline else nil) ppf
 
 let locUnknown = { file = ""; hfile = ""; line = -1; hline = -1 }
 

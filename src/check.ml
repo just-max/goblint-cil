@@ -171,7 +171,9 @@ type ctxType =
   | CTDecl                              (* In a typedef, or a declaration *)
   | CTNumeric                           (* As an argument to __real__ or __imag__ *)
 
-let d_context () = function
+let d_context ppf c =
+  ppf |>
+  match c with
     CTStruct -> text "CTStruct"
   | CTUnion -> text "CTUnion"
   | CTFArg -> text "CTFArg"
@@ -465,7 +467,7 @@ and checkExpType (isconst: bool) (e: exp) (t: typ) =
    type of the expression *)
 and checkExp (isconst: bool) (e: exp) : typ =
   E.withContext
-    (fun _ -> dprintf "check%s: %a"
+    (dprintf "check%s: %a"
         (if isconst then "Const" else "Exp") d_exp e)
     (fun _ ->
       match e with
@@ -617,7 +619,7 @@ and checkExp (isconst: bool) (e: exp) : typ =
 
 and checkInit  (i: init) : typ =
   E.withContext
-    (fun _ -> dprintf "checkInit: %a" d_init i)
+    (dprintf "checkInit: %a" d_init i)
     (fun _ ->
       match i with
         SingleInit e -> checkExp true e
@@ -710,11 +712,11 @@ and checkInitType (i: init) (t: typ) : unit =
 
 and checkStmt (s: stmt) =
   E.withContext
-    (fun _ ->
+    (fun ppf ->
       (* Print context only for certain small statements *)
       match s.skind with
-        Loop _ | If _ | Switch _  -> nil
-      | _ -> dprintf "checkStmt: %a" d_stmt s)
+        Loop _ | If _ | Switch _  -> nil ppf
+      | _ -> dprintf "checkStmt: %a" d_stmt s ppf)
     (fun _ ->
       (* Check the labels *)
       let checkLabel = function
@@ -891,7 +893,7 @@ let rec checkGlobal = function
   | GText _ -> ()
   | GType (ti, l) ->
       currentLoc := l;
-      E.withContext (fun _ -> dprintf "GType(%s)" ti.tname)
+      E.withContext (dprintf "GType(%s)" ti.tname)
         (fun _ ->
           checkTypeInfo Defined ti;
           if ti.tname <> "" then defineName ti.tname)
@@ -916,7 +918,7 @@ let rec checkGlobal = function
   | GVarDecl (vi, l) ->
       currentLoc := l;
       (* We might have seen it already *)
-      E.withContext (fun _ -> dprintf "GVarDecl(%s)" vi.vname)
+      E.withContext (dprintf "GVarDecl(%s)" vi.vname)
         (fun _ ->
           (* If we have seen this vid already then it must be for the exact
              same varinfo *)
@@ -935,7 +937,7 @@ let rec checkGlobal = function
   | GVar (vi, init, l) ->
       currentLoc := l;
       (* Maybe this is the first occurrence *)
-      E.withContext (fun _ -> dprintf "GVar(%s)" vi.vname)
+      E.withContext (dprintf "GVar(%s)" vi.vname)
         (fun _ ->
           checkGlobal (GVarDecl (vi, l));
           (* Check the initializer *)
@@ -960,7 +962,7 @@ let rec checkGlobal = function
       if H.mem fundecForVarIds vi.vid then
         ignore (warn "There already is a different fundec for vid %d (%s)" vi.vid vi.vname);
 
-      E.withContext (fun _ -> dprintf "GFun(%s)" fname)
+      E.withContext (dprintf "GFun(%s)" fname)
         (fun _ ->
           checkGlobal (GVarDecl (vi, l));
           (* Check that the argument types in the type are identical to the
@@ -973,7 +975,7 @@ let rec checkGlobal = function
                   ignore (warnContext
                             "Formal %s not shared (expecting name %s) in %s"
                             fo.vname fn fname);
-                E.withContext (fun () -> text "formal "++ text fo.vname)
+                E.withContext (text "formal "++ text fo.vname)
                   (fun () -> typeMatch ft fo.vtype)
                   ();
                 if fa != fo.vattr then

@@ -83,9 +83,9 @@ module C = Set.Make (Absloc)
     absloc sets are unified *)
 type abslocset = C.t
 
-let d_absloc () (a: absloc) : Pretty.doc =
+let d_absloc ppf (a: absloc) : unit =
   let i,s,_ = a in
-  Pretty.dprintf "<%d, %s>" i s
+  Pretty.dprintf "<%d, %s>" i s ppf
 
 type c_abslocinfo = {
   mutable l_name: string;   (** name of the location *)

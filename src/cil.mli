@@ -1503,7 +1503,7 @@ val splitFunctionTypeVI:
    constructors are unrolled. *)
 
 (** Print a type signature *)
-val d_typsig: unit -> typsig -> Pretty.doc
+val d_typsig: Format.formatter -> typsig -> unit
 
 (** Compute a type signature *)
 val typeSig: typ -> typsig
@@ -2136,22 +2136,22 @@ a corresponding function that pretty-prints an element of that type:
 
 
 (** Pretty-print a location *)
-val d_loc: unit -> location -> Pretty.doc
+val d_loc: Format.formatter -> location -> unit
 
 (** Pretty-print the {!currentLoc} *)
-val d_thisloc: unit -> Pretty.doc
+val d_thisloc: Pretty.doc
 
 (** Pretty-print an integer of a given kind *)
-val d_ikind: unit -> ikind -> Pretty.doc
+val d_ikind: Format.formatter -> ikind -> unit
 
 (** Pretty-print a floating-point kind *)
-val d_fkind: unit -> fkind -> Pretty.doc
+val d_fkind: Format.formatter -> fkind -> unit
 
 (** Pretty-print storage-class information *)
-val d_storage: unit -> storage -> Pretty.doc
+val d_storage: Format.formatter -> storage -> unit
 
 (** Pretty-print a constant *)
-val d_const: unit -> constant -> Pretty.doc
+val d_const: Format.formatter -> constant -> unit
 
 
 val derefStarLevel: int
@@ -2179,7 +2179,7 @@ class type cilPrinter = object
   method setPrintInstrTerminator : string -> unit
   method getPrintInstrTerminator : unit -> string
 
-  method pVDecl: unit -> varinfo -> Pretty.doc
+  method pVDecl: Format.formatter -> varinfo -> unit
     (** Invoked for each variable declaration. Note that variable
        declarations are all the [GVar], [GVarDecl], [GFun], all the [varinfo]
        in formals of function types, and the formals and locals for function
@@ -2188,19 +2188,19 @@ class type cilPrinter = object
   method pVar: varinfo -> Pretty.doc
     (** Invoked on each variable use. *)
 
-  method pLval: unit -> lval -> Pretty.doc
+  method pLval: Format.formatter -> lval -> unit
     (** Invoked on each lvalue occurrence *)
 
   method pOffset: Pretty.doc -> offset -> Pretty.doc
     (** Invoked on each offset occurrence. The second argument is the base. *)
 
-  method pInstr: unit -> instr -> Pretty.doc
+  method pInstr: Format.formatter -> instr -> unit
     (** Invoked on each instruction occurrence. *)
 
-  method pLabel: unit -> label -> Pretty.doc
+  method pLabel: Format.formatter -> label -> unit
     (** Print a label. *)
 
-  method pStmt: unit -> stmt -> Pretty.doc
+  method pStmt: Format.formatter -> stmt -> unit
     (** Control-flow statement. This is used by
        {!printGlobal} and by {!dumpGlobal}. *)
 
@@ -2212,10 +2212,10 @@ class type cilPrinter = object
     (** Dump a control-flow block to a file with a given indentation.
        This is used by {!dumpGlobal}. *)
 
-  method pBlock: unit -> block -> Pretty.doc
+  method pBlock: Format.formatter -> block -> unit
     (** Print a block. *)
 
-  method pGlobal: unit -> global -> Pretty.doc
+  method pGlobal: Format.formatter -> global -> unit
     (** Global (vars, types, etc.). This can be slow and is used only by
        {!printGlobal} but not by {!dumpGlobal}. *)
 
@@ -2223,10 +2223,10 @@ class type cilPrinter = object
     (** Dump a global to a file with a given indentation. This is used by
        {!dumpGlobal} *)
 
-  method pFieldDecl: unit -> fieldinfo -> Pretty.doc
+  method pFieldDecl: Format.formatter -> fieldinfo -> unit
     (** A field declaration *)
 
-  method pType: Pretty.doc option -> unit -> typ -> Pretty.doc
+  method pType: Pretty.doc option -> Format.formatter -> typ -> unit
   (** Use of some type in some declaration. The first argument is used to print
      the declared element, or is None if we are just printing a type with no
      name being declared. Note that for structure/union and enumeration types
@@ -2237,10 +2237,10 @@ class type cilPrinter = object
     (** Attribute. Also return an indication whether this attribute must be
         printed inside the __attribute__ list or not. *)
 
-  method pAttrParam: unit -> attrparam -> Pretty.doc
+  method pAttrParam: Format.formatter -> attrparam -> unit
     (** Attribute parameter *)
 
-  method pAttrs: unit -> attributes -> Pretty.doc
+  method pAttrs: Format.formatter -> attributes -> unit
     (** Attribute lists *)
 
   method pLineDirective: ?forcefile:bool -> location -> Pretty.doc
@@ -2250,17 +2250,17 @@ class type cilPrinter = object
        is different from the last time time this function is called. The last
        file name is stored in a private field inside the cilPrinter object. *)
 
-  method pStmtKind: stmt -> unit -> stmtkind -> Pretty.doc
+  method pStmtKind: stmt -> Format.formatter -> stmtkind -> unit
     (** Print a statement kind. The code to be printed is given in the
        {!stmtkind} argument.  The initial {!stmt} argument
        records the statement which follows the one being printed;
        {!defaultCilPrinterClass} uses this information to prettify
        statement printing in certain special cases. *)
 
-  method pExp: unit -> exp -> Pretty.doc
+  method pExp: Format.formatter -> exp -> unit
     (** Print expressions *)
 
-  method pInit: unit -> init -> Pretty.doc
+  method pInit: Format.formatter -> init -> unit
     (** Print initializers. This can be slow and is used by
        {!printGlobal} but not by {!dumpGlobal}. *)
 
@@ -2304,35 +2304,35 @@ val printerForMaincil: cilPrinter ref
 
 (* Top-level printing functions *)
 (** Print a type given a pretty printer *)
-val printType: cilPrinter -> unit -> typ -> Pretty.doc
+val printType: cilPrinter -> Format.formatter -> typ -> unit
 
 (** Print an expression given a pretty printer *)
-val printExp: cilPrinter -> unit -> exp -> Pretty.doc
+val printExp: cilPrinter -> Format.formatter -> exp -> unit
 
 (** Print an lvalue given a pretty printer *)
-val printLval: cilPrinter -> unit -> lval -> Pretty.doc
+val printLval: cilPrinter -> Format.formatter -> lval -> unit
 
 (** Print a global given a pretty printer *)
-val printGlobal: cilPrinter -> unit -> global -> Pretty.doc
+val printGlobal: cilPrinter -> Format.formatter -> global -> unit
 
 (** Print an attribute given a pretty printer *)
-val printAttr: cilPrinter -> unit -> attribute -> Pretty.doc
+val printAttr: cilPrinter -> Format.formatter -> attribute -> unit
 
 (** Print a set of attributes given a pretty printer *)
-val printAttrs: cilPrinter -> unit -> attributes -> Pretty.doc
+val printAttrs: cilPrinter -> Format.formatter -> attributes -> unit
 
 (** Print an instruction given a pretty printer *)
-val printInstr: cilPrinter -> unit -> instr -> Pretty.doc
+val printInstr: cilPrinter -> Format.formatter -> instr -> unit
 
 (** Print a statement given a pretty printer. This can take very long
    (or even overflow the stack) for huge statements. Use {!dumpStmt}
    instead. *)
-val printStmt: cilPrinter -> unit -> stmt -> Pretty.doc
+val printStmt: cilPrinter -> Format.formatter -> stmt -> unit
 
 (** Print a block given a pretty printer. This can take very long
    (or even overflow the stack) for huge block. Use {!dumpBlock}
    instead. *)
-val printBlock: cilPrinter -> unit -> block -> Pretty.doc
+val printBlock: cilPrinter -> Format.formatter -> block -> unit
 
 (** Dump a statement to a file using a given indentation. Use this instead of
    {!printStmt} whenever possible. *)
@@ -2345,85 +2345,85 @@ val dumpBlock: cilPrinter -> out_channel -> int -> block -> unit
 (** Print an initializer given a pretty printer. This can take very long
    (or even overflow the stack) for huge initializers. Use {!dumpInit}
    instead. *)
-val printInit: cilPrinter -> unit -> init -> Pretty.doc
+val printInit: cilPrinter -> Format.formatter -> init -> unit
 
 (** Dump an initializer to a file using a given indentation. Use this instead of
    {!printInit} whenever possible. *)
 val dumpInit: cilPrinter -> out_channel -> int -> init -> unit
 
 (** Pretty-print a type using {!defaultCilPrinter} *)
-val d_type: unit -> typ -> Pretty.doc
+val d_type: Format.formatter -> typ -> unit
 
 (** Pretty-print an expression using {!defaultCilPrinter}  *)
-val d_exp: unit -> exp -> Pretty.doc
+val d_exp: Format.formatter -> exp -> unit
 
 (** Pretty-print an lvalue using {!defaultCilPrinter}   *)
-val d_lval: unit -> lval -> Pretty.doc
+val d_lval: Format.formatter -> lval -> unit
 
 (** Pretty-print an offset using {!defaultCilPrinter}, given the pretty
    printing for the base.   *)
-val d_offset: Pretty.doc -> unit -> offset -> Pretty.doc
+val d_offset: Pretty.doc -> Format.formatter -> offset -> unit
 
 (** Pretty-print an initializer using {!defaultCilPrinter}.  This can be
    extremely slow (or even overflow the stack) for huge initializers. Use
    {!dumpInit} instead. *)
-val d_init: unit -> init -> Pretty.doc
+val d_init: Format.formatter -> init -> unit
 
 (** Pretty-print a binary operator *)
-val d_binop: unit -> binop -> Pretty.doc
+val d_binop: Format.formatter -> binop -> unit
 
 (** Pretty-print a unary operator *)
-val d_unop: unit -> unop -> Pretty.doc
+val d_unop: Format.formatter -> unop -> unit
 
 (** Pretty-print an attribute using {!defaultCilPrinter}  *)
-val d_attr: unit -> attribute -> Pretty.doc
+val d_attr: Format.formatter -> attribute -> unit
 
 (** Pretty-print an argument of an attribute using {!defaultCilPrinter}  *)
-val d_attrparam: unit -> attrparam -> Pretty.doc
+val d_attrparam: Format.formatter -> attrparam -> unit
 
 (** Pretty-print a list of attributes using {!defaultCilPrinter}  *)
-val d_attrlist: unit -> attributes -> Pretty.doc
+val d_attrlist: Format.formatter -> attributes -> unit
 
 (** Pretty-print an instruction using {!defaultCilPrinter}   *)
-val d_instr: unit -> instr -> Pretty.doc
+val d_instr: Format.formatter -> instr -> unit
 
 (** Pretty-print a label using {!defaultCilPrinter} *)
-val d_label: unit -> label -> Pretty.doc
+val d_label: Format.formatter -> label -> unit
 
 (** Pretty-print a statement using {!defaultCilPrinter}. This can be
    extremely slow (or even overflow the stack) for huge statements. Use
    {!dumpStmt} instead. *)
-val d_stmt: unit -> stmt -> Pretty.doc
+val d_stmt: Format.formatter -> stmt -> unit
 
 (** Pretty-print a block using {!defaultCilPrinter}. This can be
    extremely slow (or even overflow the stack) for huge blocks. Use
    {!dumpBlock} instead. *)
-val d_block: unit -> block -> Pretty.doc
+val d_block: Format.formatter -> block -> unit
 
 (** Pretty-print the internal representation of a global using
    {!defaultCilPrinter}. This can be extremely slow (or even overflow the
    stack) for huge globals (such as arrays with lots of initializers). Use
    {!dumpGlobal} instead. *)
-val d_global: unit -> global -> Pretty.doc
+val d_global: Format.formatter -> global -> unit
 
 
 (** Versions of the above pretty printers, that don't print #line directives *)
-val dn_exp       : unit -> exp -> Pretty.doc
-val dn_lval      : unit -> lval -> Pretty.doc
+val dn_exp       : Format.formatter -> exp -> unit
+val dn_lval      : Format.formatter -> lval -> unit
 (* dn_offset is missing because it has a different interface *)
-val dn_init      : unit -> init -> Pretty.doc
-val dn_type      : unit -> typ -> Pretty.doc
-val dn_global    : unit -> global -> Pretty.doc
-val dn_attrlist  : unit -> attributes -> Pretty.doc
-val dn_attr      : unit -> attribute -> Pretty.doc
-val dn_attrparam : unit -> attrparam -> Pretty.doc
-val dn_stmt      : unit -> stmt -> Pretty.doc
-val dn_instr     : unit -> instr -> Pretty.doc
+val dn_init      : Format.formatter -> init -> unit
+val dn_type      : Format.formatter -> typ -> unit
+val dn_global    : Format.formatter -> global -> unit
+val dn_attrlist  : Format.formatter -> attributes -> unit
+val dn_attr      : Format.formatter -> attribute -> unit
+val dn_attrparam : Format.formatter -> attrparam -> unit
+val dn_stmt      : Format.formatter -> stmt -> unit
+val dn_instr     : Format.formatter -> instr -> unit
 
 
 (** Pretty-print a short description of the global. This is useful for error
    messages *)
-val d_shortglobal: unit -> global -> Pretty.doc
+val d_shortglobal: Format.formatter -> global -> unit
 
 (** Pretty-print a global. Here you give the channel where the printout
    should be sent. *)
@@ -2439,37 +2439,37 @@ val dumpFile: cilPrinter -> out_channel -> string -> file -> unit
    that *)
 
 (** Like {!Errormsg.bug} except that {!currentLoc} is also printed *)
-val bug: ('a,unit,Pretty.doc) format -> 'a
+val bug: ('a,Format.formatter,unit) format -> 'a
 
 (** Like {!Errormsg.unimp} except that {!currentLoc}is also printed *)
-val unimp: ('a,unit,Pretty.doc) format -> 'a
+val unimp: ('a,Format.formatter,unit) format -> 'a
 
 (** Like {!Errormsg.error} except that {!currentLoc} is also printed *)
-val error: ('a,unit,Pretty.doc) format -> 'a
+val error: ('a,Format.formatter,unit) format -> 'a
 
 (** Like {!error} except that it explicitly takes a location argument,
    instead of using the {!currentLoc} *)
-val errorLoc: location -> ('a,unit,Pretty.doc) format -> 'a
+val errorLoc: location -> ('a,Format.formatter,unit) format -> 'a
 
 (** Like {!Errormsg.warn} except that {!currentLoc} is also printed *)
-val warn: ('a,unit,Pretty.doc) format -> 'a
+val warn: ('a,Format.formatter,unit) format -> 'a
 
 
 (** Like {!Errormsg.warnOpt} except that {!currentLoc} is also printed.
    This warning is printed only of {!Errormsg.warnFlag} is set. *)
-val warnOpt: ('a,unit,Pretty.doc) format -> 'a
+val warnOpt: ('a,Format.formatter,unit) format -> 'a
 
 (** Like {!Errormsg.warn} except that {!currentLoc} and context
     is also printed *)
-val warnContext: ('a,unit,Pretty.doc) format -> 'a
+val warnContext: ('a,Format.formatter,unit) format -> 'a
 
 (** Like {!Errormsg.warn} except that {!currentLoc} and context is also
    printed. This warning is printed only of {!Errormsg.warnFlag} is set. *)
-val warnContextOpt: ('a,unit,Pretty.doc) format -> 'a
+val warnContextOpt: ('a,Format.formatter,unit) format -> 'a
 
 (** Like {!warn} except that it explicitly takes a location argument,
    instead of using the {!currentLoc} *)
-val warnLoc: location -> ('a,unit,Pretty.doc) format -> 'a
+val warnLoc: location -> ('a,Format.formatter,unit) format -> 'a
 
 (** Sometimes you do not want to see the syntactic sugar that the above
    pretty-printing functions add. In that case you can use the following
@@ -2477,31 +2477,31 @@ val warnLoc: location -> ('a,unit,Pretty.doc) format -> 'a
    not valid C *)
 
 (** Pretty-print the internal representation of an expression *)
-val d_plainexp: unit -> exp -> Pretty.doc
+val d_plainexp: Format.formatter -> exp -> unit
 
 (** Pretty-print the internal representation of an integer *)
-val d_plaininit: unit -> init -> Pretty.doc
+val d_plaininit: Format.formatter -> init -> unit
 
 (** Pretty-print the internal representation of an lvalue *)
-val d_plainlval: unit -> lval -> Pretty.doc
+val d_plainlval: Format.formatter -> lval -> unit
 
 (** Pretty-print the internal representation of an lvalue offset
-val d_plainoffset: unit -> offset -> Pretty.doc *)
+val d_plainoffset: Format.formatter -> offset -> unit *)
 
 (** Pretty-print the internal representation of a type *)
-val d_plaintype: unit -> typ -> Pretty.doc
+val d_plaintype: Format.formatter -> typ -> unit
 
 
 (** Pretty-print an expression while printing descriptions rather than names
   of temporaries. *)
-val dd_exp: unit -> exp -> Pretty.doc
+val dd_exp: Format.formatter -> exp -> unit
 
 (** Pretty-print an lvalue on the left side of an assignment.
     If there is an offset or memory dereference, temporaries will
     be replaced by descriptions as in dd_exp.  If the lval is a temp var,
     that var will not be replaced by a description; use "dd_exp () (Lval lv)"
     if that's what you want. *)
-val dd_lval: unit -> lval -> Pretty.doc
+val dd_lval: Format.formatter -> lval -> unit
 
 
 
@@ -2704,7 +2704,7 @@ type formatArg =
 
 
 (** Pretty-prints a format arg *)
-val d_formatarg: unit -> formatArg -> Pretty.doc
+val d_formatarg: Format.formatter -> formatArg -> unit
 
 (** Emit warnings when truncating integer constants (default true) *)
 val warnTruncate: bool ref

@@ -70,10 +70,10 @@ module DT = struct
 
   let copy (d: t) = d
 
-  let pretty () (d: t) =
+  let pretty ppf (d: t) =
     dprintf "{%a}"
       (docList (fun s -> dprintf "%d" s.sid))
-      (BS.elements d)
+      (BS.elements d) ppf
 
   let computeFirstPredecessor (s: stmt) (d: BS.t) : BS.t =
     (* Make sure we add this block to the set *)

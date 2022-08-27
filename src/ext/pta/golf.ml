@@ -1583,10 +1583,10 @@ type absloc = label
 let absloc_of_lvalue (l : lvalue) : absloc = l.l
 let absloc_eq (a1, a2) = smart_alias_query a1 a2
 let absloc_print_name = ref true
-let d_absloc () (p : absloc) =
+let d_absloc ppf (p : absloc) =
   let a = find p in
-    if !absloc_print_name then Pretty.dprintf "%s" a.l_name
-    else Pretty.dprintf "%d" a.l_stamp
+    if !absloc_print_name then Pretty.dprintf "%s" a.l_name ppf
+    else Pretty.dprintf "%d" a.l_stamp ppf
 
 let phonyAddrOf (lv : lvalue) : lvalue =
   make_lval (fresh_label true, address lv)

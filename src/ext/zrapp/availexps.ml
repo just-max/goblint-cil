@@ -58,9 +58,9 @@ let eh_equals eh1 eh2 =
     with Not_found -> false)
       eh1 true
 
-let eh_pretty () eh = line ++ seq ~sep:line ~doit:(fun (vid,e) ->
+let eh_pretty ppf eh = line ++ seq ~sep:line ~doit:(fun (vid,e) ->
   text "AE:vid:" ++ num vid ++ text ": " ++
-    (d_exp () e)) ~elements:(IH.tolist eh)
+    (fun ppf -> d_exp ppf e)) ~elements:(IH.tolist eh) @@ ppf
 
 (* the result must be the intersection of eh1 and eh2 *)
 (* exp IH.t -> exp IH.t -> exp IH.t *)

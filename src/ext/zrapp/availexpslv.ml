@@ -66,9 +66,9 @@ let lvh_equals lvh1 lvh2 =
     with Not_found -> false)
       lvh1 true
 
-let lvh_pretty () lvh = LvExpHash.fold (fun lv e d ->
-  d ++ line ++ (d_lval () lv) ++ text " -> " ++ (d_exp () e))
-    lvh nil
+let lvh_pretty ppf lvh = LvExpHash.fold (fun lv e d ->
+  d ++ line ++ (fun ppf -> d_lval ppf lv) ++ text " -> " ++ (fun ppf -> d_exp ppf e))
+    lvh nil @@ ppf
 
 
 (* the result must be the intersection of eh1 and eh2 *)

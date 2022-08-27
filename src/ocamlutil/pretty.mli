@@ -58,7 +58,7 @@
    The {!Pretty.dprintf} method is slightly slower so we do not use it for 
    large jobs such as the output routines for a compiler. But we use it for 
    small jobs such as logging and error messages. *)
-type doc
+type doc = Format.formatter -> unit
 
 
 
@@ -145,13 +145,13 @@ val seq: sep:doc -> doit:('a ->doc) -> elements:'a list -> doc
 (** An alternative function for printing a list. The [unit] argument is there 
    to make this function more easily usable with the {!Pretty.dprintf} 
    interface. The first argument is a separator, by default a comma. *)
-val docList: ?sep:doc -> ('a -> doc) -> unit -> 'a list -> doc
+val docList: ?sep:doc -> ('a -> doc) -> Format.formatter -> 'a list -> unit
 
 (** sm: Yet another list printer.  This one accepts the same kind of
     printing function that {!Pretty.dprintf} does, and itself works 
     in the dprintf context.  Also accepts
     a string as the separator since that's by far the most common.  *)
-val d_list: string -> (unit -> 'a -> doc) -> unit -> 'a list -> doc
+val d_list: string -> (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a list -> unit
 
 (** Formats an array. A separator and a function that prints an array
     element. The default separator is a comma. *)
@@ -163,10 +163,10 @@ val docOpt: ('a -> doc) -> unit -> 'a option -> doc
 
 (** Print an int32 *)
 val d_int32: int32 -> doc
-val f_int32: unit -> int32 -> doc
+val f_int32: Format.formatter -> int32 -> unit
 
 val d_int64: int64 -> doc
-val f_int64: unit -> int64 -> doc
+val f_int64: Format.formatter -> int64 -> unit
 
 (** Format maps. *)
 module MakeMapPrinter :
@@ -209,9 +209,9 @@ sig
 end
 
 (** A function that is useful with the [printf]-like interface *)
-val insert: unit -> doc -> doc
+val insert: Format.formatter -> doc -> unit
 
-val dprintf: ('a, unit, doc, doc) format4 -> 'a  
+val dprintf: ('a, Format.formatter, unit, Format.formatter -> unit) format4 -> 'a  
 (** This function provides an alternative method for constructing 
     [doc] objects. The first argument for this function is a format string 
     argument (of type [('a, unit, doc) format]; if you insist on 
@@ -260,7 +260,7 @@ val dprintf: ('a, unit, doc, doc) format4 -> 'a
    this function, unit is the type of the first argument to %a and %t 
    formats, doc is the type of the intermediate result, and 'b is the type of 
    the result of gprintf. *)
-val gprintf: (doc -> 'b) -> ('a, unit, doc, 'b) format4 -> 'a
+val gprintf: (doc -> 'b) -> ('a, Format.formatter, unit, 'b) format4 -> 'a
 
 (** Format the document to the given width and emit it to the given channel *)
 val fprint: out_channel -> width:int -> doc -> unit
@@ -269,13 +269,13 @@ val fprint: out_channel -> width:int -> doc -> unit
 val sprint: width:int -> doc -> string
 
 (** Like {!Pretty.dprintf} followed by {!Pretty.fprint} *)
-val fprintf: out_channel -> ('a, unit, doc) format -> 'a  
+val fprintf: out_channel -> ('a, Format.formatter, unit) format -> 'a  
 
 (** Like {!Pretty.fprintf} applied to [stdout] *)
-val printf: ('a, unit, doc) format -> 'a 
+val printf: ('a, Format.formatter, unit) format -> 'a 
 
 (** Like {!Pretty.fprintf} applied to [stderr] *)
-val eprintf: ('a, unit, doc) format -> 'a 
+val eprintf: ('a, Format.formatter, unit) format -> 'a 
 
                                                                      
 (* sm: arg!  why can't I write this function?! *)

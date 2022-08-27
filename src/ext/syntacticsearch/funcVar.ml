@@ -87,7 +87,7 @@ class var_search_in_expr varname varid loc result includeCallTmp : nopCilVisitor
           @ [
               ( info.vname,
                 loc,
-                String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
+                String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf info.vtype)),
                 info.vid );
             ]
       else ();
@@ -112,7 +112,7 @@ let search_lhost host name loc varid includeCallTmp =
         [
           ( info.vname,
             loc,
-            String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
+            String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf info.vtype)),
             info.vid );
         ]
       else []
@@ -154,7 +154,7 @@ let rec search_instr_list_for_var list name varid includeCallTmp =
       then
         ( info.vname,
           loc,
-          String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
+          String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf info.vtype)),
           info.vid )
         :: search_instr_list_for_var xs name varid includeCallTmp
       else search_instr_list_for_var xs name varid includeCallTmp
@@ -285,7 +285,7 @@ let find_var_in_globals varname varid list =
       [
         ( info.vname,
           loc,
-          String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
+          String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf info.vtype)),
           info.vid );
       ]
   | _ -> []
@@ -462,7 +462,7 @@ let find_decl_in_fun varname varid funname file =
           Some
             ( x.vname,
               x.vdecl,
-              String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)),
+              String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf x.vtype)),
               x.vid )
         else None)
       list
@@ -480,7 +480,7 @@ let find_decl_in_fun varname varid funname file =
               Some
                 ( x.vname,
                   x.vdecl,
-                  String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)),
+                  String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf x.vtype)),
                   x.vid )
             else None)
           (get_formals_locals fundec)
@@ -498,7 +498,7 @@ let find_decl_in_fun_all funname file =
         (fun x ->
           ( x.vname,
             x.vdecl,
-            String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)),
+            String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf x.vtype)),
             x.vid ))
         (fundec.sformals @ fundec.slocals)
 
@@ -509,7 +509,7 @@ let find_decl_all_glob file =
          Some
            ( info.vname,
              loc,
-             String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
+             String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf info.vtype)),
              info.vid )))
     file.globals
 
@@ -560,7 +560,7 @@ class var_find_def_in_fun varname varid funname result : nopCilVisitor =
               @ [
                   ( info.vname,
                     loc,
-                    String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
+                    String.trim (Pretty.sprint ~width:1 (fun ppf -> d_type ppf info.vtype)),
                     info.vid );
                 ];
             SkipChildren )
