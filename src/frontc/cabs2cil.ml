@@ -800,7 +800,7 @@ module BlockChunk =
       }
 
     let d_chunk ppf (c: chunk) =
-      dprintf "@[{ @[%a@] };@?%a@]"
+      dprintf "@[{ @[%a@] };@ %a@]"
            (docList ~sep:(chr ';') (fun s ppf -> d_stmt ppf s)) c.stmts
            (docList ~sep:(chr ';') (fun i ppf -> d_instr ppf i)) (List.rev c.postins) ppf
 
@@ -1431,7 +1431,7 @@ let rec castTo ?(fromsource=false)
              that into a field access *)
     | TComp(tunion, a1), _ -> begin
         match isTransparentUnion ot with
-          None -> E.s (error "cabs2cil/castTo: illegal cast  %a -> %a@!"
+          None -> E.s (error "cabs2cil/castTo: illegal cast  %a -> %a\n"
                          d_type ot d_type nt')
         | Some fstfield -> begin
             (* We do it now only if the expression is an lval *)
@@ -1449,7 +1449,7 @@ let rec castTo ?(fromsource=false)
         (* strip attributes for a cleaner error message *)
         let ot'' = setTypeAttrs ot [] in
         let nt'' = setTypeAttrs nt' [] in
-        E.s (error "cabs2cil/castTo: illegal cast  %a -> %a@!"
+        E.s (error "cabs2cil/castTo: illegal cast  %a -> %a\n"
                   d_type ot'' d_type nt'')
   end
 
@@ -1537,7 +1537,7 @@ let cabsTypeAddAttributes a0 t =
                     match a0one with
                       Attr("mode", [ACons(mode,[])]) -> begin
                         (trace "gccwidth" (dprintf "I see mode %s applied to an int type\n"
-                                             mode (* #$@!#@ ML! d_type t *) ));
+                                             mode (* #$\n#@ ML! d_type t *) ));
 			(* assuming int is the word size *)
 			try
 			  let size = match stripUnderscores mode with
@@ -2929,7 +2929,7 @@ and doType (nameortype: attributeClass) (* This is AttrName if we are doing
         let a2' = doAttributes a2 in
         let a2n, a2f, a2t = partitionAttributes ~default:nameortype a2' in
 (*
-        ignore (E.log "doType: %a @[a1n=%a@!a1f=%a@!a1t=%a@!a2n=%a@!a2f=%a@!a2t=%a@]@!" d_loc !currentLoc d_attrlist a1n d_attrlist a1f d_attrlist a1t d_attrlist a2n d_attrlist a2f d_attrlist a2t);
+        ignore (E.log "doType: %a @[a1n=%a\na1f=%a\na1t=%a\na2n=%a\na2f=%a\na2t=%a@]\n" d_loc !currentLoc d_attrlist a1n d_attrlist a1f d_attrlist a1t d_attrlist a2n d_attrlist a2f d_attrlist a2t);
 *)
         let bt' = cabsTypeAddAttributes a1t bt in
 (*
@@ -3361,7 +3361,7 @@ and doExp (asconst: bool)   (* This expression is used as a constant *)
     | (Lval(lv) | CastE(_, Lval lv)), TFun _  ->
         mkAddrOfAndMark lv, TPtr(t, [])
     | _, (TArray _ | TFun _) ->
-        E.s (error "Array or function expression is not lval: %a@!"
+        E.s (error "Array or function expression is not lval: %a\n"
                d_plainexp e)
     | _ -> e, t
   in
@@ -3471,7 +3471,7 @@ and doExp (asconst: bool)   (* This expression is used as a constant *)
           | (TInt _|TEnum _), TPtr(t2e,_) -> e2', t2, e1', t2e
           | _ ->
               E.s (error
-                     "Expecting a pointer type in index:@! t1=%a@!t2=%a@!"
+                     "Expecting a pointer type in index:\n t1=%a\nt2=%a\n"
                      d_plaintype t1 d_plaintype t2)
         in
         (* We have to distinguish the construction based on the type of e1'' *)
@@ -3493,7 +3493,7 @@ and doExp (asconst: bool)   (* This expression is used as a constant *)
         let tresult =
           match unrollType t with
           | TPtr(te, _) -> te
-          | _ -> E.s (error "Expecting a pointer type in *. Got %a@!"
+          | _ -> E.s (error "Expecting a pointer type in *. Got %a\n"
                         d_plaintype t)
         in
         finishExp se
@@ -3965,7 +3965,7 @@ and doExp (asconst: bool)   (* This expression is used as a constant *)
             | AddrOf (Var v, NoOffset) when isFunctionType v.vtype ->
                 finishExp se e' t
 
-            | _ -> E.s (error "Expected lval for ADDROF. Got %a@!"
+            | _ -> E.s (error "Expected lval for ADDROF. Got %a\n"
                           d_plainexp e')
         end
         | _ -> E.s (error "Unexpected operand for addrof")
@@ -5692,9 +5692,9 @@ and createGlobal (specs : (typ * storage * bool * A.attribute list))
     dummyFunDec.svar
   end
 (*
-          ignore (E.log "Env after processing global %s is:@!%t@!"
+          ignore (E.log "Env after processing global %s is:\n%t\n"
                     n docEnv);
-          ignore (E.log "Alpha after processing global %s is:@!%t@!"
+          ignore (E.log "Alpha after processing global %s is:\n%t\n"
                     n docAlphaTable)
 *)
 and createAutoLocal ((((n, ndt, a, cloc) : A.name), (inite: A.init_expression)) as name):chunk =
@@ -6105,7 +6105,7 @@ and doDecl (isglobal: bool) : A.definition -> chunk = function
 
 
 (*
-            ignore (E.log "makefunvar:%s@! type=%a@! vattr=%a@!"
+            ignore (E.log "makefunvar:%s\n type=%a\n vattr=%a\n"
                         n d_type thisFunctionVI.vtype
                         d_attrlist thisFunctionVI.vattr);
 *)
@@ -6241,7 +6241,7 @@ and doDecl (isglobal: bool) : A.definition -> chunk = function
 
 
 (*
-              ignore (E.log "endFunction %s at %t:@! sformals=%a@!  slocals=%a@!"
+              ignore (E.log "endFunction %s at %t:\n sformals=%a\n  slocals=%a\n"
               !currentFunctionFDEC.svar.vname d_thisloc
               (docList ~sep:(chr ',') (fun v -> text v.vname))
               !currentFunctionFDEC.sformals

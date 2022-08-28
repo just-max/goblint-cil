@@ -1164,7 +1164,7 @@ let d_thisloc ppf = d_loc ppf !currentLoc
 let error (fmt : ('a,Format.formatter,unit) format) : 'a =
   let f d =
     E.hadErrors := true;
-    ignore (eprintf "%t: Error: %a@!"
+    ignore (eprintf "%t: Error: %a\n"
               d_thisloc insert d);
     (* nil *)
   in
@@ -1173,7 +1173,7 @@ let error (fmt : ('a,Format.formatter,unit) format) : 'a =
 let unimp (fmt : ('a,Format.formatter,unit) format) : 'a =
   let f d =
     E.hadErrors := true;
-    ignore (eprintf "%t: Unimplemented: %a@!"
+    ignore (eprintf "%t: Unimplemented: %a\n"
               d_thisloc insert d);
     (* nil *)
   in
@@ -1182,7 +1182,7 @@ let unimp (fmt : ('a,Format.formatter,unit) format) : 'a =
 let bug (fmt : ('a,Format.formatter,unit) format) : 'a =
   let f d =
     E.hadErrors := true;
-    ignore (eprintf "%t: Bug: %a@!"
+    ignore (eprintf "%t: Bug: %a\n"
               d_thisloc insert d);
     E.showContext ();
     (* nil *)
@@ -1192,7 +1192,7 @@ let bug (fmt : ('a,Format.formatter,unit) format) : 'a =
 let errorLoc (loc: location) (fmt : ('a,Format.formatter,unit) format) : 'a =
   let f d =
     E.hadErrors := true;
-    ignore (eprintf "%a: Error: %a@!"
+    ignore (eprintf "%a: Error: %a\n"
               d_loc loc insert d);
     E.showContext ();
     (* nil *)
@@ -1201,7 +1201,7 @@ let errorLoc (loc: location) (fmt : ('a,Format.formatter,unit) format) : 'a =
 
 let warn (fmt : ('a,Format.formatter,unit) format) : 'a =
   let f d =
-    ignore (eprintf "%t: Warning: %a@!"
+    ignore (eprintf "%t: Warning: %a\n"
               d_thisloc insert d);
     (* nil *)
   in
@@ -1211,7 +1211,7 @@ let warn (fmt : ('a,Format.formatter,unit) format) : 'a =
 let warnOpt (fmt : ('a,Format.formatter,unit) format) : 'a =
   let f d =
     if !E.warnFlag then
-      ignore (eprintf "%t: Warning: %a@!"
+      ignore (eprintf "%t: Warning: %a\n"
                 d_thisloc insert d);
     (* nil *)
   in
@@ -1219,7 +1219,7 @@ let warnOpt (fmt : ('a,Format.formatter,unit) format) : 'a =
 
 let warnContext (fmt : ('a,Format.formatter,unit) format) : 'a =
   let f d =
-    ignore (eprintf "%t: Warning: %a@!"
+    ignore (eprintf "%t: Warning: %a\n"
               d_thisloc insert d);
     E.showContext ();
     (* nil *)
@@ -1229,7 +1229,7 @@ let warnContext (fmt : ('a,Format.formatter,unit) format) : 'a =
 let warnContextOpt (fmt : ('a,Format.formatter,unit) format) : 'a =
   let f d =
     if !E.warnFlag then
-      ignore (eprintf "%t: Warning: %a@!"
+      ignore (eprintf "%t: Warning: %a\n"
                 d_thisloc insert d);
     E.showContext ();
     (* nil *)
@@ -1238,7 +1238,7 @@ let warnContextOpt (fmt : ('a,Format.formatter,unit) format) : 'a =
 
 let warnLoc (loc: location) (fmt : ('a,Format.formatter,unit) format) : 'a =
   let f d =
-    ignore (eprintf "%a: Warning: %a@!"
+    ignore (eprintf "%a: Warning: %a\n"
               d_loc loc insert d);
     E.showContext ();
     (* nil *)
@@ -4611,22 +4611,22 @@ class plainCilPrinterClass =
 
   method private pOnlyType (ppf: Format.formatter): _ -> unit = function
      TVoid a -> dprintf "TVoid(@[%a@])" self#pAttrs a ppf
-   | TInt(ikind, a) -> dprintf "TInt(@[%a,@?%a@])"
+   | TInt(ikind, a) -> dprintf "TInt(@[%a,@ %a@])"
          d_ikind ikind self#pAttrs a ppf
    | TFloat(fkind, a) ->
-       dprintf "TFloat(@[%a,@?%a@])" d_fkind fkind self#pAttrs a ppf
+       dprintf "TFloat(@[%a,@ %a@])" d_fkind fkind self#pAttrs a ppf
    | TNamed (t, a) ->
-       dprintf "TNamed(@[%s,@?%a,@?%a@])"
+       dprintf "TNamed(@[%s,@ %a,@ %a@])"
          t.tname self#pOnlyType t.ttype self#pAttrs a ppf
-   | TPtr(t, a) -> dprintf "TPtr(@[%a,@?%a@])" self#pOnlyType t self#pAttrs a ppf
+   | TPtr(t, a) -> dprintf "TPtr(@[%a,@ %a@])" self#pOnlyType t self#pAttrs a ppf
    | TArray(t,l,a) ->
        let dl = match l with
          None -> text "None" | Some l -> dprintf "Some(@[%a@])" self#pExp l in
-       dprintf "TArray(@[%a,@?%a,@?%a@])"
+       dprintf "TArray(@[%a,@ %a,@ %a@])"
          self#pOnlyType t insert dl self#pAttrs a ppf
    | TEnum(enum,a) -> dprintf "Enum(%s,@[%a@])" enum.ename self#pAttrs a ppf
    | TFun(tr,args,isva,a) ->
-       dprintf "TFun(@[%a,@?%a%s,@?%a@])"
+       dprintf "TFun(@[%a,@ %a%s,@ %a@])"
          self#pOnlyType tr
          insert
          (if args = None then text "None"
@@ -4644,7 +4644,7 @@ class plainCilPrinterClass =
            self#pAttrs comp.cattr ppf
        else begin
          H.add donecomps comp.ckey (); (* Add it before we do the fields *)
-         dprintf "TComp(@[%s %s,@?%a,@?%a,@?%a@])"
+         dprintf "TComp(@[%s %s,@ %a,@ %a,@ %a@])"
            (if comp.cstruct then "struct" else "union") comp.cname
            (docList ~sep:(chr ',' ++ break)
               (fun f -> dprintf "%s : %a" f.fname self#pOnlyType f.ftype))
@@ -4694,10 +4694,10 @@ class plainCilPrinterClass =
               ++ unalign)
         ++ text ")"
 
-  | CastE(t,e) -> dprintf "CastE(@[%a,@?%a@])" self#pOnlyType t self#pExp e ppf
+  | CastE(t,e) -> dprintf "CastE(@[%a,@ %a@])" self#pOnlyType t self#pExp e ppf
 
   | UnOp(u,e1,_) ->
-      dprintf "UnOp(@[%a,@?%a@])"
+      dprintf "UnOp(@[%a,@ %a@])"
         d_unop u self#pExp e1 ppf
 
   | BinOp(b,e1,e2,_) ->
@@ -4712,11 +4712,11 @@ class plainCilPrinterClass =
         | MinusPI -> text "MinusPI"
         | _ -> (fun ppf -> d_binop ppf b)
       in
-      dprintf "%a(@[%a,@?%a@])" d_plainbinop b
+      dprintf "%a(@[%a,@ %a@])" d_plainbinop b
         self#pExp e1 self#pExp e2 ppf
 
   | Question(e1,e2,e3,_) ->
-      dprintf "Question(@[%a,@?%a,@?%a@])"
+      dprintf "Question(@[%a,@ %a,@ %a@])"
         self#pExp e1 self#pExp e2 self#pExp e3 ppf
 
   | SizeOf (t) ->
@@ -4749,10 +4749,10 @@ class plainCilPrinterClass =
   method private d_plainoffset ppf = function
       NoOffset -> text "NoOffset" ppf
     | Field(fi,o) ->
-        dprintf "Field(@[%s:%a,@?%a@])"
+        dprintf "Field(@[%s:%a,@ %a@])"
           fi.fname self#pOnlyType fi.ftype self#d_plainoffset o ppf
      | Index(e, o) ->
-         dprintf "Index(@[%a,@?%a@])" self#pExp e self#d_plainoffset o ppf
+         dprintf "Index(@[%a,@ %a@])" self#pExp e self#d_plainoffset o ppf
 
   method! pInit ppf = function
       SingleInit e -> dprintf "SI(%a)" d_exp e ppf
@@ -4760,7 +4760,7 @@ class plainCilPrinterClass =
         let d_plainoneinit (o, i) =
           (fun ppf -> self#d_plainoffset ppf o) ++ text " = " ++ (fun ppf -> self#pInit ppf i)
         in
-        dprintf "CI(@[%a,@?%a@])" self#pOnlyType t
+        dprintf "CI(@[%a,@ %a@])" self#pOnlyType t
           (docList ~sep:(chr ',' ++ break) d_plainoneinit) initl ppf
 (*
     | ArrayInit (t, len, initl) ->
@@ -4769,13 +4769,13 @@ class plainCilPrinterClass =
           incr idx;
           text "[" ++ num !idx ++ text "] = " ++ self#pInit () i
         in
-        dprintf "AI(@[%a,%d,@?%a@])" self#pOnlyType t len
+        dprintf "AI(@[%a,%d,@ %a@])" self#pOnlyType t len
           (docList ~sep:(chr ',' ++ break) d_plainoneinit) initl
 *)
   method! pLval ppf (lv: lval) =
     match lv with
-    | Var vi, o -> dprintf "Var(@[%s,@?%a@])" vi.vname self#d_plainoffset o ppf
-    | Mem e, o -> dprintf "Mem(@[%a,@?%a@])" self#pExp e self#d_plainoffset o ppf
+    | Var vi, o -> dprintf "Var(@[%s,@ %a@])" vi.vname self#d_plainoffset o ppf
+    | Mem e, o -> dprintf "Mem(@[%a,@ %a@])" self#pExp e self#d_plainoffset o ppf
 
 
 end
@@ -4874,20 +4874,20 @@ let printerForMaincil = ref defaultCilPrinter
 
 let rec d_typsig ppf = function
     TSArray (ts, eo, al) ->
-      dprintf "TSArray(@[%a,@?%a,@?%a@])"
+      dprintf "TSArray(@[%a,@ %a,@ %a@])"
         d_typsig ts
         insert (text (match eo with None -> "None"
                        | Some e -> "Some " ^ string_of_cilint e))
         d_attrlist al ppf
   | TSPtr (ts, al) ->
-      dprintf "TSPtr(@[%a,@?%a@])"
+      dprintf "TSPtr(@[%a,@ %a@])"
         d_typsig ts d_attrlist al ppf
   | TSComp (iss, name, al) ->
-      dprintf "TSComp(@[%s %s,@?%a@])"
+      dprintf "TSComp(@[%s %s,@ %a@])"
         (if iss then "struct" else "union") name
         d_attrlist al ppf
   | TSFun (rt, args, isva, al) ->
-      dprintf "TSFun(@[%a,@?%a,%B,@?%a@])"
+      dprintf "TSFun(@[%a,@ %a,%B,@ %a@])"
         d_typsig rt
         insert
         (match args with
@@ -4897,7 +4897,7 @@ let rec d_typsig ppf = function
         isva
         d_attrlist al ppf
   | TSEnum (n, al) ->
-      dprintf "TSEnum(@[%s,@?%a@])"
+      dprintf "TSEnum(@[%s,@ %a@])"
         n d_attrlist al ppf
   | TSBase t -> dprintf "TSBase(%a)" d_type t ppf
 
@@ -6612,13 +6612,13 @@ let rec xform_switch_stmt s break_dest cont_dest = begin
   | Break(l) -> begin try
                   s.skind <- Goto(break_dest (),l)
                 with e ->
-                  ignore (error "prepareCFG: break: %a@!" d_stmt s) ;
+                  ignore (error "prepareCFG: break: %a\n" d_stmt s) ;
                   raise e
                 end
   | Continue(l) -> begin try
                   s.skind <- Goto(cont_dest (),l)
                 with e ->
-                  ignore (error "prepareCFG: continue: %a@!" d_stmt s) ;
+                  ignore (error "prepareCFG: continue: %a\n" d_stmt s) ;
                   raise e
                 end
   | If(e,b1,b2,l,el) -> xform_switch_block b1 break_dest cont_dest ;
@@ -6746,7 +6746,7 @@ end and xform_switch_block b break_dest cont_dest =
       xform_switch_stmt stmt break_dest cont_dest) b.bstmts ;
   with e ->
     List.iter (fun stmt -> ignore
-      (warn "prepareCFG: %a@!" d_stmt stmt)) b.bstmts ;
+      (warn "prepareCFG: %a\n" d_stmt stmt)) b.bstmts ;
     raise e
 
 (* Enter all the labels in a function into an alpha renaming table to

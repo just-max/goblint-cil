@@ -651,7 +651,7 @@
          let msg =
            P.sprint ~width:80
              (P.dprintf
-                "\n\tFailed assumption that %s and %s are isomorphic %s@!%a@!%a"
+                "\n\tFailed assumption that %s and %s are isomorphic %s\n%a\n%a"
                 (compFullName oldci) (compFullName ci) reason dn_global
                 (GCompTag (oldci, locUnknown))
                 dn_global
@@ -788,7 +788,7 @@
            let f = if !ignore_merge_conflicts then warn else error in
            ignore
              (f
-                "Incompatible declaration for %s (from %s(%d)).@! Previous was \
+                "Incompatible declaration for %s (from %s(%d)).\n Previous was \
                  at %a (from %s (%d)) %s "
                 vi.vname
                 (H.find fileNames !currentFidx)

@@ -79,7 +79,7 @@ let showContext () =
   let rec loop = function
       [] -> ()
     | f :: rest -> (errorContext := rest; (* Just in case f raises an error *)
-                    ignore (fprintf !logChannel "  Context : %t@!" f);
+                    ignore (fprintf !logChannel "  Context : %t\n" f);
                     loop rest)
   in
   let old = !errorContext in
@@ -92,7 +92,7 @@ let showContext () =
   end
 
 let contextMessage (name: string) (d: doc) =
-  ignore (fprintf !logChannel "%s: %a@!" name insert d);
+  ignore (fprintf !logChannel "%s: %a\n" name insert d);
   showContext ()
 
 let warnFlag = ref false

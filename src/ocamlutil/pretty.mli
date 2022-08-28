@@ -227,12 +227,12 @@ val dprintf: ('a, Format.formatter, unit, Format.formatter -> unit) format4 -> '
 -  \@\[ Inserts an {!Pretty.align}. Every format string must have matching 
         {!Pretty.align} and {!Pretty.unalign}. 
 -  \@\] Inserts an {!Pretty.unalign}.
--  \@!  Inserts a {!Pretty.line}. Just like "\n"
--  \@?  Inserts a {!Pretty.break}.
+-  \\n  Inserts a {!Pretty.line}. Just like "\n"
+-  \@   Inserts a {!Pretty.break}.
 -  \@<  Inserts a {!Pretty.mark}. 
 -  \@>  Inserts a {!Pretty.unmark}.
 -  \@^  Inserts a {!Pretty.leftflush}
-       Should be used immediately after \@! or "\n".
+       Should be used immediately after \\n or "\n".
 -  \@\@ : inserts a \@ character
 
  In addition to the usual [printf] % formatting characters the following two 

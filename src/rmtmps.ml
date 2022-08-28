@@ -351,7 +351,7 @@ let isExportedRoot global =
   | _ ->
       false, "neither function nor variable"
   in
-  trace (dprintf "isExportedRoot %a -> %b, %s@!"
+  trace (dprintf "isExportedRoot %a -> %b, %s\n"
            d_shortglobal global result reason);
   result
 
@@ -379,7 +379,7 @@ let isCompleteProgramRoot global =
   | _ ->
       false
   in
-  trace (dprintf "complete program root -> %b for %a@!" result d_shortglobal global);
+  trace (dprintf "complete program root -> %b for %a\n" result d_shortglobal global);
   result
 
 
@@ -815,6 +815,6 @@ let removeUnusedTemps ?(isRoot : rootsFilter = isDefaultRoot) file =
 	if count > 2000 then
 	  ignore (E.warn "%d unused local variables removed" count)
 	else
-	  ignore (E.warn "%d unused local variables removed:@!%a"
+	  ignore (E.warn "%d unused local variables removed:\n%a"
 		    count (docList ~sep:(chr ',' ++ break) text) removedLocals)
     end

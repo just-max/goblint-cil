@@ -314,7 +314,7 @@ and typeMatch (t1: typ) (t2: typ) =
          flexible array members *)
       | TArray (t, None, _), TArray (t', _, _)
       | TArray (t, _, _), TArray (t', None, _) -> typeMatch t t'
-      | _, _ -> ignore (warn "Type mismatch:@!    %a@!and %a@!"
+      | _, _ -> ignore (warn "Type mismatch:\n    %a\nand %a\n"
                            d_type t1 d_type t2)
   end else begin
     (* Many casts are missing.  For now, just skip this check. *)
