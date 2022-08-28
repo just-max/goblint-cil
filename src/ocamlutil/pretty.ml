@@ -589,7 +589,9 @@ let countNewLines = ref 0
                           memory *) *)
 let fprint (chn: out_channel) ~(width: int) doc =
   let ppf = Format.formatter_of_out_channel chn in
-  Format.fprintf ppf "%t" doc
+  Format.pp_set_margin ppf width;
+  doc ppf;
+  Format.pp_print_flush ppf ()
 
 (* Print the document to a string *)
 (* let sprint ~(width : int)  doc : string =
@@ -614,7 +616,9 @@ let fprint (chn: out_channel) ~(width: int) doc =
   alignDepth := old_alignDepth;
   Buffer.contents buf *)
 let sprint ~(width: int) doc =
-  Format.asprintf "%a" (fun ppf f -> f ppf) doc
+  Format.pp_set_margin Format.str_formatter width;
+  doc Format.str_formatter;
+  Format.flush_str_formatter ()
 
 
                                         (* The rest is based on printf.ml *)
