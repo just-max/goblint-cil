@@ -305,7 +305,7 @@
  let vEnv : (string, varinfo node) H.t = H.create 111
 
  (* A set of inline functions indexed by their printout ! *)
- let inlineBodies : (P.doc, varinfo node) H.t = H.create 111
+ let inlineBodies : (string, varinfo node) H.t = H.create 111
 
  (** A number of alpha conversion tables. We ought to keep one table for each
     name space. Unfortunately, because of the way the C lexer works, type
@@ -1422,7 +1422,7 @@
            );
            (* See if we can remove this inline function *)
            if fdec'.svar.vinline && !merge_inlines then (
-             let printout = printInlineForComparison fdec' g' in
+             let printout = Format.asprintf "%t" @@ printInlineForComparison fdec' g' in
              (* Make a node for this inline function using the original name. *)
              let inode = getNode vEq vSyn !currentFidx origname fdec'.svar (Some (l, !currentDeclIdx))
              in
