@@ -158,7 +158,7 @@ val d_list: string -> (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a
 val docArray: ?sep:doc -> (int -> 'a -> doc) -> unit -> 'a array -> doc
 
 (** Prints an ['a option] with [None] or [Some] *)
-val docOpt: ('a -> doc) -> unit -> 'a option -> doc
+val docOpt: ('a -> doc) -> Format.formatter -> 'a option -> unit
 
 
 (** Print an int32 *)

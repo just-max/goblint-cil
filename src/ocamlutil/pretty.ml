@@ -155,9 +155,9 @@ let docArray ?(sep=chr ',') (doit:int -> 'a -> doc) () (elements:'a array) =
     let f0 = doit 0 elements.(0) in
     loop f0 1
 
-let docOpt delem () = function
-    None -> text "None"
-  | Some e -> text "Some(" ++ (delem e) ++ chr ')'
+let docOpt delem ppf = function
+    None -> text "None" ppf
+  | Some e -> ppf |> text "Some(" ++ (delem e) ++ chr ')'
 
 
 
