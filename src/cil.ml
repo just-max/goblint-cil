@@ -4207,7 +4207,8 @@ class defaultCilPrinterClass : cilPrinter = object (self)
       | None when not !print_CIL_Input ->
           (* Cannot print the attributes in this case because gcc does not
              like them here, except if we are printing for CIL. *)
-          if pa = nil then nil else
+          (* if pa = nil then nil else *)
+          if Format.asprintf "%t" pa = "" then nil else
           text "/*" ++ pa ++ text "*/"
       | _ -> pa
     in
