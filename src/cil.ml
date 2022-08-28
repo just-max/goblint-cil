@@ -4188,10 +4188,9 @@ class defaultCilPrinterClass : cilPrinter = object (self)
                 ppf (List.filter (fun v -> not v.vhasdeclinstruction) f.slocals))
             ++ line ++ line
             (* the body *)
-            ++ ((* remember the declaration *) currentFormals <- f.sformals;
-                let body ppf = self#pBlock ppf f.sbody in
-                currentFormals <- [];
-                body))
+            ++ (fun ppf -> (* remember the declaration *) currentFormals <- f.sformals;
+                self#pBlock ppf f.sbody;
+                currentFormals <- []))
       ++ line
       ++ text "}"
 
