@@ -589,7 +589,10 @@ let countNewLines = ref 0
                           memory *) *)
 let fprint (chn: out_channel) ~(width: int) doc =
   let ppf = Format.formatter_of_out_channel chn in
+  (* Format.pp_set_geometry Format.str_formatter ~margin:width ~max_indent:(width - 1); *)
+  (* TODO: workaround for https://github.com/ocaml/ocaml/issues/11517 *)
   Format.pp_set_margin ppf width;
+  Format.pp_set_max_indent ppf (Format.pp_get_margin ppf () - 1);
   doc ppf;
   Format.pp_print_flush ppf ()
 
@@ -616,8 +619,12 @@ let fprint (chn: out_channel) ~(width: int) doc =
   alignDepth := old_alignDepth;
   Buffer.contents buf *)
 let sprint ~(width: int) doc =
-  Format.pp_set_margin Format.str_formatter width;
-  doc Format.str_formatter;
+  let ppf = Format.str_formatter in
+  (* Format.pp_set_geometry Format.str_formatter ~margin:width ~max_indent:(width - 1); *)
+  (* TODO: workaround for https://github.com/ocaml/ocaml/issues/11517 *)
+  Format.pp_set_margin ppf width;
+  Format.pp_set_max_indent ppf (Format.pp_get_margin ppf () - 1);
+  doc ppf;
   Format.flush_str_formatter ()
 
 
