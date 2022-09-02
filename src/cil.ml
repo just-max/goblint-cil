@@ -1156,8 +1156,7 @@ let nextCompinfoKey = ref 1
 
 (* Some error reporting functions *)
 let d_loc ppf (loc: location) : unit =
-  ppf |>
-  text loc.file ++ chr ':' ++ num loc.line
+  Fmt.pf ppf "%s:%d" loc.file loc.line
 
 let d_thisloc ppf = d_loc ppf !currentLoc
 
@@ -1721,40 +1720,39 @@ external parse : string -> file = "cil_main"
  *)
 
 let d_ikind ppf ik =
-  ppf |>
+  Fmt.string ppf @@
   match ik with
-    IChar -> text "char"
-  | ISChar -> text "signed char"
-  | IUChar -> text "unsigned char"
-  | IBool -> text "_Bool"
-  | IInt -> text "int"
-  | IUInt -> text "unsigned int"
-  | IShort -> text "short"
-  | IUShort -> text "unsigned short"
-  | ILong -> text "long"
-  | IULong -> text "unsigned long"
-  | ILongLong -> text "long long"
-  | IULongLong -> text "unsigned long long"
-  | IInt128 -> text "__int128"
-  | IUInt128 -> text "unsigned __int128"
+    IChar -> "char"
+  | ISChar -> "signed char"
+  | IUChar -> "unsigned char"
+  | IBool -> "_Bool"
+  | IInt -> "int"
+  | IUInt -> "unsigned int"
+  | IShort -> "short"
+  | IUShort -> "unsigned short"
+  | ILong -> "long"
+  | IULong -> "unsigned long"
+  | ILongLong -> "long long"
+  | IULongLong -> "unsigned long long"
+  | IInt128 -> "__int128"
+  | IUInt128 -> "unsigned __int128"
 
 let d_fkind ppf f =
-  ppf |>
+  Fmt.pf ppf @@
   match f with
-    FFloat -> text "float"
-  | FDouble -> text "double"
-  | FLongDouble -> text "long double"
-  | FComplexFloat -> text "_Complex float"
-  | FComplexDouble -> text "_Complex double"
-  | FComplexLongDouble -> text "_Complex long double"
+    FFloat -> "float"
+  | FDouble -> "double"
+  | FLongDouble -> "long double"
+  | FComplexFloat -> "_Complex float"
+  | FComplexDouble -> "_Complex double"
+  | FComplexLongDouble -> "_Complex long double"
 
 let d_storage ppf s =
-  ppf |>
   match s with
-    NoStorage -> nil
-  | Static -> text "static "
-  | Extern -> text "extern "
-  | Register -> text "register "
+    NoStorage -> Fmt.nop ppf ()
+  | Static -> Fmt.string ppf "static "
+  | Extern -> Fmt.string ppf "extern "
+  | Register -> Fmt.string ppf "register "
 
 (* sm: need this value below *)
 let mostNeg32BitInt : cilint = cilint_of_string "-0x80000000"
@@ -2804,33 +2802,33 @@ let parseInt (str: string) : exp =
 
 
 let d_unop ppf u =
-  ppf |>
+  Fmt.string ppf @@
   match u with
-    Neg -> text "-"
-  | BNot -> text "~"
-  | LNot -> text "!"
+    Neg -> "-"
+  | BNot -> "~"
+  | LNot -> "!"
 
 let d_binop ppf b =
-  ppf |>
+  Fmt.string ppf @@
   match b with
-    PlusA | PlusPI | IndexPI -> text "+"
-  | MinusA | MinusPP | MinusPI -> text "-"
-  | Mult -> text "*"
-  | Div -> text "/"
-  | Mod -> text "%"
-  | Shiftlt -> text "<<"
-  | Shiftrt -> text ">>"
-  | Lt -> text "<"
-  | Gt -> text ">"
-  | Le -> text "<="
-  | Ge -> text ">="
-  | Eq -> text "=="
-  | Ne -> text "!="
-  | BAnd -> text "&"
-  | BXor -> text "^"
-  | BOr -> text "|"
-  | LAnd -> text "&&"
-  | LOr -> text "||"
+    PlusA | PlusPI | IndexPI -> "+"
+  | MinusA | MinusPP | MinusPI -> "-"
+  | Mult -> "*"
+  | Div -> "/"
+  | Mod -> "%"
+  | Shiftlt -> "<<"
+  | Shiftrt -> ">>"
+  | Lt -> "<"
+  | Gt -> ">"
+  | Le -> "<="
+  | Ge -> ">="
+  | Eq -> "=="
+  | Ne -> "!="
+  | BAnd -> "&"
+  | BXor -> "^"
+  | BOr -> "|"
+  | LAnd -> "&&"
+  | LOr -> "||"
 
 let invalidStmt = mkStmt (Instr [])
 
@@ -3205,7 +3203,7 @@ class type cilPrinter = object
   method pLval: Format.formatter -> lval -> unit
     (** Invoked on each lvalue occurrence *)
 
-  method pOffset: doc -> offset -> doc
+  method pOffset: doc -> Format.formatter -> offset -> unit
     (** Invoked on each offset occurrence. The second argument is the base. *)
 
   method pInstr: Format.formatter -> instr -> unit
@@ -3257,7 +3255,7 @@ class type cilPrinter = object
   method pLabel: Format.formatter -> label -> unit
     (** Label *)
 
-  method pLineDirective: ?forcefile:bool -> location -> Pretty.doc
+  method pLineDirective: ?forcefile:bool -> Format.formatter -> location -> unit
     (** Print a line-number. This is assumed to come always on an empty line.
        If the forcefile argument is present and is true then the file name
        will be printed always. Otherwise the file name is printed only if it
@@ -3302,39 +3300,36 @@ class defaultCilPrinterClass : cilPrinter = object (self)
   (* variable declaration *)
   method pVDecl (ppf: Format.formatter) (v:varinfo): unit =
     (* First the storage modifiers *)
-    ppf |>
-    text (if v.vinline then "__inline " else "")
-      ++ (fun ppf -> d_storage ppf v.vstorage)
-      ++ (fun ppf -> self#pType (Some (text v.vname)) ppf v.vtype)
-      ++ text " "
-      ++ (fun ppf -> self#pAttrs ppf v.vattr)
+    Fmt.pf ppf "%s%a%a %a"
+      (if v.vinline then "__inline " else "")
+      d_storage v.vstorage
+      (self#pType (Some (text v.vname))) v.vtype
+      self#pAttrs v.vattr
 
   (*** L-VALUES ***)
   method pLval (ppf: Format.formatter) (lv:lval): unit =  (* lval (base is 1st field)  *)
-    ppf |>
     match lv with
-      Var vi, o -> self#pOffset (self#pVar vi) o
+      Var vi, o -> self#pOffset (self#pVar vi) ppf o
     | Mem e, Field(fi, o) ->
         self#pOffset
-          ((fun ppf -> self#pExpPrec arrowLevel ppf e) ++ text ("->" ^ fi.fname)) o
+          (Pretty.dprintf "%a->%s" (self#pExpPrec arrowLevel) e fi.fname) ppf o
     | Mem e, NoOffset ->
-        text "*" ++ (fun ppf -> self#pExpPrec derefStarLevel ppf e)
+        Fmt.pf ppf "*%a" (self#pExpPrec derefStarLevel) e
     | Mem e, o ->
         self#pOffset
-          (text "(*" ++ (fun ppf -> self#pExpPrec derefStarLevel ppf e) ++ text ")") o
+          (Pretty.dprintf "(*%a)" (self#pExpPrec derefStarLevel) e) ppf o
 
   (** Offsets **)
-  method pOffset (base: doc) = function
-    | NoOffset -> base
+  method pOffset (base: doc) (ppf: Format.formatter) : _ -> unit = function
+    | NoOffset -> base ppf
     | Field (fi, o) ->
-        self#pOffset (base ++ text "." ++ text fi.fname) o
+        self#pOffset (Pretty.dprintf "%t.%s" base fi.fname) ppf o
     | Index (e, o) ->
-        self#pOffset (base ++ text "[" ++ (fun ppf -> self#pExp ppf e) ++ text "]") o
+        self#pOffset (Pretty.dprintf "%t[%a]" base self#pExp e) ppf o
 
   method private pLvalPrec (contextprec: int) ppf lv =
     if getParenthLevel (Lval(lv)) >= contextprec then
-      ppf |>
-      text "(" ++ (fun ppf -> self#pLval ppf lv) ++ text ")"
+      Fmt.pf ppf "(%a)" self#pLval lv
     else
       self#pLval ppf lv
 
@@ -3345,61 +3340,46 @@ class defaultCilPrinterClass : cilPrinter = object (self)
       Const(c) -> d_const ppf c
     | Lval(l) -> self#pLval ppf l
     | UnOp(u,e1,_) ->
-        ppf |>
-        (fun ppf -> d_unop ppf u) ++ chr ' ' ++ (fun ppf -> self#pExpPrec level ppf e1)
+        Fmt.pf ppf "%a %a" d_unop u (self#pExpPrec level) e1
 
     | BinOp(b,e1,e2,_) ->
-        ppf |>
-        align
-          ++ (fun ppf -> self#pExpPrec level ppf e1)
-          ++ chr ' '
-          ++ (fun ppf -> d_binop ppf b)
-          ++ chr ' '
-          ++ (fun ppf -> self#pExpPrec level ppf e2)
-          ++ unalign
+        Fmt.pf ppf "%t%a %a %a%t"
+          align
+          (self#pExpPrec level) e1
+          d_binop b
+          (self#pExpPrec level) e2
+          unalign
 
     | Question(e1,e2,e3,_) ->
-        ppf |>
-        (fun ppf -> self#pExpPrec level ppf e1)
-          ++ text " ? "
-          ++ (fun ppf -> self#pExpPrec level ppf e2)
-          ++ text " : "
-          ++ (fun ppf -> self#pExpPrec level ppf e3)
+        Fmt.pf ppf "%a ? %a : %a"
+          (self#pExpPrec level) e1
+          (self#pExpPrec level) e2
+          (self#pExpPrec level) e3
 
     | CastE(t,e) ->
-        ppf |>
-        text "("
-          ++ (fun ppf -> self#pType None ppf t)
-          ++ text ")"
-          ++ (fun ppf -> self#pExpPrec level ppf e)
+        Fmt.pf ppf "(%a)%a"
+          (self#pType None) t
+          (self#pExpPrec level) e
 
     | SizeOf (t) ->
-        ppf |>
-        text "sizeof(" ++ (fun ppf -> self#pType None ppf t) ++ chr ')'
+        Fmt.pf ppf "sizeof(%a)" (self#pType None) t
     | SizeOfE (Lval (Var fv, NoOffset)) when fv.vname = "__builtin_va_arg_pack" && (not !printCilAsIs) ->
-        text "__builtin_va_arg_pack()" ppf
+        Fmt.string ppf "__builtin_va_arg_pack()"
     | SizeOfE (e) ->
-        ppf |>
-        text "sizeof(" ++ (fun ppf -> self#pExp ppf e) ++ chr ')'
+        Fmt.pf ppf "sizeof(%a)" self#pExp e
     | Imag e ->
-        ppf |>
-        text "__imag__(" ++ (fun ppf -> self#pExp ppf e) ++ chr ')'
+        Fmt.pf ppf "__imag__(%a)" self#pExp e
     | Real e ->
-        ppf |>
-        text "__real__(" ++ (fun ppf -> self#pExp ppf e) ++ chr ')'
+        Fmt.pf ppf "__real__(%a)" self#pExp e
     | SizeOfStr s ->
-        ppf |>
-        text "sizeof(" ++ (fun ppf -> d_const ppf (CStr (s, No_encoding))) ++ chr ')'
+        Fmt.pf ppf "sizeof(%a)" d_const (CStr (s, No_encoding))
 
     | AlignOf (t) ->
-        ppf |>
-        text "__alignof__(" ++ (fun ppf -> self#pType None ppf t) ++ chr ')'
+        Fmt.pf ppf "__alignof__(%a)" (self#pType None) t
     | AlignOfE (e) ->
-        ppf |>
-        text "__alignof__(" ++ (fun ppf -> self#pExp ppf e) ++ chr ')'
+        Fmt.pf ppf "__alignof__(%a)" self#pExp e
     | AddrOf(lv) ->
-        ppf |>
-        text "& " ++ (fun ppf -> self#pLvalPrec addrOfLevel ppf lv)
+        Fmt.pf ppf "& %a" (self#pLvalPrec addrOfLevel) lv
     | AddrOfLabel(sref) -> begin
         (* Grab one of the labels *)
         let rec pickLabel = function
@@ -3408,10 +3388,10 @@ class defaultCilPrinterClass : cilPrinter = object (self)
           | _ :: rest -> pickLabel rest
         in
         match pickLabel !sref.labels with
-          Some lbl -> text ("&& " ^ lbl) ppf
+          Some lbl -> Fmt.pf ppf "&& %s" lbl
         | None ->
             ignore (error "Cannot find label for target of address of label");
-            text "&& __invalid_label" ppf
+            Fmt.string ppf "&& __invalid_label"
     end
 
     | StartOf(lv) -> self#pLval ppf lv
@@ -3430,8 +3410,7 @@ class defaultCilPrinterClass : cilPrinter = object (self)
 	false
     in
     if needParens then
-      ppf |>
-      chr '(' ++ (fun ppf -> self#pExp ppf e) ++ chr ')'
+      Fmt.pf ppf "(%a)" self#pExp e
     else
       self#pExp ppf e
 
@@ -3455,22 +3434,24 @@ class defaultCilPrinterClass : cilPrinter = object (self)
                 false
           | _ -> false
         in
-        let d_oneInit = function
+        let d_oneInit ppf = function
             Field(f, NoOffset), i ->
-              (if printDesignator then
-                text ("." ^ f.fname ^ " = ")
-              else nil) ++ (fun ppf -> self#pInit ppf i)
+              Fmt.pf ppf "%t%a"
+                (if printDesignator then
+                  Pretty.dprintf ".%s = " f.fname
+                else Pretty.nil)
+                self#pInit i
           | Index(e, NoOffset), i ->
-              (if printDesignator then
-                text "[" ++ (fun ppf -> self#pExp ppf e) ++ text "] = " else nil) ++
-                (fun ppf -> self#pInit ppf i)
+              Fmt.pf ppf "%t%a"
+                (if printDesignator then
+                  Pretty.dprintf "[%a] = " self#pExp e else Pretty.nil)
+                self#pInit i
           | _ -> E.s (unimp "Trying to print malformed initializer")
         in
-        ppf |>
-        chr '{' ++ (align
-                      ++ (fun ppf -> (docList ~sep:(chr ',' ++ break) d_oneInit) ppf initl)
-                      ++ unalign)
-          ++ chr '}'
+        Fmt.pf ppf "{%t%a%t}"
+          align
+          (Fmt.list ~sep:Fmt.comma d_oneInit) initl
+          unalign
 (*
     | ArrayInit (_, _, il) ->
         chr '{' ++ (align
@@ -3535,57 +3516,57 @@ class defaultCilPrinterClass : cilPrinter = object (self)
 
   (*** INSTRUCTIONS ****)
   method pInstr (ppf: Format.formatter) (i:instr): unit =       (* imperative instruction *)
-    ppf |>
     match i with
     | Set(lv,e,l,el) -> begin
         (* Be nice to some special cases *)
         match e with
           BinOp((PlusA|PlusPI|IndexPI),Lval(lv'),Const(CInt(one,_,_)),_)
             when Util.equals lv lv' && compare_cilint one one_cilint = 0 && not !printCilAsIs ->
-              self#pLineDirective l
-                ++ (fun ppf -> self#pLvalPrec indexLevel ppf lv)
-                ++ text (" ++" ^ printInstrTerminator)
+              Fmt.pf ppf "%a%a ++%s"
+                (self#pLineDirective: _ Fmt.t) l
+                (self#pLvalPrec indexLevel) lv
+                printInstrTerminator
 
         | BinOp((MinusA|MinusPI),Lval(lv'),
                 Const(CInt(one,_,_)), _)
             when Util.equals lv lv' && compare_cilint one one_cilint = 0 && not !printCilAsIs ->
-                  self#pLineDirective l
-                    ++ (fun ppf -> self#pLvalPrec indexLevel ppf lv)
-                    ++ text (" --" ^ printInstrTerminator)
+                  Fmt.pf ppf "%a%a --%s"
+                    (self#pLineDirective: _ Fmt.t) l
+                    (self#pLvalPrec indexLevel) lv
+                    printInstrTerminator
 
         | BinOp((PlusA|PlusPI|IndexPI),Lval(lv'),Const(CInt(mone,_,_)),_)
             when Util.equals lv lv' && compare_cilint mone mone_cilint = 0
                 && not !printCilAsIs ->
-              self#pLineDirective l
-                ++ (fun ppf -> self#pLvalPrec indexLevel ppf lv)
-                ++ text (" --" ^ printInstrTerminator)
+              Fmt.pf ppf "%a%a --%s"
+                (self#pLineDirective: _ Fmt.t) l
+                (self#pLvalPrec indexLevel) lv
+                printInstrTerminator
 
         | BinOp((PlusA|PlusPI|IndexPI|MinusA|MinusPP|MinusPI|BAnd|BOr|BXor|
           Mult|Div|Mod|Shiftlt|Shiftrt) as bop,
                 Lval(lv'),e,_) when Util.equals lv lv'
                 && not !printCilAsIs ->
-                  self#pLineDirective l
-                    ++ (fun ppf -> self#pLval ppf lv)
-                    ++ text " " ++ (fun ppf -> d_binop ppf bop)
-                    ++ text "= "
-                    ++ (fun ppf -> self#pExp ppf e)
-                    ++ text printInstrTerminator
+                  Fmt.pf ppf "%a%a %a= %a%s"
+                    (self#pLineDirective: _ Fmt.t) l
+                    self#pLval lv
+                    d_binop bop
+                    self#pExp e
+                    printInstrTerminator
 
         | _ ->
-            self#pLineDirective l
-              ++ (fun ppf -> self#pLval ppf lv)
-              ++ text " = "
-              ++ (fun ppf -> self#pExp ppf e)
-              ++ text printInstrTerminator
+            Fmt.pf ppf "%a%a = %a%s"
+              (self#pLineDirective: _ Fmt.t) l
+              self#pLval lv
+              self#pExp e
+              printInstrTerminator
 
     end
     | VarDecl(v, l) ->
-        self#pLineDirective l
-        ++ (fun ppf -> self#pVDecl ppf v)
-        ++ (match v.vinit.init with
-            | None -> text ";"
-            | Some i -> text " = " ++
-                (fun ppf -> self#pInit ppf i) ++ text ";")
+        Fmt.pf ppf "%a%a%a;"
+          (self#pLineDirective: _ Fmt.t) l
+          self#pVDecl v
+          (Fmt.option (fun ppf i -> Fmt.pf ppf " = %a" self#pInit i)) v.vinit.init
       (* In cabs2cil we have turned the call to builtin_va_arg into a
          three-argument call: the last argument is the address of the
          destination *)
@@ -3599,18 +3580,15 @@ class defaultCilPrinterClass : cilPrinter = object (self)
                         "%a: Encountered unexpected call to %s with dest %a\n"
                         d_loc l vi.vname self#pExp adest)
           in
-          self#pLineDirective l
-	    ++ (fun ppf -> self#pLval ppf destlv) ++ text " = "
-
-            (* Now the function name *)
-            ++ text "__builtin_va_arg"
-            ++ text "(" ++ (align
-                              (* Now the arguments *)
-                              ++ (fun ppf -> self#pExp ppf dest)
-                              ++ chr ',' ++ break
-                              ++ (fun ppf -> self#pType None ppf t)
-                              ++ unalign)
-            ++ text (")" ^ printInstrTerminator)
+          Fmt.pf ppf "%a%a = __builtin_va_arg(%t%a,@ %a%t)%s"
+            (self#pLineDirective: _ Fmt.t) l
+	          self#pLval destlv
+            align
+            (* Now the arguments *)
+            self#pExp dest
+            (self#pType None) t
+            unalign
+            printInstrTerminator
 
       (* In cabs2cil we have dropped the last argument in the call to
          __builtin_va_start and __builtin_stdarg_start. *)
@@ -3619,25 +3597,24 @@ class defaultCilPrinterClass : cilPrinter = object (self)
                vi.vname = "__builtin_va_start") && not !printCilAsIs) ->
         if currentFormals <> [] then begin
           let last = self#getLastNamedArgument vi.vname in
-          fun ppf -> self#pInstr ppf (Call(None,Lval(Var vi,NoOffset),[marker; last],l,el))
+          self#pInstr ppf (Call(None,Lval(Var vi,NoOffset),[marker; last],l,el))
         end
         else begin
           (* We can't print this call because someone called pInstr outside
              of a pFunDecl, so we don't know what the formals of the current
              function are.  Just put in a placeholder for now; this isn't
              valid C. *)
-          self#pLineDirective l
-          ++ dprintf
-            "%s(%a, /* last named argument of the function calling %s */)"
+          Fmt.pf ppf "%a%s(%a, /* last named argument of the function calling %s */)%s"
+            (self#pLineDirective: _ Fmt.t) l
             vi.vname self#pExp marker vi.vname
-          ++ text printInstrTerminator
+            printInstrTerminator
         end
       (* In cabs2cil we have dropped the last argument in the call to
          __builtin_next_arg. *)
     | Call(res, Lval(Var vi, NoOffset), [ ], l, el)
         when vi.vname = "__builtin_next_arg" && not !printCilAsIs -> begin
           let last = self#getLastNamedArgument vi.vname in
-          fun ppf -> self#pInstr ppf (Call(res,Lval(Var vi,NoOffset),[last],l, el))
+          self#pInstr ppf (Call(res,Lval(Var vi,NoOffset),[last],l, el))
         end
 
       (* In cparser we have turned the call to
@@ -3647,15 +3624,14 @@ class defaultCilPrinterClass : cilPrinter = object (self)
          Remove the sizeofs when printing. *)
     | Call(dest, Lval(Var vi, NoOffset), [SizeOf t1; SizeOf t2], l, el)
         when vi.vname = "__builtin_types_compatible_p" && not !printCilAsIs ->
-        self#pLineDirective l
+        Fmt.pf ppf "%a%a%s(%a, %a)%s"
+          (self#pLineDirective: _ Fmt.t) l
           (* Print the destination *)
-        ++ (match dest with
-              None -> nil
-            | Some lv -> (fun ppf -> self#pLval ppf lv) ++ text " = ")
+          (Fmt.option (fun ppf lv -> Fmt.pf ppf "%a = " self#pLval lv)) dest
           (* Now the call itself *)
-        ++ dprintf "%s(%a, %a)" vi.vname
-             (self#pType None) t1  (self#pType None) t2
-        ++ text printInstrTerminator
+          vi.vname
+          (self#pType None) t1 (self#pType None) t2
+          printInstrTerminator
     | Call(_, Lval(Var vi, NoOffset), _, l, el)
         when vi.vname = "__builtin_types_compatible_p" && not !printCilAsIs ->
         E.s (bug "__builtin_types_compatible_p: cabs2cil should have added sizeof to the arguments.")
@@ -3674,79 +3650,73 @@ class defaultCilPrinterClass : cilPrinter = object (self)
           | CastE(t, e) -> CastE(patchTypeNotVLA t, e)
           | e -> e
         in
-        self#pLineDirective l
-          ++ (match dest with
-            None -> nil
-          | Some lv ->
-              (fun ppf -> self#pLval ppf lv) ++ text " = " ++
-                (* Maybe we need to print a cast *)
-                (let destt = typeOfLval lv in
-                match unrollType (typeOf e) with
-                  TFun (rt, _, _, _)
-                      when not (Util.equals (!pTypeSig rt)
-                                            (!pTypeSig destt)) ->
-                    text "(" ++ (fun ppf -> self#pType None ppf destt) ++ text ")"
-                | _ -> nil))
+        Fmt.pf ppf "%a%a%t(%t%a%t)%s"
+          (self#pLineDirective: _ Fmt.t) l
+          (Fmt.option (fun ppf lv ->
+              Fmt.pf ppf "%a = %t"
+                self#pLval lv
+                (fun ppf ->
+                  (* Maybe we need to print a cast *)
+                  (let destt = typeOfLval lv in
+                  match unrollType (typeOf e) with
+                    TFun (rt, _, _, _)
+                        when not (Util.equals (!pTypeSig rt)
+                                              (!pTypeSig destt)) ->
+                      Fmt.pf ppf "(%a)" (self#pType None) destt
+                  | _ -> Fmt.nop ppf ()))))
+          dest
           (* Now the function name *)
-          ++ (let ed ppf = self#pExp ppf e in
-              match e with
-                Lval(Var _, _) -> ed
-              | _ -> text "(" ++ ed ++ text ")")
-          ++ text "(" ++
-          (align
-             (* Now the arguments *)
-             ++ (fun ppf -> docList ~sep:(chr ',' ++ break)
-                   (fun x ppf -> self#pExp ppf (patchArgNotUseVLACast x)) ppf args) (* here we would need to remove casts to array types that are not ok *)
-             ++ unalign)
-        ++ text (")" ^ printInstrTerminator)
+          (fun ppf ->
+            match e with
+              Lval(Var _, _) -> self#pExp ppf e
+            | _ -> Fmt.pf ppf "(%a)" self#pExp e)
+          align
+          (* Now the arguments *)
+          (Fmt.list ~sep:Fmt.comma (Fmt.using patchArgNotUseVLACast self#pExp)) (* here we would need to remove casts to array types that are not ok *)
+          args
+          unalign
+          printInstrTerminator
 
     | Asm(attrs, tmpls, outs, ins, clobs, l) ->
-        self#pLineDirective l
-          ++ text ("__asm__ ")
-          ++ (fun ppf -> self#pAttrs ppf attrs)
-          ++ text " ("
-          ++ (align
-                ++ (fun ppf -> docList ~sep:line
-                      (fun x -> text ("\"" ^ escape_string x ^ "\""))
-                      ppf tmpls)
-                ++
-                (if outs = [] && ins = [] && clobs = [] then
-                  chr ':'
-              else
-                (text ": "
-                    ++ (fun ppf -> docList ~sep:(chr ',' ++ break)
-                          (fun (idopt, c, lv) ->
-                          text(match idopt with
-                                None -> ""
-                              | Some id -> "[" ^ id ^ "] "
-                          ) ++
-                            text ("\"" ^ escape_string c ^ "\" (")
-                              ++ (fun ppf -> self#pLval ppf lv)
-                              ++ text ")") ppf outs)))
-              ++
-                (if ins = [] && clobs = [] then
-                  nil
-                else
-                  (text ": "
-                      ++ (fun ppf -> docList ~sep:(chr ',' ++ break)
-                            (fun (idopt, c, e) ->
-                              text(match idopt with
-                                    None -> ""
-                                  | Some id -> "[" ^ id ^ "] "
-                              ) ++
-                              text ("\"" ^ escape_string c ^ "\" (")
-                                ++ (fun ppf -> self#pExp ppf e)
-                                ++ text ")") ppf ins)))
-                ++
-                (if clobs = [] then nil
-                else
-                  (text ": "
-                      ++ (fun ppf -> docList ~sep:(chr ',' ++ break)
-                            (fun c -> text ("\"" ^ escape_string c ^ "\""))
-                            ppf
-                            clobs)))
-                ++ unalign)
-          ++ text (")" ^ printInstrTerminator)
+        Fmt.pf ppf "%a__asm__ %a (%t%a%t%t%t%t)%s"
+          (self#pLineDirective: _ Fmt.t) l
+          self#pAttrs attrs
+          align
+          (Fmt.list ~sep:(Fmt.any "@\n") (Fmt.using (fun x -> "\"" ^ escape_string x ^ "\"") Fmt.string))
+          tmpls
+          (fun ppf ->
+            if outs = [] && ins = [] && clobs = [] then
+              Fmt.string ppf ":"
+            else
+              Fmt.pf ppf ": %a"
+                (Fmt.list ~sep:Fmt.comma (fun ppf (idopt, c, lv) ->
+                  Fmt.pf ppf "%a\"%s\" (%a)"
+                    (Fmt.option (Fmt.using (fun id -> "[" ^ id ^ "] ") Fmt.string))
+                    idopt
+                    (escape_string c)
+                    self#pLval lv))
+                outs)
+          (fun ppf ->
+            if ins = [] && clobs = [] then
+              Fmt.nop ppf ()
+            else
+              Fmt.pf ppf ": %a"
+                (Fmt.list ~sep:Fmt.comma (fun ppf (idopt, c, e) ->
+                  Fmt.pf ppf "%a\"%s\" (%a)"
+                    (Fmt.option (Fmt.using (fun id -> "[" ^ id ^ "] ") Fmt.string))
+                    idopt
+                    (escape_string c)
+                    self#pExp e))
+                ins)
+          (fun ppf ->
+            if clobs = [] then
+              Fmt.nop ppf ()
+            else
+              Fmt.pf ppf ": %a"
+                (Fmt.list ~sep:Fmt.comma (Fmt.using (fun c -> "\"" ^ escape_string c ^ "\"") Fmt.string))
+                clobs)
+          unalign
+          printInstrTerminator
 
 
   (**** STATEMENTS ****)
@@ -3817,55 +3787,55 @@ class defaultCilPrinterClass : cilPrinter = object (self)
   val mutable lastLineNumber = -1
 
   (* Make sure that you only call self#pLineDirective on an empty line *)
-  method pLineDirective ?(forcefile=false) l =
+  method pLineDirective ?(forcefile=false) ppf l: unit =
     currentLoc := l;
     match !lineDirectiveStyle with
-    | None -> nil
-    | Some _ when l.line <= 0 -> nil
+    | None -> Fmt.nop ppf ()
+    | Some _ when l.line <= 0 -> Fmt.nop ppf ()
 
       (* Do not print lineComment if the same line as above *)
-    | Some LineCommentSparse when l.line = lastLineNumber -> nil
+    | Some LineCommentSparse when l.line = lastLineNumber -> Fmt.nop ppf ()
 
     | Some style  ->
-	let directive =
+	let directive ppf =
 	  match style with
-	  | LineComment | LineCommentSparse -> text "//#line "
-	  | LinePreprocessorOutput -> chr '#'
-	  | LinePreprocessorInput -> text "#line"
+	  | LineComment | LineCommentSparse -> Fmt.string ppf "//#line "
+	  | LinePreprocessorOutput -> Fmt.char ppf '#'
+	  | LinePreprocessorInput -> Fmt.string ppf "#line"
 	in
         lastLineNumber <- l.line;
-	let filename =
+	let filename ppf =
           if forcefile || l.file <> lastFileName then
 	    begin
 	      lastFileName <- l.file;
-	      text " \"" ++ text l.file ++ text "\""
+        Fmt.pf ppf " \"%s\"" l.file
             end
 	  else
-	    nil
+	    Fmt.nop ppf ()
 	in
-	leftflush ++ directive ++ chr ' ' ++ num l.line ++ filename ++ line
+  Fmt.pf ppf "%t%t %d%t%t@\n"
+	  leftflush
+    directive
+    l.line
+    filename
+    line
 
-  method private pIfConditionThen loc condition thenBlock =
-      self#pLineDirective loc
-      ++ text "if"
-      ++ (align
-          ++ text " ("
-          ++ (fun ppf -> self#pExp ppf condition)
-          ++ text ") "
-          ++ (fun ppf -> self#pBlock ppf thenBlock))
+  method private pIfConditionThen loc condition thenBlock ppf: unit =
+      Fmt.pf ppf "%aif%t (%a) %a"
+        (self#pLineDirective: _ Fmt.t) loc
+        align
+        self#pExp condition
+        self#pBlock thenBlock
 
   method private pStmtKind (next: stmt) (ppf: Format.formatter): _ -> unit = function
       Return(None, l) ->
-        ppf |>
-        self#pLineDirective l
-          ++ text "return;"
+        Fmt.pf ppf "%areturn;"
+          (self#pLineDirective: _ Fmt.t) l
 
     | Return(Some e, l) ->
-        ppf |>
-        self#pLineDirective l
-          ++ text "return ("
-          ++ (fun ppf -> self#pExp ppf e)
-          ++ text ");"
+        Fmt.pf ppf "%areturn (%a);"
+          (self#pLineDirective: _ Fmt.t) l
+          self#pExp e
 
     | Goto (sref, l) -> begin
         (* Grab one of the labels *)
@@ -3875,34 +3845,28 @@ class defaultCilPrinterClass : cilPrinter = object (self)
           | _ :: rest -> pickLabel rest
         in
         match pickLabel !sref.labels with
-          Some lbl -> ppf |> self#pLineDirective l ++ text ("goto " ^ lbl ^ ";")
+          Some lbl -> Fmt.pf ppf "%agoto %s;" (self#pLineDirective: _ Fmt.t) l lbl
         | None ->
             ignore (error "Cannot find label for target of goto");
-            text "goto __invalid_label;" ppf
+            Fmt.string ppf "goto __invalid_label;"
     end
 
     | ComputedGoto(e, l) ->
-        ppf |>
-        self#pLineDirective l
-          ++ text "goto *("
-          ++ (fun ppf -> self#pExp ppf e)
-          ++ text ");"
+        Fmt.pf ppf "%agoto *(%a);"
+          (self#pLineDirective: _ Fmt.t) l
+          self#pExp e
 
     | Break l ->
-        ppf |>
-        self#pLineDirective l
-          ++ text "break;"
+        Fmt.pf ppf "%abreak;" (self#pLineDirective: _ Fmt.t) l
 
     | Continue l ->
-        ppf |>
-        self#pLineDirective l
-          ++ text "continue;"
+        Fmt.pf ppf "%acontinue;" (self#pLineDirective: _ Fmt.t) l
 
     | Instr il ->
-        ppf |>
-        align
-          ++ (fun ppf -> docList ~sep:line (fun i ppf -> self#pInstr ppf i) ppf il)
-          ++ unalign
+        Fmt.pf ppf "%t%a%t"
+          align
+          (Fmt.list ~sep:(Fmt.any "@\n") self#pInstr) il
+          unalign
 
     | If(be,t,{bstmts=[];battrs=[]},l,el) when not !printCilAsIs ->
         self#pIfConditionThen l be t ppf
@@ -3921,27 +3885,24 @@ class defaultCilPrinterClass : cilPrinter = object (self)
         self#pIfConditionThen l (UnOp(LNot,be,intType)) e ppf
 
     | If(be,t,e,l,el) ->
-        ppf |>
-        self#pIfConditionThen l be t
-          ++ (match e with
-                { bstmts=[{skind=If _; _} as elsif]; battrs=[] } ->
-                    text " else"
-                    ++ line (* Don't indent else-ifs *)
-                    ++ (fun ppf -> self#pStmtNext next ppf elsif)
-              | _ ->
-                    text " "   (* sm: indent next code 2 spaces (was 4) *)
-                    ++ align
-                    ++ text "else "
-                    ++ (fun ppf -> self#pBlock ppf e))
+        Fmt.pf ppf "%t%a"
+          (self#pIfConditionThen l be t)
+          (fun ppf e -> match e with
+            { bstmts=[{skind=If _; _} as elsif]; battrs=[] } ->
+                Fmt.pf ppf " else@\n%a" (* Don't indent else-ifs *)
+                  (self#pStmtNext next) elsif
+          | _ ->
+                Fmt.pf ppf " %telse %a" (* sm: indent next code 2 spaces (was 4) *)
+                  align
+                  self#pBlock e)
+          e
 
     | Switch(e,b,_,l,el) ->
-        ppf |>
-        self#pLineDirective l
-          ++ (align
-                ++ text "switch ("
-                ++ (fun ppf -> self#pExp ppf e)
-                ++ text ") "
-                ++ (fun ppf -> self#pBlock ppf b))
+        Fmt.pf ppf "%a%tswitch (%a) %a"
+          (self#pLineDirective: _ Fmt.t) l
+          align
+          self#pExp e
+          self#pBlock b
     | Loop(b, l, el, _, _) -> begin
         (* Maybe the first thing is a conditional. Turn it into a WHILE *)
         try
@@ -3963,69 +3924,65 @@ class defaultCilPrinterClass : cilPrinter = object (self)
               end
             | _ -> raise Not_found
           in
-          ppf |>
-          self#pLineDirective l
-            ++ text "wh"
-            ++ (align
-                  ++ text "ile ("
-                  ++ (fun ppf -> self#pExp ppf term)
-                  ++ text ") "
-                  ++ (fun ppf -> self#pBlock ppf {bstmts=bodystmts; battrs=b.battrs}))
+          Fmt.pf ppf "%awh%tile (%a) %a"
+            (self#pLineDirective: _ Fmt.t) l
+            align
+            self#pExp term
+            self#pBlock {bstmts=bodystmts; battrs=b.battrs}
 
         with Not_found ->
-          ppf |>
-          self#pLineDirective l
-            ++ text "wh"
-            ++ (align
-                  ++ text "ile (1) "
-                  ++ (fun ppf -> self#pBlock ppf b))
+          Fmt.pf ppf "%awh%tile (1) %a"
+            (self#pLineDirective: _ Fmt.t) l
+            align
+            self#pBlock b
     end
-    | Block b -> ppf |> align ++ (fun ppf -> self#pBlock ppf b)
+    | Block b -> Fmt.pf ppf "%t%a" align self#pBlock b
 
 
   (*** GLOBALS ***)
   method pGlobal (ppf: Format.formatter) (g:global) : unit =       (* global (vars, types, etc.) *)
-    ppf |>
     match g with
     | GFun (fundec, l) ->
         (* If the function has attributes then print a prototype because
           GCC cannot accept function attributes in a definition *)
         let oldattr = fundec.svar.vattr in
         (* Always print the file name before function declarations *)
-        let proto =
+        let proto ppf =
           if oldattr <> [] then
-            (self#pLineDirective l) ++ (fun ppf -> self#pVDecl ppf fundec.svar)
-              ++ chr ';' ++ line
-          else nil in
+            Fmt.pf ppf "%a%a;@\n"
+              (self#pLineDirective: _ Fmt.t) l
+              self#pVDecl fundec.svar
+          else Fmt.nop ppf () in
         (* Temporarily remove the function attributes *)
         fundec.svar.vattr <- [];
-        let body = (self#pLineDirective ~forcefile:true l)
-                      ++ (self#pFunDecl () fundec) in
+        let body ppf = Fmt.pf ppf "%a%a" (self#pLineDirective ~forcefile:true) l
+                        self#pFunDecl fundec in
         fundec.svar.vattr <- oldattr;
-        proto ++ body ++ line
+        Fmt.pf ppf "%t%t@\n" proto body
 
     | GType (typ, l) ->
-        self#pLineDirective ~forcefile:true l ++
-          text "typedef "
-          ++ (fun ppf -> self#pType (Some (text typ.tname)) ppf typ.ttype)
-          ++ text ";\n"
+        Fmt.pf ppf "%atypedef %a;\n"
+          (self#pLineDirective ~forcefile:true) l
+          (self#pType (Some (text typ.tname))) typ.ttype
 
     | GEnumTag (enum, l) ->
-        self#pLineDirective l ++
-          text "enum" ++ align ++ text (" " ^ enum.ename) ++
-          text " {" ++ line
-          ++ (fun ppf -> docList ~sep:(chr ',' ++ line)
-                (fun (n,i, loc) ->
-                  text (n ^ " = ")
-                    ++ (fun ppf -> self#pExp ppf i))
-                ppf enum.eitems)
-          ++ unalign ++ line ++ text "} "
-          ++ (fun ppf -> self#pAttrs ppf enum.eattr) ++ text";\n"
+        Fmt.pf ppf "%aenum%t %s {@\n%a%t@\n} %a;\n"
+          (self#pLineDirective: _ Fmt.t) l
+          align
+          enum.ename
+          (Fmt.list ~sep:(Fmt.any ",@\n") (fun ppf (n,i, loc) ->
+                  Fmt.pf ppf "%s = %a"
+                    n
+                    self#pExp i))
+          enum.eitems
+          unalign
+          self#pAttrs enum.eattr
 
     | GEnumTagDecl (enum, l) -> (* This is a declaration of a tag *)
-        self#pLineDirective l ++
-          text "enum " ++ text enum.ename ++ chr ' '
-          ++ (fun ppf -> self#pAttrs ppf enum.eattr) ++ text ";\n"
+        Fmt.pf ppf "%aenum %s %a;\n"
+          (self#pLineDirective: _ Fmt.t) l
+          enum.ename
+          self#pAttrs enum.eattr
 
     | GCompTag (comp, l) -> (* This is a definition of a tag *)
         let n = comp.cname in
@@ -4033,58 +3990,55 @@ class defaultCilPrinterClass : cilPrinter = object (self)
           if comp.cstruct then "struct", "str", "uct"
           else "union",  "uni", "on"
         in
-        self#pLineDirective ~forcefile:true l ++
-          text su1 ++ (align ++ text su2 ++ chr ' '
-                         ++ text n
-                         ++ text " {" ++ line
-                         ++ (fun ppf -> (docList ~sep:line (fun fi ppf -> self#pFieldDecl ppf fi)) ppf
-                               comp.cfields)
-                         ++ unalign)
-          ++ line ++ text "}" ++
-          (fun ppf -> self#pAttrs ppf comp.cattr) ++ text ";\n"
+        Fmt.pf ppf "%a%s%t%s %s {@\n%a%t@\n}%a;\n"
+          (self#pLineDirective ~forcefile:true) l
+          su1 align su2 n
+          (Fmt.list ~sep:(Fmt.any "@\n") self#pFieldDecl) comp.cfields
+          unalign
+          self#pAttrs comp.cattr
 
     | GCompTagDecl (comp, l) -> (* This is a declaration of a tag *)
         let su = if comp.cstruct then "struct " else "union " in
-        self#pLineDirective l
-          ++ text su
-          ++ text comp.cname ++ chr ' '
-          ++ (fun ppf -> self#pAttrs ppf comp.cattr) ++ text ";\n"
+        Fmt.pf ppf "%a%s%s %a;\n"
+          (self#pLineDirective: _ Fmt.t) l
+          su comp.cname
+          self#pAttrs comp.cattr
 
     | GVar (vi, io, l) ->
-        self#pLineDirective ~forcefile:true l ++
-          (fun ppf -> self#pVDecl ppf vi)
-          ++ chr ' '
-          ++ (match io.init with
-            None -> nil
-          | Some i -> text " = " ++
-                (let islong =
-                  match i with
-                    CompoundInit (_, il) when List.length il >= 8 -> true
-                  | _ -> false
-                in
+        Fmt.pf ppf "%a%a %a;\n"
+          (self#pLineDirective ~forcefile:true) l
+          self#pVDecl vi
+          (Fmt.option (fun ppf i ->
+            let islong =
+              match i with
+                CompoundInit (_, il) when List.length il >= 8 -> true
+              | _ -> false
+            in
+            Fmt.pf ppf " = %t%a"
+              (fun ppf ->
                 if islong then
-                  line ++ self#pLineDirective l ++ text "  "
-                else nil) ++
-                (fun ppf -> self#pInit ppf i))
-          ++ text ";\n"
+                  Fmt.pf ppf "@\n%a  " (self#pLineDirective: _ Fmt.t) l
+                else Fmt.nop ppf ())
+              self#pInit i))
+          io.init
 
     (* print global variable 'extern' declarations, and function prototypes *)
     | GVarDecl (vi, l) ->
         if not !printCilAsIs && H.mem builtinFunctions vi.vname then begin
           (* Compiler builtins need no prototypes. Just print them in
              comments. *)
-          text "/* compiler builtin: \n   " ++
-            (fun ppf -> self#pVDecl ppf vi)
-            ++ text ";  */\n"
+          Fmt.pf ppf "/* compiler builtin: \n   %a;  */\n"
+            self#pVDecl vi
 
         end else
-          self#pLineDirective l ++
-            (fun ppf -> self#pVDecl ppf vi)
-            ++ text ";\n"
+          Fmt.pf ppf "%a%a;\n"
+           (self#pLineDirective: _ Fmt.t) l
+            self#pVDecl vi
 
     | GAsm (s, l) ->
-        self#pLineDirective l ++
-          text ("__asm__(\"" ^ escape_string s ^ "\");\n")
+        Fmt.pf ppf "%a__asm__(\"%s\");\n"
+          (self#pLineDirective: _ Fmt.t) l
+          (escape_string s)
 
     | GPragma (Attr(an, args), l) ->
         (* sm: suppress printing pragmas that gcc does not understand *)
@@ -4097,28 +4051,28 @@ class defaultCilPrinterClass : cilPrinter = object (self)
            (startsWith "ccured" an) ||
            (an = "merger") ||
            (an = "cilnoremove")) in
-        let d =
+        let d ppf =
 	  match an, args with
 	  | _, [] ->
-              text an
+        Fmt.string ppf an
 	  | "weak", [ACons (symbol, [])] ->
-	      text "weak " ++ text symbol
+	      Fmt.pf ppf "weak %s" symbol
 	  | _ ->
-            text (an ^ "(")
-              ++ (fun ppf -> docList ~sep:(chr ',') (fun a ppf -> self#pAttrParam ppf a) ppf args)
-              ++ text ")"
+        Fmt.pf ppf "%s (%a)"
+          an
+          (Fmt.list ~sep:(Fmt.any ",") self#pAttrParam) args
         in
-        self#pLineDirective l
-          ++ (if suppress then text "/* " else text "")
-          ++ (text "#pragma ")
-          ++ d
-          ++ (if suppress then text " */\n" else text "\n")
+        Fmt.pf ppf "%a%s#pragma %t%s"
+          (self#pLineDirective: _ Fmt.t) l
+          (if suppress then "/* " else "")
+          d
+          (if suppress then " */\n" else "\n")
 
     | GText s  ->
         if s <> "//" then
-          text s ++ text "\n"
+          Fmt.pf ppf "%s\n" s
         else
-          nil
+          Fmt.nop ppf ()
 
 
    method dGlobal (out: out_channel) (g: global) : unit =
@@ -4129,32 +4083,35 @@ class defaultCilPrinterClass : cilPrinter = object (self)
          (* If the function has attributes then print a prototype because
             GCC cannot accept function attributes in a definition *)
          let oldattr = fdec.svar.vattr in
-         let proto =
-           if oldattr <> [] then
-             (self#pLineDirective l) ++ (fun ppf -> self#pVDecl ppf fdec.svar)
-               ++ chr ';' ++ line
-           else nil in
+         let proto ppf =
+          if oldattr <> [] then
+            Fmt.pf ppf "%a%a;@\n"
+              (self#pLineDirective: _ Fmt.t) l
+              self#pVDecl fdec.svar
+          else Fmt.nop ppf () in
          fprint out ~width:!lineLength
-           (proto ++ (self#pLineDirective ~forcefile:true l));
+           (Pretty.dprintf "%t%a" proto (self#pLineDirective ~forcefile:true) l);
          (* Temporarily remove the function attributes *)
          fdec.svar.vattr <- [];
-         fprint out ~width:!lineLength (self#pFunDecl () fdec);
+         fprint out ~width:!lineLength (fun ppf -> self#pFunDecl ppf fdec);
          fdec.svar.vattr <- oldattr;
          output_string out "\n"
 
      | GVar (vi, {init = Some i}, l) -> begin
          fprint out ~width:!lineLength
-           (self#pLineDirective ~forcefile:true l ++
-              (fun ppf -> self#pVDecl ppf vi)
-              ++ text " = "
-              ++ (let islong =
-                match i with
-                  CompoundInit (_, il) when List.length il >= 8 -> true
-                | _ -> false
-              in
-              if islong then
-                line ++ self#pLineDirective l ++ text "  "
-              else nil));
+           (fun ppf ->
+              Fmt.pf ppf "%a%a = %t"
+                (self#pLineDirective ~forcefile:true) l
+                self#pVDecl vi
+                (fun ppf ->
+                  let islong =
+                    match i with
+                      CompoundInit (_, il) when List.length il >= 8 -> true
+                    | _ -> false
+                  in
+                  if islong then
+                    Fmt.pf ppf "@\n%a  " (self#pLineDirective: _ Fmt.t) l
+                  else Fmt.nop ppf ()));
          self#dInit out 3 i;
          output_string out ";\n"
      end
@@ -4173,26 +4130,20 @@ class defaultCilPrinterClass : cilPrinter = object (self)
        ++ (fun ppf -> self#pAttrs ppf fi.fattr)
        ++ text ";"
 
-  method private pFunDecl () f =
-      (fun ppf -> self#pVDecl ppf f.svar)
-      ++  line
-      ++ text "{ "
-      ++ (align
-            (* locals. *)
-            ++ line
-            ++ (fun ppf -> docList ~sep:line
-                (fun vi -> match vi.vinit.init with
-                | None -> (fun ppf -> self#pVDecl ppf vi) ++ text ";"
-                | Some i -> (fun ppf -> self#pVDecl ppf vi) ++ text " = " ++
-                    (fun ppf -> self#pInit ppf i) ++ text ";")
-                ppf (List.filter (fun v -> not v.vhasdeclinstruction) f.slocals))
-            ++ line ++ line
-            (* the body *)
-            ++ (fun ppf -> (* remember the declaration *) currentFormals <- f.sformals;
-                self#pBlock ppf f.sbody;
-                currentFormals <- []))
-      ++ line
-      ++ text "}"
+  method private pFunDecl ppf f =
+      Fmt.pf ppf "%a@\n{ %t@\n%a@\n@\n%t@\n}"
+        self#pVDecl f.svar
+        align
+        (* locals. *)
+        (Fmt.list ~sep:(Fmt.any "@\n")
+            (fun ppf vi -> match vi.vinit.init with
+            | None -> Fmt.pf ppf "%a;" self#pVDecl vi
+            | Some i -> Fmt.pf ppf "%a = %a;" self#pVDecl vi self#pInit i))
+        (List.filter (fun v -> not v.vhasdeclinstruction) f.slocals)
+        (* the body *)
+        (fun ppf -> (* remember the declaration *) currentFormals <- f.sformals;
+            self#pBlock ppf f.sbody;
+            currentFormals <- [])
 
   (***** PRINTING DECLARATIONS and TYPES ****)
 
@@ -4532,7 +4483,7 @@ let dumpInit (pp: cilPrinter) (out: out_channel) (ind: int) (i: init) : unit =
 let d_exp ppf e = printExp defaultCilPrinter ppf e
 let _ = pd_exp := d_exp
 let d_lval ppf lv = printLval defaultCilPrinter ppf lv
-let d_offset base ppf off = defaultCilPrinter#pOffset base off ppf
+let d_offset base ppf off = defaultCilPrinter#pOffset base ppf off
 let d_init ppf i = printInit defaultCilPrinter ppf i
 let d_type ppf t = printType defaultCilPrinter ppf t
 let _ = pd_type := d_type
@@ -4853,10 +4804,10 @@ object (self)
       match e with
         Lval (Var vi, o)
       | StartOf (Var vi, o) ->
-          self#pOffset (self#pVarDescriptive vi) o ppf
+          self#pOffset (self#pVarDescriptive vi) ppf o
       | AddrOf (Var vi, o) ->
           (* No parens needed, since offsets have higher precedence than & *)
-          ppf |> text "& " ++ self#pOffset (self#pVarDescriptive vi) o
+          Fmt.pf ppf "& %a" (self#pOffset (self#pVarDescriptive vi)) o
       | _ -> super#pExp ppf e
     else
       super#pExp ppf e

@@ -3,7 +3,7 @@
 (library
   (public_name goblint-cil)
   (name goblintCil)
-  (libraries zarith findlib dynlink unix str stdlib-shims)
+  (libraries zarith findlib dynlink unix str stdlib-shims fmt)
   (modules (:standard \ main ciloptions machdepConfigure modelConfigure))
 )
 

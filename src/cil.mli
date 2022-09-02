@@ -2191,7 +2191,7 @@ class type cilPrinter = object
   method pLval: Format.formatter -> lval -> unit
     (** Invoked on each lvalue occurrence *)
 
-  method pOffset: Pretty.doc -> offset -> Pretty.doc
+  method pOffset: Pretty.doc -> Format.formatter -> offset -> unit
     (** Invoked on each offset occurrence. The second argument is the base. *)
 
   method pInstr: Format.formatter -> instr -> unit
@@ -2243,7 +2243,7 @@ class type cilPrinter = object
   method pAttrs: Format.formatter -> attributes -> unit
     (** Attribute lists *)
 
-  method pLineDirective: ?forcefile:bool -> location -> Pretty.doc
+  method pLineDirective: ?forcefile:bool -> Format.formatter -> location -> unit
     (** Print a line-number. This is assumed to come always on an empty line.
        If the forcefile argument is present and is true then the file name
        will be printed always. Otherwise the file name is printed only if it
