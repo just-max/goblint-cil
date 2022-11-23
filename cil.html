@@ -1552,7 +1552,9 @@ than 2<sup>30</sup> bits (134 MB) on 32-bit computers, or 2<sup>62</sup> bits on
 64-bit computers.</li></ul>
 <!--TOC subsection id="sec35" Code that behaves differently under CIL-->
 <h3 id="sec35" class="subsection">11.2&#X2003;Code that behaves differently under CIL</h3><!--SEC END --><ul class="itemize"><li class="li-itemize">
-GCC has a strange feature called &#X201C;extern inline&#X201D;. Such a function can
+Without optimizations GCC generally does not use &#X201C;inline&#X201D; functions.
+With optimizations they might be inlined. CIL assumes optimization, and also
+assumes that &#X201C;inline&#X201D; functions are always inlined.</li><li class="li-itemize">GCC has a strange feature called &#X201C;extern inline&#X201D;. Such a function can
 be defined twice: first with the &#X201C;extern inline&#X201D; specifier and the second
 time without it. If optimizations are turned off then the &#X201C;extern inline&#X201D;
 definition is considered a prototype (its body is ignored).<p>With old versions of gcc, if optimizations
@@ -1714,7 +1716,11 @@ Options:
   --mode=xxx   What tool to emulate:
                 GNUCC     - GNU CC
                 MSVC      - MS VC cl compiler
-
+  --cstd=xxx   What C standard / GNU dialect to emulate:
+                c90 (also used for c89, iso9899:1990, iso9899:199409, gnu90, gnu89)
+                c99 (also used for c9x, iso9899:1999, iso9899:199x, gnu99, gnu9x)
+                c11 (c1x, iso9899:2011, c17, c18, iso9899:2017, iso9899:2018, c2x, gnu11, gnu1x, gnu17, gnu18, gnu2x)
+  --gnu89inline gnu89 semantic for inline functions
   --dest=xxx   The destination directory. Will make one if it does not exist
   --patch=xxx  Patch file (can be specified multiple times)
   --ppargs=xxx An argument to be passed to the preprocessor (can be specified
