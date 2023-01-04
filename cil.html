@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<meta name="generator" content="hevea 2.35">
+<meta name="generator" content="hevea 2.36">
 <style type="text/css">
 .equationcontainer{position:relative;}
 .equationnumber{float:right;left:auto;position:absolute;right:0}
@@ -85,8 +85,7 @@ function loadTop(url) {
 </table>
 <!--TOC section id="sec1" Introduction-->
 <h2 id="sec1" class="section">1&#X2003;Introduction</h2><!--SEC END --><p><span style="font-weight:bold">This a fork of the CIL tool</span> maintained by the team behind the static analyzer <a href="javascript:loadTop('https://goblint.in.tum.de')">Goblint</a>, <span style="font-weight:bold">which we refer to as goblint-CIL (CIL for short).</span></p><p>CIL (<span style="font-weight:bold">C</span> <span style="font-weight:bold">I</span>ntermediate <span style="font-weight:bold">L</span>anguage) is a high-level representation along with a set of tools that permit easy analysis and source-to-source
-transformation of C programs.</p><p>The original CIL has a Source Forge page: <a href="javascript:loadTop('http://sourceforge.net/projects/cil')">http://sourceforge.net/projects/cil</a>.</p><p>goblint-cil is developed on Github: <a href="javascript:loadTop('https://github.com/goblint/cil/')">https://github.com/goblint/cil/</a>.</p><p>Compared with the original CIL there are some <em>breaking</em> changes:</p><ul class="itemize"><li class="li-itemize">
-Support for C99 and C11.
+transformation of C programs.</p><p>The original CIL has a Source Forge page: <a href="javascript:loadTop('http://sourceforge.net/projects/cil')">http://sourceforge.net/projects/cil</a>.</p><p>goblint-cil is developed on Github: <a href="javascript:loadTop('https://github.com/goblint/cil/')">https://github.com/goblint/cil/</a>.</p><p>Compared with the original CIL there are some <em>breaking</em> changes:</p><ul class="itemize"><li class="li-itemize">Support for C99 and C11.
 </li><li class="li-itemize">Compatibility with modern OCaml versions.
 </li><li class="li-itemize">Use Zarith instead of Num and use that for integer constants.
 </li><li class="li-itemize">Improved locations with columns and spans.
@@ -104,13 +103,13 @@ process not only ANSI-C programs but also those using GNU C
 extensions. If you do not use CIL and want instead to use just a C parser and
 analyze programs expressed as abstract-syntax trees then your analysis will
 have to handle a lot of ugly corners of the language (let alone the fact that
-parsing C itself is not a trivial task). See Section&#X2004;&#X200D;<a href="#sec-simplec">??</a> for some
+parsing C itself is not a trivial task). See Section&#XA0;<a href="#sec-simplec">??</a> for some
 examples of such extreme programs that CIL simplifies for you.</p><p>In essence, CIL is a highly-structured, &#X201C;clean&#X201D; subset of C. CIL features a
 reduced number of syntactic and conceptual forms. For example, all looping
 constructs are reduced to a single form, all function bodies are given
 explicit <span style="font-family:monospace">return</span> statements, syntactic sugar like <span style="font-family:monospace">"-&gt;"</span> is
 eliminated and function arguments with array types become pointers. (For an
-extensive list of how CIL simplifies C programs, see Section&#X2004;&#X200D;<a href="#sec-cabs2cil">3</a>.)
+extensive list of how CIL simplifies C programs, see Section&#XA0;<a href="#sec-cabs2cil">3</a>.)
 This reduces the number of cases that must be considered when manipulating a C
 program. CIL also separates type declarations from code and flattens scopes
 within function bodies. This structures the program in a manner more amenable
@@ -125,8 +124,7 @@ be used with routines that require an AST (e.g. type-based analyses and
 pretty-printers), as well as with routines that require a CFG (e.g., dataflow
 analyses).</p><p>CIL comes accompanied by a number of Perl scripts that perform generally
 useful operations on code:
-</p><ul class="itemize"><li class="li-itemize">
-A <a href="#sec-driver">driver</a> which behaves as the <span style="font-family:monospace">gcc</span> compiler and can invoke the preprocessor followed by the CIL
+</p><ul class="itemize"><li class="li-itemize">A <a href="#sec-driver">driver</a> which behaves as the <span style="font-family:monospace">gcc</span> compiler and can invoke the preprocessor followed by the CIL
 application. The advantage of this script is that you can easily use CIL and
 the analyses written for CIL with existing make files.
 </li><li class="li-itemize">A <a href="#sec-merger">whole-program merger</a> that you can use as a
@@ -159,8 +157,7 @@ Then, run the following commands to build and install <span style="font-family:m
 If you want to install to some other directory, you can tweak the prefix
 during the configure step. For instance, to install in your local directory:</p><p><span style="font-family:monospace">./configure --prefix=&#X2018;opam config var prefix&#X2018;</span></p><p>The <span style="font-family:monospace">configure</span> script tries to find appropriate defaults for your system.
 You can control its actions by passing the following arguments:
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">CC=foo</span> Specifies the path for the <span style="font-family:monospace">gcc</span> executable. By default
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">CC=foo</span> Specifies the path for the <span style="font-family:monospace">gcc</span> executable. By default
 whichever version is in the PATH is used.
 </li></ul><p>CIL requires an underlying C compiler and preprocessor. CIL depends on the
 underlying compiler and machine for the sizes and alignment of types. The
@@ -179,8 +176,7 @@ This example shows that the analysis is so much simpler because it has to
 handle only a few simple C constructs and also because it can leverage on CIL
 infrastructure such as visitors and pretty-printers.</p><p>In no particular order these are a few of the most significant ways in which
 C programs are compiled into CIL:
-</p><ol class="enumerate" type=1><li class="li-enumerate">
-CIL will eliminate all declarations for unused entities. This means that
+</p><ol class="enumerate" type=1><li class="li-enumerate">CIL will eliminate all declarations for unused entities. This means that
 just because your hello world program includes <span style="font-family:monospace">stdio.h</span> it does not mean
 that your analysis has to handle all the ugly stuff from <span style="font-family:monospace">stdio.h</span>.</li><li class="li-enumerate">Type specifiers are interpreted and normalized:
 <pre class="verbatim"><span style="color:blue">int long signed x;
@@ -411,7 +407,7 @@ calls <span style="font-family:monospace">cilly.byte.exe</span> or <span style="
 distributed with CIL and whose purpose is to instrument code to print the
 addresses of memory locations being written. (We plan to release a
 C-language interface to CIL so that you can write your analyses in C
-instead of Ocaml.) See Section&#X2004;&#X200D;<a href="#sec-Extension">7</a> for a survey of other example
+instead of Ocaml.) See Section&#XA0;<a href="#sec-Extension">7</a> for a survey of other example
 modules.</p><p>Assuming that you have written <span style="font-family:monospace">/home/necula/logwrites.ml</span>,
 here is how you use it:</p><ol class="enumerate" type=1><li class="li-enumerate">Modify <span style="font-family:monospace">logwrites.ml</span> so that it includes a CIL &#X201C;feature
 descriptor&#X201D; like this:
@@ -433,14 +429,13 @@ argument parsing, so initialize the ref cell to true if you want
 this feature to be enabled by default.<p>When the user passes the <span style="font-family:monospace">--dologwrites</span>
 command-line option to <span style="font-family:monospace">cilly</span>, the variable associated with the
 <span style="font-family:monospace">fd_enabled</span> flag is set and the <span style="font-family:monospace">fd_doit</span> function is called
-on the <span style="font-family:monospace">Cil.file</span> that represents the merger (see Section&#X2004;&#X200D;<a href="#sec-merger">12</a>) of
+on the <span style="font-family:monospace">Cil.file</span> that represents the merger (see Section&#XA0;<a href="#sec-merger">12</a>) of
 all C files listed as arguments.</p></li><li class="li-enumerate">Invoke <span style="font-family:monospace">configure</span> with the arguments
 <pre class="verbatim">./configure EXTRASRCDIRS=/home/necula EXTRAFEATURES=logwrites
 </pre><p>This step works if each feature is packaged into its own ML file, and the
 name of the entry point in the file is <span style="font-family:monospace">feature</span>.</p><p>An alternative way to specify the new features is to change the build files
 yourself, as explained below. You&#X2019;ll need to use this method if a single
-feature is split across multiple files.</p><ol class="enumerate" type=a><li class="li-enumerate">
-Put <span style="font-family:monospace">logwrites.ml</span> in the <span style="font-family:monospace">src</span> or <span style="font-family:monospace">src/ext</span> directory. This
+feature is split across multiple files.</p><ol class="enumerate" type=a><li class="li-enumerate">Put <span style="font-family:monospace">logwrites.ml</span> in the <span style="font-family:monospace">src</span> or <span style="font-family:monospace">src/ext</span> directory. This
 will make sure that <span style="font-family:monospace">make</span> can find it. If you want to put it in some
 other directory, modify <span style="font-family:monospace">Makefile.in</span> and add to <span style="font-family:monospace">SOURCEDIRS</span> your
 directory. Alternately, you can create a symlink from <span style="font-family:monospace">src</span> or
@@ -469,7 +464,7 @@ printing the description, and calling your function automatically.
 Note: do not worry about introducing new bugs into CIL by adding a single
 line to the feature list.</p></li><li class="li-enumerate">Now you can invoke the <span style="font-family:monospace">cilly</span> application on a preprocessed file, or
 instead use the <span style="font-family:monospace">cilly</span> driver which provides a convenient compiler-like
-interface to <span style="font-family:monospace">cilly</span>. See Section&#X2004;&#X200D;<a href="#sec-driver">6</a> for details using <span style="font-family:monospace">cilly</span>.
+interface to <span style="font-family:monospace">cilly</span>. See Section&#XA0;<a href="#sec-driver">6</a> for details using <span style="font-family:monospace">cilly</span>.
 Remember to enable your analysis by passing the right argument (e.g.,
 <span style="font-family:monospace">--dologwrites</span>).</li></ol>
 <!--TOC subsection id="sec6" Using CIL as a library-->
@@ -504,8 +499,7 @@ to write your analysis and transformation.</p>
 <h2 id="sec7" class="section">5&#X2003;CIL API Documentation</h2><!--SEC END --><p><a id="sec-api"></a></p><p>The CIL API is documented in the file <span style="font-family:monospace">src/cil.mli</span>. We also have an
 <a href="api/goblint-cil/index.html">online documentation</a> extracted from
 <span style="font-family:monospace">cil.mli</span> and other useful modules. We
-index below the main types that are used to represent C programs in CIL:</p><ul class="itemize"><li class="li-itemize">
-<a href="api/goblint-cil/GoblintCil/index.html#type-file">GoblintCil.file</a> is the representation of a file.
+index below the main types that are used to represent C programs in CIL:</p><ul class="itemize"><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#type-file">GoblintCil.file</a> is the representation of a file.
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#type-global">GoblintCil.global</a> is the representation of a global declaration or
 definitions. Values for <a href="api/goblint-cil/GoblintCil/index.html#val-emptyFunction">operating on globals</a>.
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#type-typ">GoblintCil.typ</a> is the representation of a type.
@@ -534,8 +528,7 @@ Values for <a href="api/goblint-cil/GoblintCil/index.html#type-attributeClass">o
 the visitor pattern for CIL programs. The visiting engine scans depth-first
 the structure of a CIL program and at each node it queries a user-provided
 visitor structure whether it should do one of the following operations:
-</p><ul class="itemize"><li class="li-itemize">
-Ignore this node and all its descendants
+</p><ul class="itemize"><li class="li-itemize">Ignore this node and all its descendants
 </li><li class="li-itemize">Descend into all of the children and when done rebuild the node if any
 of the children have changed.
 </li><li class="li-itemize">Replace the subtree rooted at the node with another tree.
@@ -553,8 +546,7 @@ The most convenient way to obtain such classes is to specialize the
 nothing). Any given specialization typically overrides only a few of the
 methods. Take a look for example at the
 [copyFunctionVisitor] defined in <span style="font-family:monospace">cil.ml</span>.</p><p>Once you have defined a visitor you can invoke it with one of the functions:
-</p><ul class="itemize"><li class="li-itemize">
-<a href="api/goblint-cil/GoblintCil/index.html#val-visitCilFile">GoblintCil.visitCilFile</a> or <a href="api/goblint-cil/GoblintCil/index.html#val-visitCilFileSameGlobals">GoblintCil.visitCilFileSameGlobals</a> - visit a file
+</p><ul class="itemize"><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-visitCilFile">GoblintCil.visitCilFile</a> or <a href="api/goblint-cil/GoblintCil/index.html#val-visitCilFileSameGlobals">GoblintCil.visitCilFileSameGlobals</a> - visit a file
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-visitCilGlobal">GoblintCil.visitCilGlobal</a> - visit a global
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-visitCilFunction">GoblintCil.visitCilFunction</a> - visit a function definition
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-visitCilExp">GoblintCil.visitCilExp</a> - visit an expression
@@ -694,8 +686,7 @@ Lists of statements
 List of instructions
    Instr_list ::= Instr | %I:ID | Instr Instr_list
 </pre><p>Notes regarding the syntax:
-</p><ul class="itemize"><li class="li-itemize">
-In the grammar description above non-terminals are written with
+</p><ul class="itemize"><li class="li-itemize">In the grammar description above non-terminals are written with
 uppercase initial</li><li class="li-itemize">All of the patterns consist of the <span style="font-family:monospace">%</span> character followed by one or
 two letters, followed by &#X201C;:&#X201D; and an indentifier. For each such
 pattern there is a corresponding constructor of the <a href="api/goblint-cil/GoblintCil/index.html#type-formatArg">GoblintCil.formatArg</a>
@@ -733,8 +724,7 @@ temporary will be constructed (using a function you provive). You can then
 refer to that temporary by name in the rest of the pattern.</li><li class="li-itemize">The <span style="font-family:monospace">%v:</span> pattern specifier is optional.
 </li></ul><p>The following function are defined in the <span style="font-family:monospace">Formatcil</span> module for
 constructing and deconstructing:
-</p><ul class="itemize"><li class="li-itemize">
-<a href="api/goblint-cil/GoblintCil/Formatcil/index.html#val-cExp">Formatcil.cExp</a> constructs <a href="api/goblint-cil/GoblintCil/index.html#type-exp">GoblintCil.exp</a>.
+</p><ul class="itemize"><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/Formatcil/index.html#val-cExp">Formatcil.cExp</a> constructs <a href="api/goblint-cil/GoblintCil/index.html#type-exp">GoblintCil.exp</a>.
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/Formatcil/index.html#val-cType">Formatcil.cType</a> constructs <a href="api/goblint-cil/GoblintCil/index.html#type-typ">GoblintCil.typ</a>.
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/Formatcil/index.html#val-cLval">Formatcil.cLval</a> constructs <a href="api/goblint-cil/GoblintCil/index.html#type-lval">GoblintCil.lval</a>.
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/Formatcil/index.html#val-cInstr">Formatcil.cInstr</a> constructs <a href="api/goblint-cil/GoblintCil/index.html#type-instr">GoblintCil.instr</a>.
@@ -781,8 +771,7 @@ utilities for pretty printing and reporting errors and provide a convenient
 <span style="font-family:monospace">printf</span>-like interface.</p><p>Additionally, CIL defines for each major type a pretty-printing function that
 you can use in conjunction with the <a href="api/goblint-cil/GoblintCil/Pretty/index.html">Pretty</a> interface. The
 following are some of the pretty-printing functions:
-</p><ul class="itemize"><li class="li-itemize">
-<a href="api/goblint-cil/GoblintCil/index.html#val-d_exp">GoblintCil.d_exp</a> - print an expression
+</p><ul class="itemize"><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-d_exp">GoblintCil.d_exp</a> - print an expression
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-d_type">GoblintCil.d_type</a> - print a type
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-d_lval">GoblintCil.d_lval</a> - print an lvalue
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-d_global">GoblintCil.d_global</a> - print a global
@@ -800,8 +789,7 @@ following are some of the pretty-printing functions:
 <a href="api/goblint-cil/GoblintCil/GoblintCil/index.html#class-type-cilPrinter">GoblintCil.cilPrinter</a>. Typically such an instance extends
 <a href="api/goblint-cil/GoblintCil/index.html#val-defaultCilPrinter">GoblintCil.defaultCilPrinter</a>. Once you have a customized pretty-printer you
 can use the following printing functions:
-</p><ul class="itemize"><li class="li-itemize">
-<a href="api/goblint-cil/GoblintCil/index.html#val-printExp">GoblintCil.printExp</a> - print an expression
+</p><ul class="itemize"><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-printExp">GoblintCil.printExp</a> - print an expression
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-printType">GoblintCil.printType</a> - print a type
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-printLval">GoblintCil.printLval</a> - print an lvalue
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-printGlobal">GoblintCil.printGlobal</a> - print a global
@@ -853,8 +841,7 @@ and <span style="font-family:monospace">N</span> is a name attribute (each of th
  int fact(int x) N { ... }
 </span></pre><p>Type attributes can be specified along with the type using the following
 rules:
-</p><ol class="enumerate" type=1><li class="li-enumerate">
-The type attributes for a base type (int, float, named type, reference
+</p><ol class="enumerate" type=1><li class="li-enumerate">The type attributes for a base type (int, float, named type, reference
 to struct or union or enum) must be specified immediately following the
 type (actually it is Ok to mix attributes with the specification of the
 type, in between unsigned and int for example).<p>For example:
@@ -917,15 +904,13 @@ starts a function body.</p><p>GCC classifies its attributes in attributes for fu
 for types, although the latter category is only usable in definition of struct
 or union types and is not nearly as powerful as the CIL type attributes. We
 have made an effort to reclassify GCC attributes as name and type attributes
-(they only apply for function types). Here is what we came up with:</p><ul class="itemize"><li class="li-itemize">
-GCC name attributes:<p>section, constructor, destructor, unused, weak, no_instrument_function,
+(they only apply for function types). Here is what we came up with:</p><ul class="itemize"><li class="li-itemize">GCC name attributes:<p>section, constructor, destructor, unused, weak, no_instrument_function,
 noreturn, alias, no_check_memory_usage, dllinport, dllexport, exception,
 model</p></li><li class="li-itemize">GCC function type attributes:<p>fconst (printed as "const"), format, regparm, stdcall,
 cdecl, longcall</p><p>I was not able to completely decipher the position in which these attributes
 must go. So, the CIL elaborator knows these names and applies the following
 rules:
-</p><ul class="itemize"><li class="li-itemize">
-All of the name attributes that appear in the specifier part (i.e. at
+</p><ul class="itemize"><li class="li-itemize">All of the name attributes that appear in the specifier part (i.e. at
 the beginning) of a declaration are associated with all declared names.</li><li class="li-itemize">All of the name attributes that appear at the end of a declarator are
 associated with the particular name being declared.</li><li class="li-itemize">More complicated is the handling of the function type attributes, since
 there can be more than one function in a single declaration (a function
@@ -949,8 +934,7 @@ that you can move it to any place you want.</p><p>A simple use of the driver is:
 current directory. Otherwise, they&#X2019;ll be put in <span style="font-family:monospace">/tmp</span> and deleted
 automatically. Not that this is the only CIL-specific flag in the
 list &#X2013; the other flags use <span style="font-family:monospace">gcc</span>&#X2019;s syntax.</p><p>This performs the following actions:
-</p><ul class="itemize"><li class="li-itemize">
-preprocessing using the -D and -I arguments with the resulting
+</p><ul class="itemize"><li class="li-itemize">preprocessing using the -D and -I arguments with the resulting
 file left in <span style="font-family:monospace">hello.i</span>,
 </li><li class="li-itemize">the invocation of the <span style="font-family:monospace">cilly.native</span> application which parses <span style="font-family:monospace">hello.i</span>
 converts it to CIL and the pretty-prints it to <span style="font-family:monospace">hello.cil.c</span>
@@ -979,12 +963,9 @@ have to do is to pass the <span style="font-family:monospace">--merge</span> fla
 <span style="font-family:monospace">bar</span>. Those files will be compiled as usual and then linked in at the very
 end.</p><p>The sequence of actions performed by <span style="font-family:monospace">cilly</span> depends on whether merging
 is turned on or not:
-</p><ul class="itemize"><li class="li-itemize">
-If merging is off
-<ol class="enumerate" type=1><li class="li-enumerate">
-For every file <span style="font-family:monospace">file.c</span> to compile
-<ol class="enumerate" type=a><li class="li-enumerate">
-Preprocess the file with the given arguments to
+</p><ul class="itemize"><li class="li-itemize">If merging is off
+<ol class="enumerate" type=1><li class="li-enumerate">For every file <span style="font-family:monospace">file.c</span> to compile
+<ol class="enumerate" type=a><li class="li-enumerate">Preprocess the file with the given arguments to
 produce <span style="font-family:monospace">file.i</span>
 </li><li class="li-enumerate">Invoke <span style="font-family:monospace">cilly.native</span> to produce a <span style="font-family:monospace">file.cil.c</span>
 </li><li class="li-enumerate">Preprocess to <span style="font-family:monospace">file.cil.i</span>
@@ -993,10 +974,8 @@ produce <span style="font-family:monospace">file.i</span>
 </li><li class="li-enumerate">Link the resulting objects
 </li></ol>
 </li><li class="li-itemize">If merging is on
-<ol class="enumerate" type=1><li class="li-enumerate">
-For every file <span style="font-family:monospace">file.c</span> to compile
-<ol class="enumerate" type=a><li class="li-enumerate">
-Preprocess the file with the given arguments to
+<ol class="enumerate" type=1><li class="li-enumerate">For every file <span style="font-family:monospace">file.c</span> to compile
+<ol class="enumerate" type=a><li class="li-enumerate">Preprocess the file with the given arguments to
 produce <span style="font-family:monospace">file.i</span>
 </li><li class="li-enumerate">Save the preprocessed source as <span style="font-family:monospace">file.o</span>
 </li></ol>
@@ -1004,7 +983,7 @@ produce <span style="font-family:monospace">file.i</span>
 file that must be linked and see if it actually
 contains preprocessed source. Pass all those files to a
 special merging application (described in
-Section&#X2004;&#X200D;<a href="#sec-merger">12</a>) to produce <span style="font-family:monospace">hello.exe_comb.c</span>
+Section&#XA0;<a href="#sec-merger">12</a>) to produce <span style="font-family:monospace">hello.exe_comb.c</span>
 </li><li class="li-enumerate">Invoke <span style="font-family:monospace">cilly.native</span> to produce a <span style="font-family:monospace">hello.exe_comb.cil.c</span>
 </li><li class="li-enumerate">Preprocess to <span style="font-family:monospace">hello.exe_comb.cil.i</span>
 </li><li class="li-enumerate">Invoke the underlying compiler to produce <span style="font-family:monospace">hello.exe_comb.cil.o</span>
@@ -1018,21 +997,19 @@ system&#X2019;s include files:</p><pre class="verbatim">make CC="bin/cilly --inc
 (if it exists) whenever it encounters <span style="font-family:monospace">#include &lt;stdio.h&gt;</span>. The <span style="font-family:monospace">xxx</span> is
 a string that identifies the compiler version you are using. This modified
 include files should be produced with the patcher script (see
-Section&#X2004;&#X200D;<a href="#sec-patcher">13</a>).</p>
+Section&#XA0;<a href="#sec-patcher">13</a>).</p>
 <!--TOC subsection id="sec15" <span style="font-family:monospace">cilly</span> Options-->
 <h3 id="sec15" class="subsection">6.1&#X2003;<span style="font-family:monospace">cilly</span> Options</h3><!--SEC END --><p>Among the options for the <span style="font-family:monospace">cilly</span> you can put anything that can normally
 go in the command line of the compiler that <span style="font-family:monospace">cilly</span> is impersonating.
 <span style="font-family:monospace">cilly</span> will do its best to pass those options along to the appropriate
 subprocess. In addition, the following options are supported (a complete and
-up-to-date list can always be obtained by running <span style="font-family:monospace">cilly --help</span>):</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">--gcc=command</span> Tell <span style="font-family:monospace">cilly</span> to use <span style="font-family:monospace">command</span> to invoke
+up-to-date list can always be obtained by running <span style="font-family:monospace">cilly --help</span>):</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">--gcc=command</span> Tell <span style="font-family:monospace">cilly</span> to use <span style="font-family:monospace">command</span> to invoke
 gcc, e.g. <span style="font-family:monospace">--gcc=arm-elf-gcc</span> to use a cross-compiler. See also
 the <span style="font-family:monospace">--envmachine</span> option below that tells CIL to assume a
 different machine model.
 </li><li class="li-itemize"><span style="font-family:monospace">--mode=mode</span> This must be the first argument if present. It makes
 <span style="font-family:monospace">cilly</span> behave as a given compiled. The following modes are recognized:
-<ul class="itemize"><li class="li-itemize">
-GNUCC - the GNU C Compiler. This is the default.
+<ul class="itemize"><li class="li-itemize">GNUCC - the GNU C Compiler. This is the default.
 </li><li class="li-itemize">AR - the archiver <span style="font-family:monospace">ar</span>. Only the mode <span style="font-family:monospace">cr</span> is supported and
 the original version of the archive is lost.
 </li></ul>
@@ -1043,12 +1020,12 @@ is doing.
 </li><li class="li-itemize"><span style="font-family:monospace">--merge</span> This tells <span style="font-family:monospace">cilly</span> to first attempt to collect into one
 source file all of the sources that make your application, and then to apply
 <span style="font-family:monospace">cilly.native</span> on the resulting source. The sequence of actions in this case is
-described above and the merger itself is described in Section&#X2004;&#X200D;<a href="#sec-merger">12</a>.</li><li class="li-itemize"><span style="font-family:monospace">--leavealone=xxx</span>. Do not merge and do not present to CIL the files
+described above and the merger itself is described in Section&#XA0;<a href="#sec-merger">12</a>.</li><li class="li-itemize"><span style="font-family:monospace">--leavealone=xxx</span>. Do not merge and do not present to CIL the files
 whose basename is "xxx". These files are compiled as usual and linked in at
 the end.
 </li><li class="li-itemize"><span style="font-family:monospace">--includedir=xxx</span>. Override the include files with those in the given
 directory. The given directory is the same name that was given an an argument
-to the patcher (see Section&#X2004;&#X200D;<a href="#sec-patcher">13</a>). In particular this means that
+to the patcher (see Section&#XA0;<a href="#sec-patcher">13</a>). In particular this means that
 that directory contains subdirectories named based on the current compiler
 version. The patcher creates those directories.
 </li><li class="li-itemize"><span style="font-family:monospace">--usecabs</span>. Do not CIL, but instead just parse the source and print
@@ -1067,9 +1044,8 @@ named <span style="font-family:monospace">*.cil.c</span>.
 <span style="font-family:monospace">cilly.native</span> flags that both need to know
 about. The following options are supported. Many of these flags also
 have corresponding &#X201C;<span style="font-family:monospace">--no</span>*&#X201D; versions if you need to go back to
-the default, as in &#X201C;<span style="font-family:monospace">--nowarnall</span>&#X201D;.</p><p>&#X2003;&#X200D;&#X2003;&#X200D;&#X2003;&#X200D;&#X2003;&#X200D;&#X2002;&#X200D;&#X2005;&#X200D; <span style="font-weight:bold">General Options:</span>
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">--version</span> output version information and exit
+the default, as in &#X201C;<span style="font-family:monospace">--nowarnall</span>&#X201D;.</p><p>&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0; <span style="font-weight:bold">General Options:</span>
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">--version</span> output version information and exit
 </li><li class="li-itemize"><span style="font-family:monospace">--verbose</span> Print lots of random stuff. This is passed on from cilly
 </li><li class="li-itemize"><span style="font-family:monospace">--warnall</span> Show all warnings.
 </li><li class="li-itemize"><span style="font-family:monospace">--debug=xxx</span> turns on debugging flag xxx
@@ -1102,7 +1078,7 @@ To report only user-mode time, find the call to <span style="font-family:monospa
 compiled into CIL. Note that you should not pass gcc&#X2019;s 32/64-bit
 <span style="font-family:monospace">-m32</span> and <span style="font-family:monospace">-m64</span> options to <span style="font-family:monospace">cilly</span> if you use
 <span style="font-family:monospace">--envmachine</span> (they use <span style="font-family:monospace">--envmachine</span> under the hood).
-See Section&#X2004;&#X200D;<a href="#sec-cilmachine">6.4</a> for a description of <span style="font-family:monospace">CIL_MACHINE</span>&#X2019;s
+See Section&#XA0;<a href="#sec-cilmachine">6.4</a> for a description of <span style="font-family:monospace">CIL_MACHINE</span>&#X2019;s
 format.<p><span style="font-weight:bold">Lowering Options</span>
 </p></li><li class="li-itemize"><span style="font-family:monospace">--noLowerConstants</span> do not lower constant expressions.
 </li><li class="li-itemize"><span style="font-family:monospace">--noInsertImplicitCasts</span> do not insert implicit casts.
@@ -1118,7 +1094,7 @@ output by e.g. changing <span style="font-family:monospace">while(1)</span> into
 sets this for you.
 </li><li class="li-itemize"><span style="font-family:monospace">--mergedout=xxx</span> specify the name of the merged file
 </li><li class="li-itemize"><span style="font-family:monospace">--cabsonly=xxx</span> CABS output file name
-<p><span style="font-weight:bold">Selected features.</span> See Section&#X2004;&#X200D;<a href="#sec-Extension">7</a> for more information.
+<p><span style="font-weight:bold">Selected features.</span> See Section&#XA0;<a href="#sec-Extension">7</a> for more information.
 </p></li><li class="li-itemize"><span style="font-family:monospace">--domakeCFG</span>. Make the program look more like a CFG. Implemented
 in <span style="font-family:monospace">src/cil.ml</span>.<p>For an up-to-date list of available options, run <span style="font-family:monospace">cilly.native --help</span>.</p></li></ul>
 <!--TOC subsection id="sec17" Internal Options-->
@@ -1128,8 +1104,7 @@ programmatically &#X2013; see <span style="font-family:monospace">src/ciloptions
 extensions to see how. Some options should be set before parsing to
 be effective.</p><p>Additionally, a few CIL options have no command-line flag and can only
 be set programmatically. These options may be useful for certain
-analyses:</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">Cabs2cil.doCollapseCallCast</span>:This is false by default. Set
+analyses:</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">Cabs2cil.doCollapseCallCast</span>:This is false by default. Set
 to true to replicate the behavior of CIL 1.3.5 and earlier.<p>When false, all casts in the program are made explicit using the
 <span style="font-family:monospace">CastE</span> expression. Accordingly, the destination of a Call
 instruction will always have the same type as the function&#X2019;s return
@@ -1183,8 +1158,7 @@ keys are ignored. The following keys must be defined:
 <tr><td style="text-align:left;border:solid 1px;white-space:nowrap" > underscore_name</td><td style="text-align:left;border:solid 1px;white-space:nowrap" >true if generated symbols preceded by _ </td></tr>
 </table>
 </div><p>Some notes:
-</p><ul class="itemize"><li class="li-itemize">
-Values cannot contain spaces as spaces separate key/value pairs.
+</p><ul class="itemize"><li class="li-itemize">Values cannot contain spaces as spaces separate key/value pairs.
 </li><li class="li-itemize">The value of size_t is the text for the type defined as
 size_t, e.g. <span style="font-family:monospace">unsigned long</span>. As spaces are not allowed in values,
 CIL will replace underscores by spaces: <span style="font-family:monospace">size_t=unsigned_long</span>.
@@ -1246,7 +1220,7 @@ code fragment</p>
 <h3 id="sec23" class="subsection">7.2&#X2003;Data flow analysis framework</h3><!--SEC END --><p>The <a href="api/goblint-cil/GoblintCil/Dataflow/index.html">Dataflow</a> module (click for the ocamldoc) contains a
 parameterized framework for forward and backward data flow
 analyses. You provide the transfer functions and this module does the
-analysis. You must compute control-flow information (Section&#X2004;&#X200D;<a href="#sec-cfg">7.1</a>)
+analysis. You must compute control-flow information (Section&#XA0;<a href="#sec-cfg">7.1</a>)
 before invoking the Dataflow module.</p>
 <!--TOC subsection id="sec24" Dominators-->
 <h3 id="sec24" class="subsection">7.3&#X2003;Dominators</h3><!--SEC END --><p>The module <a href="api/goblint-cil/GoblintCil/Dominators/index.html">Dominators</a> contains the computation of immediate
@@ -1256,8 +1230,7 @@ dominators. It uses the <a href="api/goblint-cil/GoblintCil/Dataflow/index.html"
 analyses for CIL: <span style="font-family:monospace">Olf</span> and <span style="font-family:monospace">Golf</span>. <span style="font-family:monospace">Olf</span> is the default.
 (Switching from <span style="font-family:monospace">olf.ml</span> to <span style="font-family:monospace">golf.ml</span> requires a change in
 <span style="font-family:monospace">Ptranal</span> and a recompiling <span style="font-family:monospace">cilly</span>.)</p><p>The analyses have the following characteristics:
-</p><ul class="itemize"><li class="li-itemize">
-Not based on C types (inferred pointer relationships are sound
+</p><ul class="itemize"><li class="li-itemize">Not based on C types (inferred pointer relationships are sound
 despite most kinds of C casts)
 </li><li class="li-itemize">One level of subtyping
 </li><li class="li-itemize">One level of context sensitivity (Golf only)
@@ -1275,8 +1248,7 @@ internal state, so <span style="font-family:monospace">Ptranal.analyze_file</spa
 once.</p><p>The constructed points-to graph supports several kinds of queries,
 including alias queries (may two expressions be aliased?) and
 points-to queries (to what set of locations may an expression point?).</p><p>The main interface with the alias analysis is as follows:
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">Ptranal.may_alias: Cil.exp -&gt; Cil.exp -&gt; bool</span>. If
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">Ptranal.may_alias: Cil.exp -&gt; Cil.exp -&gt; bool</span>. If
 <span style="font-family:monospace">true</span>, the two expressions may have the same value.
 </li><li class="li-itemize"><span style="font-family:monospace">Ptranal.resolve_lval: Cil.lval -&gt; (Cil.varinfo
 list)</span>. Returns the list of variables to which the given
@@ -1288,8 +1260,7 @@ point.
 list)</span>. Returns the list of functions to which the given
 expression may point.
 </li></ul><p>The precision of the analysis can be customized by changing the values
-of several flags:</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">Ptranal.no_sub: bool ref</span>.
+of several flags:</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">Ptranal.no_sub: bool ref</span>.
 If <span style="font-family:monospace">true</span>, subtyping is disabled. Associated commandline option:
 <span style="font-weight:bold">--ptr_unify</span>.
 </li><li class="li-itemize"><span style="font-family:monospace">Ptranal.analyze_mono: bool ref</span>.
@@ -1316,8 +1287,7 @@ setting
 These are the
 default values of the flags.</p><p>There are also a few flags that can be used to inspect or serialize
 the results of the analysis.
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">Ptranal.debug_may_aliases</span>.
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">Ptranal.debug_may_aliases</span>.
 Print the may-alias relationship of each pair of expressions in the
 program. Commandline option: <span style="font-weight:bold">--ptr_may_aliases</span>.
 </li><li class="li-itemize"><span style="font-family:monospace">Ptranal.print_constraints: bool ref</span>.
@@ -1337,7 +1307,7 @@ points-to graph.
 <!--TOC subsection id="sec26" Reaching Definitions-->
 <h3 id="sec26" class="subsection">7.5&#X2003;Reaching Definitions</h3><!--SEC END --><p>The <span style="font-family:monospace">reachingdefs.ml</span> module uses the dataflow framework and CFG
 information to calculate the definitions that reach each
-statement. After computing the CFG (Section&#X2004;&#X200D;<a href="#sec-cfg">7.1</a>) and calling
+statement. After computing the CFG (Section&#XA0;<a href="#sec-cfg">7.1</a>) and calling
 <span style="font-family:monospace">computeRDs</span> on a
 function declaration, <span style="font-family:monospace">ReachingDef.stmtStartData</span> will contain a
 mapping from statement IDs to data about which definitions reach each
@@ -1349,8 +1319,7 @@ with ID <span style="font-family:monospace">i</span> reaches that statement. If 
 then there is a path to that statement on which there is no definition
 of that variable. Also, if the variable ID is unmapped at a
 statement, then no definition of that variable reaches that statement.</p><p>To summarize, reachingdefs.ml has the following interface:
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">computeRDs</span> &#X2013; Computes reaching definitions. Requires that
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">computeRDs</span> &#X2013; Computes reaching definitions. Requires that
 CFG information has already been computed for each statement.
 </li><li class="li-itemize"><span style="font-family:monospace">ReachingDef.stmtStartData</span> &#X2013; contains reaching
 definition data after <span style="font-family:monospace">computeRDs</span> is called.
@@ -1372,7 +1341,7 @@ the <span style="font-family:monospace">get_cur_iosh</span> method of the class.
 <h3 id="sec27" class="subsection">7.6&#X2003;Available Expressions</h3><!--SEC END --><p>The <span style="font-family:monospace">availexps.ml</span> module uses the dataflow framework and CFG
 information to calculate something similar to a traditional available
 expressions analysis. After <span style="font-family:monospace">computeAEs</span> is called following a CFG
-calculation (Section&#X2004;&#X200D;<a href="#sec-cfg">7.1</a>), <span style="font-family:monospace">AvailableExps.stmtStartData</span> will
+calculation (Section&#XA0;<a href="#sec-cfg">7.1</a>), <span style="font-family:monospace">AvailableExps.stmtStartData</span> will
 contain a mapping
 from statement IDs to data about what expressions are available at
 that statement. The data for each statement is a mapping for each
@@ -1381,8 +1350,7 @@ traditional sense) which the variable was last defined to be. So,
 this differs from a traditional available expressions analysis in that
 only whole expressions from a variable definition are considered rather
 than all expressions.</p><p>The interface is as follows:
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">computeAEs</span> &#X2013; Computes available expressions. Requires
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">computeAEs</span> &#X2013; Computes available expressions. Requires
 that CFG information has already been comptued for each statement.
 </li><li class="li-itemize"><span style="font-family:monospace">AvailableExps.stmtStartData</span> &#X2013; Contains available
 expressions data for each statement after <span style="font-family:monospace">computeAEs</span> has been
@@ -1402,18 +1370,16 @@ data is available when expressions are visited through the
 <h3 id="sec28" class="subsection">7.7&#X2003;Liveness Analysis</h3><!--SEC END --><p>The <span style="font-family:monospace">liveness.ml</span> module uses the dataflow framework and
 CFG information to calculate which variables are live at
 each program point. After <span style="font-family:monospace">computeLiveness</span> is called
-following a CFG calculation (Section&#X2004;&#X200D;<a href="#sec-cfg">7.1</a>), <span style="font-family:monospace">LiveFlow.stmtStartData</span> will
+following a CFG calculation (Section&#XA0;<a href="#sec-cfg">7.1</a>), <span style="font-family:monospace">LiveFlow.stmtStartData</span> will
 contain a mapping for each statement ID to a set of <span style="font-family:monospace">varinfo</span>s
 for varialbes live at that program point.</p><p>The interface is as follows:
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">computeLiveness</span> &#X2013; Computes live variables. Requires
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">computeLiveness</span> &#X2013; Computes live variables. Requires
 that CFG information has already been computed for each statement.
 </li><li class="li-itemize"><span style="font-family:monospace">LiveFlow.stmtStartData</span> &#X2013; Contains live variable data
 for each statement after <span style="font-family:monospace">computeLiveness</span> has been called.
 </li></ul><p>Also included in this module is a command line interface that
 will cause liveness data to be printed to standard out for
-a particular function or label.</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">--doliveness</span> &#X2013; Instructs cilly to comptue liveness
+a particular function or label.</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">--doliveness</span> &#X2013; Instructs cilly to comptue liveness
 information and to print on standard out the variables live
 at the points specified by <span style="font-family:monospace">--live_func</span> and <span style="font-family:monospace">live_label</span>.
 If both are ommitted, then nothing is printed.
@@ -1426,10 +1392,9 @@ the liveness data will be printed.
 <!--TOC subsection id="sec29" Dead Code Elimination-->
 <h3 id="sec29" class="subsection">7.8&#X2003;Dead Code Elimination</h3><!--SEC END --><p>The module <span style="font-family:monospace">deadcodeelim.ml</span> uses the reaching definitions
 analysis to eliminate assignment instructions whose results
-are not used. The interface is as follows:</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">elim_dead_code</span> &#X2013; Performs dead code elimination
+are not used. The interface is as follows:</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">elim_dead_code</span> &#X2013; Performs dead code elimination
 on a function. Requires that CFG information has already
-been computed (Section&#X2004;&#X200D;<a href="#sec-cfg">7.1</a>).
+been computed (Section&#XA0;<a href="#sec-cfg">7.1</a>).
 </li><li class="li-itemize"><span style="font-family:monospace">dce</span> &#X2013; Performs dead code elimination on an
 entire file. Requires that CFG information has already
 been computed.
@@ -1449,8 +1414,7 @@ structure <span style="font-family:monospace">bar</span>):
 <a href="javascript:loadTop('http://gcc.gnu.org/onlinedocs/gcc-3.0.2/gcc_5.html#SEC67')">extensions</a>
 and compiles them to CIL. The following extensions are not handled (note that
 we are able to compile a large number of programs, including the Linux kernel,
-without encountering these):</p><ol class="enumerate" type=1><li class="li-enumerate">
-Nested function definitions.
+without encountering these):</p><ol class="enumerate" type=1><li class="li-enumerate">Nested function definitions.
 </li><li class="li-enumerate">Constructing function calls.
 </li><li class="li-enumerate">Naming an expression&#X2019;s type.
 </li><li class="li-enumerate">Complex numbers
@@ -1458,9 +1422,8 @@ Nested function definitions.
 </li><li class="li-enumerate">Subscripts on non-lvalue arrays.
 </li><li class="li-enumerate">Forward function parameter declarations
 </li></ol><p>The following extensions are handled, typically by compiling them away:
-</p><ol class="enumerate" type=1><li class="li-enumerate">
-Attributes for functions, variables and types. In fact, we have a clear
-specification (see Section&#X2004;&#X200D;<a href="#sec-attrib">5.4</a>) of how attributes are interpreted. The
+</p><ol class="enumerate" type=1><li class="li-enumerate">Attributes for functions, variables and types. In fact, we have a clear
+specification (see Section&#XA0;<a href="#sec-attrib">5.4</a>) of how attributes are interpreted. The
 specification extends that of <span style="font-family:monospace">gcc</span>.
 </li><li class="li-enumerate">Old-style function definitions and prototypes. These are translated to
 new-style.
@@ -1503,8 +1466,7 @@ as such in CIL.</li><li class="li-enumerate">Function names as strings. The iden
 </li></ol>
 <!--TOC section id="sec32" CIL Limitations-->
 <h2 id="sec32" class="section">10&#X2003;CIL Limitations</h2><!--SEC END --><p>There are several implementation details of CIL that might make it unusable
-or less than ideal for certain tasks:</p><ul class="itemize"><li class="li-itemize">
-CIL operates after preprocessing. If you need to see comments, for
+or less than ideal for certain tasks:</p><ul class="itemize"><li class="li-itemize">CIL operates after preprocessing. If you need to see comments, for
 example, you cannot use CIL. But you can use attributes and pragmas instead.
 And there is some support to help you patch the include files before they are
 seen by the preprocessor. For example, this is how we turn some
@@ -1517,8 +1479,7 @@ local variables cannot have the <span style="font-family:monospace">const</span>
 <!--TOC section id="sec33" Known Bugs and Limitations-->
 <h2 id="sec33" class="section">11&#X2003;Known Bugs and Limitations</h2><!--SEC END -->
 <!--TOC subsection id="sec34" Code that CIL won&#X2019;t compile-->
-<h3 id="sec34" class="subsection">11.1&#X2003;Code that CIL won&#X2019;t compile</h3><!--SEC END --><ul class="itemize"><li class="li-itemize">
-We do not support tri-graph sequences (ISO 5.2.1.1).</li><li class="li-itemize">CIL cannot parse arbitrary <span style="font-family:monospace">#pragma</span> directives. Their
+<h3 id="sec34" class="subsection">11.1&#X2003;Code that CIL won&#X2019;t compile</h3><!--SEC END --><ul class="itemize"><li class="li-itemize">We do not support tri-graph sequences (ISO 5.2.1.1).</li><li class="li-itemize">CIL cannot parse arbitrary <span style="font-family:monospace">#pragma</span> directives. Their
 syntax must follow gcc&#X2019;s attribute syntax to be understood. If you
 need a pragma that does not follow gcc syntax, add that pragma&#X2019;s name
 to <span style="font-family:monospace">no_parse_pragma</span> in <span style="font-family:monospace">src/frontc/clexer.mll</span> to indicate that
@@ -1551,8 +1512,7 @@ Therefore, it can&#X2019;t compute the size of any object that is larger
 than 2<sup>30</sup> bits (134 MB) on 32-bit computers, or 2<sup>62</sup> bits on
 64-bit computers.</li></ul>
 <!--TOC subsection id="sec35" Code that behaves differently under CIL-->
-<h3 id="sec35" class="subsection">11.2&#X2003;Code that behaves differently under CIL</h3><!--SEC END --><ul class="itemize"><li class="li-itemize">
-Without optimizations GCC generally does not use &#X201C;inline&#X201D; functions.
+<h3 id="sec35" class="subsection">11.2&#X2003;Code that behaves differently under CIL</h3><!--SEC END --><ul class="itemize"><li class="li-itemize">Without optimizations GCC generally does not use &#X201C;inline&#X201D; functions.
 With optimizations they might be inlined. CIL assumes optimization, and also
 assumes that &#X201C;inline&#X201D; functions are always inlined.</li><li class="li-itemize">GCC has a strange feature called &#X201C;extern inline&#X201D;. Such a function can
 be defined twice: first with the &#X201C;extern inline&#X201D; specifier and the second
@@ -1586,8 +1546,7 @@ after the assignment.</li><li class="li-itemize">Because CIL uses 64-bit floatin
 representation of floating point numbers, <span style="font-family:monospace">long double</span> constants
 are parsed as if they were <span style="font-family:monospace">double</span> constants.</li></ul>
 <!--TOC subsection id="sec36" Effects of the CIL translation-->
-<h3 id="sec36" class="subsection">11.3&#X2003;Effects of the CIL translation</h3><!--SEC END --><ul class="itemize"><li class="li-itemize">
-CIL cleans up C code in various ways that may suppress compiler
+<h3 id="sec36" class="subsection">11.3&#X2003;Effects of the CIL translation</h3><!--SEC END --><ul class="itemize"><li class="li-itemize">CIL cleans up C code in various ways that may suppress compiler
 warnings. For example, CIL will add casts where they are needed
 while <span style="font-family:monospace">gcc</span> might print a warning for the missing cast. It is
 not a goal of CIL to emit such warnings &#X2014; we support several
@@ -1613,8 +1572,7 @@ sizeofs are removed when printing.</p></li></ul>
 <p>There are many program analyses that are more effective when
 done on the whole program.</p><p>The merger is a tool that combines all of the C source files in a project
 into a single C file. There are two tasks that a merger must perform:
-</p><ol class="enumerate" type=1><li class="li-enumerate">
-Detect what are all the sources that make a project and with what
+</p><ol class="enumerate" type=1><li class="li-enumerate">Detect what are all the sources that make a project and with what
 compiler arguments they are compiled.</li><li class="li-enumerate">Merge all of the source files into a single file.
 </li></ol><p>For the first task the merger impersonates a compiler and a linker (both a
 GCC and a Microsoft Visual C mode are supported) and it expects to be invoked
@@ -1629,8 +1587,7 @@ linking must be the same for all source files.</p><p>For the second task, the me
 sources with care to rename conflicting file-local declarations (we call this
 process alpha-conversion of a file). The merger also attempts to remove
 duplicate global declarations and definitions. Specifically the following
-actions are taken:</p><ul class="itemize"><li class="li-itemize">
-File-scope names (<span style="font-family:monospace">static</span> globals, names of types defined with
+actions are taken:</p><ul class="itemize"><li class="li-itemize">File-scope names (<span style="font-family:monospace">static</span> globals, names of types defined with
 <span style="font-family:monospace">typedef</span>, and structure/union/enumeration tags) are given new names if they
 conflict with declarations from previously processed sources. The new name is
 formed by appending the suffix <span style="font-family:monospace">___n</span>, where <span style="font-family:monospace">n</span> is a unique integer
@@ -1668,8 +1625,7 @@ void main() {
 }
 </span></pre><p>There are several ways in which one might create an executable from these
 files:
-</p><ul class="itemize"><li class="li-itemize">
-<pre class="verbatim">gcc file1.c file2.c -o a.out
+</p><ul class="itemize"><li class="li-itemize"><pre class="verbatim">gcc file1.c file2.c -o a.out
 </pre></li><li class="li-itemize"><pre class="verbatim">gcc -c file1.c -o file1.o
 gcc -c file2.c -o file2.o
 ld file1.o file2.o -o a.out
@@ -1749,8 +1705,7 @@ the Unix <span style="font-family:monospace">patch</span> tool. The file has the
   &gt;&gt;&gt;
 </pre><p>The flags are a comma separated, case-sensitive, sequence of keywords or
 keyword = value. The following flags are supported:
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">file=foo.h</span> - will only apply the patch on files whose name is
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">file=foo.h</span> - will only apply the patch on files whose name is
 <span style="font-family:monospace">foo.h</span>.
 </li><li class="li-itemize"><span style="font-family:monospace">optional</span> - this means that it is Ok if the current patch does not
 match any of the processed files.
@@ -1796,8 +1751,7 @@ reflect the views of the National Science Foundation or the other sponsors.</p><
 Berkeley does have time anymore to support it.</p><p>Goblint-CIL is maintained by the <a href="https://goblint.in.tum.de">Goblint</a> team at the University of Tartu and the Technical University of Munich.</p>
 <!--TOC section id="sec40" License-->
 <h2 id="sec40" class="section">15&#X2003;License</h2><!--SEC END --><p>Copyright (c) 2001-2021,
-</p><ul class="itemize"><li class="li-itemize">
-George C. Necula &lt;necula@cs.berkeley.edu&gt;
+</p><ul class="itemize"><li class="li-itemize">George C. Necula &lt;necula@cs.berkeley.edu&gt;
 </li><li class="li-itemize">Scott McPeak &lt;smcpeak@cs.berkeley.edu&gt;
 </li><li class="li-itemize">Wes Weimer &lt;weimer@cs.berkeley.edu&gt;
 </li><li class="li-itemize">Ben Liblit &lt;liblit@cs.wisc.edu&gt;

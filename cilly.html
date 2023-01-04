@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<meta name="generator" content="hevea 2.35">
+<meta name="generator" content="hevea 2.36">
 
 <base target="main">
 <script language="JavaScript">
@@ -33,7 +33,7 @@ calls <span style="font-family:monospace">cilly.byte.exe</span> or <span style="
 distributed with CIL and whose purpose is to instrument code to print the
 addresses of memory locations being written. (We plan to release a
 C-language interface to CIL so that you can write your analyses in C
-instead of Ocaml.) See Section&#X2004;&#X200D;<a href="ext.html#sec-Extension">7</a> for a survey of other example
+instead of Ocaml.) See Section&#XA0;<a href="ext.html#sec-Extension">7</a> for a survey of other example
 modules.</p><p>Assuming that you have written <span style="font-family:monospace">/home/necula/logwrites.ml</span>,
 here is how you use it:</p><ol class="enumerate" type=1><li class="li-enumerate">Modify <span style="font-family:monospace">logwrites.ml</span> so that it includes a CIL &#X201C;feature
 descriptor&#X201D; like this:
@@ -55,14 +55,13 @@ argument parsing, so initialize the ref cell to true if you want
 this feature to be enabled by default.<p>When the user passes the <span style="font-family:monospace">--dologwrites</span>
 command-line option to <span style="font-family:monospace">cilly</span>, the variable associated with the
 <span style="font-family:monospace">fd_enabled</span> flag is set and the <span style="font-family:monospace">fd_doit</span> function is called
-on the <span style="font-family:monospace">Cil.file</span> that represents the merger (see Section&#X2004;&#X200D;<a href="merger.html#sec-merger">12</a>) of
+on the <span style="font-family:monospace">Cil.file</span> that represents the merger (see Section&#XA0;<a href="merger.html#sec-merger">12</a>) of
 all C files listed as arguments.</p></li><li class="li-enumerate">Invoke <span style="font-family:monospace">configure</span> with the arguments
 <pre class="verbatim">./configure EXTRASRCDIRS=/home/necula EXTRAFEATURES=logwrites
 </pre><p>This step works if each feature is packaged into its own ML file, and the
 name of the entry point in the file is <span style="font-family:monospace">feature</span>.</p><p>An alternative way to specify the new features is to change the build files
 yourself, as explained below. You&#X2019;ll need to use this method if a single
-feature is split across multiple files.</p><ol class="enumerate" type=a><li class="li-enumerate">
-Put <span style="font-family:monospace">logwrites.ml</span> in the <span style="font-family:monospace">src</span> or <span style="font-family:monospace">src/ext</span> directory. This
+feature is split across multiple files.</p><ol class="enumerate" type=a><li class="li-enumerate">Put <span style="font-family:monospace">logwrites.ml</span> in the <span style="font-family:monospace">src</span> or <span style="font-family:monospace">src/ext</span> directory. This
 will make sure that <span style="font-family:monospace">make</span> can find it. If you want to put it in some
 other directory, modify <span style="font-family:monospace">Makefile.in</span> and add to <span style="font-family:monospace">SOURCEDIRS</span> your
 directory. Alternately, you can create a symlink from <span style="font-family:monospace">src</span> or
@@ -91,7 +90,7 @@ printing the description, and calling your function automatically.
 Note: do not worry about introducing new bugs into CIL by adding a single
 line to the feature list.</p></li><li class="li-enumerate">Now you can invoke the <span style="font-family:monospace">cilly</span> application on a preprocessed file, or
 instead use the <span style="font-family:monospace">cilly</span> driver which provides a convenient compiler-like
-interface to <span style="font-family:monospace">cilly</span>. See Section&#X2004;&#X200D;<a href="cil006.html#sec-driver">6</a> for details using <span style="font-family:monospace">cilly</span>.
+interface to <span style="font-family:monospace">cilly</span>. See Section&#XA0;<a href="cil006.html#sec-driver">6</a> for details using <span style="font-family:monospace">cilly</span>.
 Remember to enable your analysis by passing the right argument (e.g.,
 <span style="font-family:monospace">--dologwrites</span>).</li></ol>
 <h3 id="sec6" class="subsection">4.2&#X2003;Using CIL as a library</h3>

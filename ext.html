@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<meta name="generator" content="hevea 2.35">
+<meta name="generator" content="hevea 2.36">
 
 <base target="main">
 <script language="JavaScript">
@@ -61,7 +61,7 @@ code fragment</p>
 <p>The <a href="api/goblint-cil/GoblintCil/Dataflow/index.html">Dataflow</a> module (click for the ocamldoc) contains a
 parameterized framework for forward and backward data flow
 analyses. You provide the transfer functions and this module does the
-analysis. You must compute control-flow information (Section&#X2004;&#X200D;<a href="#sec-cfg">7.1</a>)
+analysis. You must compute control-flow information (Section&#XA0;<a href="#sec-cfg">7.1</a>)
 before invoking the Dataflow module.</p>
 <h3 id="sec24" class="subsection">7.3&#X2003;Dominators</h3>
 <p>The module <a href="api/goblint-cil/GoblintCil/Dominators/index.html">Dominators</a> contains the computation of immediate
@@ -71,8 +71,7 @@ dominators. It uses the <a href="api/goblint-cil/GoblintCil/Dataflow/index.html"
 analyses for CIL: <span style="font-family:monospace">Olf</span> and <span style="font-family:monospace">Golf</span>. <span style="font-family:monospace">Olf</span> is the default.
 (Switching from <span style="font-family:monospace">olf.ml</span> to <span style="font-family:monospace">golf.ml</span> requires a change in
 <span style="font-family:monospace">Ptranal</span> and a recompiling <span style="font-family:monospace">cilly</span>.)</p><p>The analyses have the following characteristics:
-</p><ul class="itemize"><li class="li-itemize">
-Not based on C types (inferred pointer relationships are sound
+</p><ul class="itemize"><li class="li-itemize">Not based on C types (inferred pointer relationships are sound
 despite most kinds of C casts)
 </li><li class="li-itemize">One level of subtyping
 </li><li class="li-itemize">One level of context sensitivity (Golf only)
@@ -90,8 +89,7 @@ internal state, so <span style="font-family:monospace">Ptranal.analyze_file</spa
 once.</p><p>The constructed points-to graph supports several kinds of queries,
 including alias queries (may two expressions be aliased?) and
 points-to queries (to what set of locations may an expression point?).</p><p>The main interface with the alias analysis is as follows:
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">Ptranal.may_alias: Cil.exp -&gt; Cil.exp -&gt; bool</span>. If
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">Ptranal.may_alias: Cil.exp -&gt; Cil.exp -&gt; bool</span>. If
 <span style="font-family:monospace">true</span>, the two expressions may have the same value.
 </li><li class="li-itemize"><span style="font-family:monospace">Ptranal.resolve_lval: Cil.lval -&gt; (Cil.varinfo
 list)</span>. Returns the list of variables to which the given
@@ -103,8 +101,7 @@ point.
 list)</span>. Returns the list of functions to which the given
 expression may point.
 </li></ul><p>The precision of the analysis can be customized by changing the values
-of several flags:</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">Ptranal.no_sub: bool ref</span>.
+of several flags:</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">Ptranal.no_sub: bool ref</span>.
 If <span style="font-family:monospace">true</span>, subtyping is disabled. Associated commandline option:
 <span style="font-weight:bold">--ptr_unify</span>.
 </li><li class="li-itemize"><span style="font-family:monospace">Ptranal.analyze_mono: bool ref</span>.
@@ -131,8 +128,7 @@ setting
 These are the
 default values of the flags.</p><p>There are also a few flags that can be used to inspect or serialize
 the results of the analysis.
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">Ptranal.debug_may_aliases</span>.
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">Ptranal.debug_may_aliases</span>.
 Print the may-alias relationship of each pair of expressions in the
 program. Commandline option: <span style="font-weight:bold">--ptr_may_aliases</span>.
 </li><li class="li-itemize"><span style="font-family:monospace">Ptranal.print_constraints: bool ref</span>.
@@ -152,7 +148,7 @@ points-to graph.
 <h3 id="sec26" class="subsection">7.5&#X2003;Reaching Definitions</h3>
 <p>The <span style="font-family:monospace">reachingdefs.ml</span> module uses the dataflow framework and CFG
 information to calculate the definitions that reach each
-statement. After computing the CFG (Section&#X2004;&#X200D;<a href="#sec-cfg">7.1</a>) and calling
+statement. After computing the CFG (Section&#XA0;<a href="#sec-cfg">7.1</a>) and calling
 <span style="font-family:monospace">computeRDs</span> on a
 function declaration, <span style="font-family:monospace">ReachingDef.stmtStartData</span> will contain a
 mapping from statement IDs to data about which definitions reach each
@@ -164,8 +160,7 @@ with ID <span style="font-family:monospace">i</span> reaches that statement. If 
 then there is a path to that statement on which there is no definition
 of that variable. Also, if the variable ID is unmapped at a
 statement, then no definition of that variable reaches that statement.</p><p>To summarize, reachingdefs.ml has the following interface:
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">computeRDs</span> &#X2013; Computes reaching definitions. Requires that
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">computeRDs</span> &#X2013; Computes reaching definitions. Requires that
 CFG information has already been computed for each statement.
 </li><li class="li-itemize"><span style="font-family:monospace">ReachingDef.stmtStartData</span> &#X2013; contains reaching
 definition data after <span style="font-family:monospace">computeRDs</span> is called.
@@ -187,7 +182,7 @@ the <span style="font-family:monospace">get_cur_iosh</span> method of the class.
 <p>The <span style="font-family:monospace">availexps.ml</span> module uses the dataflow framework and CFG
 information to calculate something similar to a traditional available
 expressions analysis. After <span style="font-family:monospace">computeAEs</span> is called following a CFG
-calculation (Section&#X2004;&#X200D;<a href="#sec-cfg">7.1</a>), <span style="font-family:monospace">AvailableExps.stmtStartData</span> will
+calculation (Section&#XA0;<a href="#sec-cfg">7.1</a>), <span style="font-family:monospace">AvailableExps.stmtStartData</span> will
 contain a mapping
 from statement IDs to data about what expressions are available at
 that statement. The data for each statement is a mapping for each
@@ -196,8 +191,7 @@ traditional sense) which the variable was last defined to be. So,
 this differs from a traditional available expressions analysis in that
 only whole expressions from a variable definition are considered rather
 than all expressions.</p><p>The interface is as follows:
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">computeAEs</span> &#X2013; Computes available expressions. Requires
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">computeAEs</span> &#X2013; Computes available expressions. Requires
 that CFG information has already been comptued for each statement.
 </li><li class="li-itemize"><span style="font-family:monospace">AvailableExps.stmtStartData</span> &#X2013; Contains available
 expressions data for each statement after <span style="font-family:monospace">computeAEs</span> has been
@@ -217,18 +211,16 @@ data is available when expressions are visited through the
 <p>The <span style="font-family:monospace">liveness.ml</span> module uses the dataflow framework and
 CFG information to calculate which variables are live at
 each program point. After <span style="font-family:monospace">computeLiveness</span> is called
-following a CFG calculation (Section&#X2004;&#X200D;<a href="#sec-cfg">7.1</a>), <span style="font-family:monospace">LiveFlow.stmtStartData</span> will
+following a CFG calculation (Section&#XA0;<a href="#sec-cfg">7.1</a>), <span style="font-family:monospace">LiveFlow.stmtStartData</span> will
 contain a mapping for each statement ID to a set of <span style="font-family:monospace">varinfo</span>s
 for varialbes live at that program point.</p><p>The interface is as follows:
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">computeLiveness</span> &#X2013; Computes live variables. Requires
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">computeLiveness</span> &#X2013; Computes live variables. Requires
 that CFG information has already been computed for each statement.
 </li><li class="li-itemize"><span style="font-family:monospace">LiveFlow.stmtStartData</span> &#X2013; Contains live variable data
 for each statement after <span style="font-family:monospace">computeLiveness</span> has been called.
 </li></ul><p>Also included in this module is a command line interface that
 will cause liveness data to be printed to standard out for
-a particular function or label.</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">--doliveness</span> &#X2013; Instructs cilly to comptue liveness
+a particular function or label.</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">--doliveness</span> &#X2013; Instructs cilly to comptue liveness
 information and to print on standard out the variables live
 at the points specified by <span style="font-family:monospace">--live_func</span> and <span style="font-family:monospace">live_label</span>.
 If both are ommitted, then nothing is printed.
@@ -241,10 +233,9 @@ the liveness data will be printed.
 <h3 id="sec29" class="subsection">7.8&#X2003;Dead Code Elimination</h3>
 <p>The module <span style="font-family:monospace">deadcodeelim.ml</span> uses the reaching definitions
 analysis to eliminate assignment instructions whose results
-are not used. The interface is as follows:</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">elim_dead_code</span> &#X2013; Performs dead code elimination
+are not used. The interface is as follows:</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">elim_dead_code</span> &#X2013; Performs dead code elimination
 on a function. Requires that CFG information has already
-been computed (Section&#X2004;&#X200D;<a href="#sec-cfg">7.1</a>).
+been computed (Section&#XA0;<a href="#sec-cfg">7.1</a>).
 </li><li class="li-itemize"><span style="font-family:monospace">dce</span> &#X2013; Performs dead code elimination on an
 entire file. Requires that CFG information has already
 been computed.

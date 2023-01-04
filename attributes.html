@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<meta name="generator" content="hevea 2.35">
+<meta name="generator" content="hevea 2.36">
 
 <base target="main">
 <script language="JavaScript">
@@ -23,8 +23,7 @@ function loadTop(url) {
 <p><a id="sec-api"></a></p><p>The CIL API is documented in the file <span style="font-family:monospace">src/cil.mli</span>. We also have an
 <a href="api/goblint-cil/index.html">online documentation</a> extracted from
 <span style="font-family:monospace">cil.mli</span> and other useful modules. We
-index below the main types that are used to represent C programs in CIL:</p><ul class="itemize"><li class="li-itemize">
-<a href="api/goblint-cil/GoblintCil/index.html#type-file">GoblintCil.file</a> is the representation of a file.
+index below the main types that are used to represent C programs in CIL:</p><ul class="itemize"><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#type-file">GoblintCil.file</a> is the representation of a file.
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#type-global">GoblintCil.global</a> is the representation of a global declaration or
 definitions. Values for <a href="api/goblint-cil/GoblintCil/index.html#val-emptyFunction">operating on globals</a>.
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#type-typ">GoblintCil.typ</a> is the representation of a type.
@@ -53,8 +52,7 @@ Values for <a href="api/goblint-cil/GoblintCil/index.html#type-attributeClass">o
 the visitor pattern for CIL programs. The visiting engine scans depth-first
 the structure of a CIL program and at each node it queries a user-provided
 visitor structure whether it should do one of the following operations:
-</p><ul class="itemize"><li class="li-itemize">
-Ignore this node and all its descendants
+</p><ul class="itemize"><li class="li-itemize">Ignore this node and all its descendants
 </li><li class="li-itemize">Descend into all of the children and when done rebuild the node if any
 of the children have changed.
 </li><li class="li-itemize">Replace the subtree rooted at the node with another tree.
@@ -72,8 +70,7 @@ The most convenient way to obtain such classes is to specialize the
 nothing). Any given specialization typically overrides only a few of the
 methods. Take a look for example at the
 [copyFunctionVisitor] defined in <span style="font-family:monospace">cil.ml</span>.</p><p>Once you have defined a visitor you can invoke it with one of the functions:
-</p><ul class="itemize"><li class="li-itemize">
-<a href="api/goblint-cil/GoblintCil/index.html#val-visitCilFile">GoblintCil.visitCilFile</a> or <a href="api/goblint-cil/GoblintCil/index.html#val-visitCilFileSameGlobals">GoblintCil.visitCilFileSameGlobals</a> - visit a file
+</p><ul class="itemize"><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-visitCilFile">GoblintCil.visitCilFile</a> or <a href="api/goblint-cil/GoblintCil/index.html#val-visitCilFileSameGlobals">GoblintCil.visitCilFileSameGlobals</a> - visit a file
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-visitCilGlobal">GoblintCil.visitCilGlobal</a> - visit a global
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-visitCilFunction">GoblintCil.visitCilFunction</a> - visit a function definition
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-visitCilExp">GoblintCil.visitCilExp</a> - visit an expression
@@ -213,8 +210,7 @@ Lists of statements
 List of instructions
    Instr_list ::= Instr | %I:ID | Instr Instr_list
 </pre><p>Notes regarding the syntax:
-</p><ul class="itemize"><li class="li-itemize">
-In the grammar description above non-terminals are written with
+</p><ul class="itemize"><li class="li-itemize">In the grammar description above non-terminals are written with
 uppercase initial</li><li class="li-itemize">All of the patterns consist of the <span style="font-family:monospace">%</span> character followed by one or
 two letters, followed by &#X201C;:&#X201D; and an indentifier. For each such
 pattern there is a corresponding constructor of the <a href="api/goblint-cil/GoblintCil/index.html#type-formatArg">GoblintCil.formatArg</a>
@@ -252,8 +248,7 @@ temporary will be constructed (using a function you provive). You can then
 refer to that temporary by name in the rest of the pattern.</li><li class="li-itemize">The <span style="font-family:monospace">%v:</span> pattern specifier is optional.
 </li></ul><p>The following function are defined in the <span style="font-family:monospace">Formatcil</span> module for
 constructing and deconstructing:
-</p><ul class="itemize"><li class="li-itemize">
-<a href="api/goblint-cil/GoblintCil/Formatcil/index.html#val-cExp">Formatcil.cExp</a> constructs <a href="api/goblint-cil/GoblintCil/index.html#type-exp">GoblintCil.exp</a>.
+</p><ul class="itemize"><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/Formatcil/index.html#val-cExp">Formatcil.cExp</a> constructs <a href="api/goblint-cil/GoblintCil/index.html#type-exp">GoblintCil.exp</a>.
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/Formatcil/index.html#val-cType">Formatcil.cType</a> constructs <a href="api/goblint-cil/GoblintCil/index.html#type-typ">GoblintCil.typ</a>.
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/Formatcil/index.html#val-cLval">Formatcil.cLval</a> constructs <a href="api/goblint-cil/GoblintCil/index.html#type-lval">GoblintCil.lval</a>.
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/Formatcil/index.html#val-cInstr">Formatcil.cInstr</a> constructs <a href="api/goblint-cil/GoblintCil/index.html#type-instr">GoblintCil.instr</a>.
@@ -300,8 +295,7 @@ utilities for pretty printing and reporting errors and provide a convenient
 <span style="font-family:monospace">printf</span>-like interface.</p><p>Additionally, CIL defines for each major type a pretty-printing function that
 you can use in conjunction with the <a href="api/goblint-cil/GoblintCil/Pretty/index.html">Pretty</a> interface. The
 following are some of the pretty-printing functions:
-</p><ul class="itemize"><li class="li-itemize">
-<a href="api/goblint-cil/GoblintCil/index.html#val-d_exp">GoblintCil.d_exp</a> - print an expression
+</p><ul class="itemize"><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-d_exp">GoblintCil.d_exp</a> - print an expression
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-d_type">GoblintCil.d_type</a> - print a type
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-d_lval">GoblintCil.d_lval</a> - print an lvalue
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-d_global">GoblintCil.d_global</a> - print a global
@@ -319,8 +313,7 @@ following are some of the pretty-printing functions:
 <a href="api/goblint-cil/GoblintCil/GoblintCil/index.html#class-type-cilPrinter">GoblintCil.cilPrinter</a>. Typically such an instance extends
 <a href="api/goblint-cil/GoblintCil/index.html#val-defaultCilPrinter">GoblintCil.defaultCilPrinter</a>. Once you have a customized pretty-printer you
 can use the following printing functions:
-</p><ul class="itemize"><li class="li-itemize">
-<a href="api/goblint-cil/GoblintCil/index.html#val-printExp">GoblintCil.printExp</a> - print an expression
+</p><ul class="itemize"><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-printExp">GoblintCil.printExp</a> - print an expression
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-printType">GoblintCil.printType</a> - print a type
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-printLval">GoblintCil.printLval</a> - print an lvalue
 </li><li class="li-itemize"><a href="api/goblint-cil/GoblintCil/index.html#val-printGlobal">GoblintCil.printGlobal</a> - print a global
@@ -371,8 +364,7 @@ and <span style="font-family:monospace">N</span> is a name attribute (each of th
  int fact(int x) N { ... }
 </span></pre><p>Type attributes can be specified along with the type using the following
 rules:
-</p><ol class="enumerate" type=1><li class="li-enumerate">
-The type attributes for a base type (int, float, named type, reference
+</p><ol class="enumerate" type=1><li class="li-enumerate">The type attributes for a base type (int, float, named type, reference
 to struct or union or enum) must be specified immediately following the
 type (actually it is Ok to mix attributes with the specification of the
 type, in between unsigned and int for example).<p>For example:
@@ -435,15 +427,13 @@ starts a function body.</p><p>GCC classifies its attributes in attributes for fu
 for types, although the latter category is only usable in definition of struct
 or union types and is not nearly as powerful as the CIL type attributes. We
 have made an effort to reclassify GCC attributes as name and type attributes
-(they only apply for function types). Here is what we came up with:</p><ul class="itemize"><li class="li-itemize">
-GCC name attributes:<p>section, constructor, destructor, unused, weak, no_instrument_function,
+(they only apply for function types). Here is what we came up with:</p><ul class="itemize"><li class="li-itemize">GCC name attributes:<p>section, constructor, destructor, unused, weak, no_instrument_function,
 noreturn, alias, no_check_memory_usage, dllinport, dllexport, exception,
 model</p></li><li class="li-itemize">GCC function type attributes:<p>fconst (printed as "const"), format, regparm, stdcall,
 cdecl, longcall</p><p>I was not able to completely decipher the position in which these attributes
 must go. So, the CIL elaborator knows these names and applies the following
 rules:
-</p><ul class="itemize"><li class="li-itemize">
-All of the name attributes that appear in the specifier part (i.e. at
+</p><ul class="itemize"><li class="li-itemize">All of the name attributes that appear in the specifier part (i.e. at
 the beginning) of a declaration are associated with all declared names.</li><li class="li-itemize">All of the name attributes that appear at the end of a declarator are
 associated with the particular name being declared.</li><li class="li-itemize">More complicated is the handling of the function type attributes, since
 there can be more than one function in a single declaration (a function

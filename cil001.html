@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<meta name="generator" content="hevea 2.35">
+<meta name="generator" content="hevea 2.36">
 
 <base target="main">
 <script language="JavaScript">
@@ -20,8 +20,7 @@ function loadTop(url) {
 <hr>
 <h2 id="sec1" class="section">1&#X2003;Introduction</h2>
 <p><span style="font-weight:bold">This a fork of the CIL tool</span> maintained by the team behind the static analyzer <a href="javascript:loadTop('https://goblint.in.tum.de')">Goblint</a>, <span style="font-weight:bold">which we refer to as goblint-CIL (CIL for short).</span></p><p>CIL (<span style="font-weight:bold">C</span> <span style="font-weight:bold">I</span>ntermediate <span style="font-weight:bold">L</span>anguage) is a high-level representation along with a set of tools that permit easy analysis and source-to-source
-transformation of C programs.</p><p>The original CIL has a Source Forge page: <a href="javascript:loadTop('http://sourceforge.net/projects/cil')">http://sourceforge.net/projects/cil</a>.</p><p>goblint-cil is developed on Github: <a href="javascript:loadTop('https://github.com/goblint/cil/')">https://github.com/goblint/cil/</a>.</p><p>Compared with the original CIL there are some <em>breaking</em> changes:</p><ul class="itemize"><li class="li-itemize">
-Support for C99 and C11.
+transformation of C programs.</p><p>The original CIL has a Source Forge page: <a href="javascript:loadTop('http://sourceforge.net/projects/cil')">http://sourceforge.net/projects/cil</a>.</p><p>goblint-cil is developed on Github: <a href="javascript:loadTop('https://github.com/goblint/cil/')">https://github.com/goblint/cil/</a>.</p><p>Compared with the original CIL there are some <em>breaking</em> changes:</p><ul class="itemize"><li class="li-itemize">Support for C99 and C11.
 </li><li class="li-itemize">Compatibility with modern OCaml versions.
 </li><li class="li-itemize">Use Zarith instead of Num and use that for integer constants.
 </li><li class="li-itemize">Improved locations with columns and spans.
@@ -39,13 +38,13 @@ process not only ANSI-C programs but also those using GNU C
 extensions. If you do not use CIL and want instead to use just a C parser and
 analyze programs expressed as abstract-syntax trees then your analysis will
 have to handle a lot of ugly corners of the language (let alone the fact that
-parsing C itself is not a trivial task). See Section&#X2004;&#X200D;<a >??</a> for some
+parsing C itself is not a trivial task). See Section&#XA0;<a >??</a> for some
 examples of such extreme programs that CIL simplifies for you.</p><p>In essence, CIL is a highly-structured, &#X201C;clean&#X201D; subset of C. CIL features a
 reduced number of syntactic and conceptual forms. For example, all looping
 constructs are reduced to a single form, all function bodies are given
 explicit <span style="font-family:monospace">return</span> statements, syntactic sugar like <span style="font-family:monospace">"-&gt;"</span> is
 eliminated and function arguments with array types become pointers. (For an
-extensive list of how CIL simplifies C programs, see Section&#X2004;&#X200D;<a href="cil003.html#sec-cabs2cil">3</a>.)
+extensive list of how CIL simplifies C programs, see Section&#XA0;<a href="cil003.html#sec-cabs2cil">3</a>.)
 This reduces the number of cases that must be considered when manipulating a C
 program. CIL also separates type declarations from code and flattens scopes
 within function bodies. This structures the program in a manner more amenable
@@ -60,8 +59,7 @@ be used with routines that require an AST (e.g. type-based analyses and
 pretty-printers), as well as with routines that require a CFG (e.g., dataflow
 analyses).</p><p>CIL comes accompanied by a number of Perl scripts that perform generally
 useful operations on code:
-</p><ul class="itemize"><li class="li-itemize">
-A <a href="cil006.html#sec-driver">driver</a> which behaves as the <span style="font-family:monospace">gcc</span> compiler and can invoke the preprocessor followed by the CIL
+</p><ul class="itemize"><li class="li-itemize">A <a href="cil006.html#sec-driver">driver</a> which behaves as the <span style="font-family:monospace">gcc</span> compiler and can invoke the preprocessor followed by the CIL
 application. The advantage of this script is that you can easily use CIL and
 the analyses written for CIL with existing make files.
 </li><li class="li-itemize">A <a href="merger.html#sec-merger">whole-program merger</a> that you can use as a

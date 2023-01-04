@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<meta name="generator" content="hevea 2.35">
+<meta name="generator" content="hevea 2.36">
 
 <base target="main">
 <script language="JavaScript">
@@ -21,8 +21,7 @@ function loadTop(url) {
 <hr>
 <h2 id="sec33" class="section">11&#X2003;Known Bugs and Limitations</h2>
 <h3 id="sec34" class="subsection">11.1&#X2003;Code that CIL won&#X2019;t compile</h3>
-<ul class="itemize"><li class="li-itemize">
-We do not support tri-graph sequences (ISO 5.2.1.1).</li><li class="li-itemize">CIL cannot parse arbitrary <span style="font-family:monospace">#pragma</span> directives. Their
+<ul class="itemize"><li class="li-itemize">We do not support tri-graph sequences (ISO 5.2.1.1).</li><li class="li-itemize">CIL cannot parse arbitrary <span style="font-family:monospace">#pragma</span> directives. Their
 syntax must follow gcc&#X2019;s attribute syntax to be understood. If you
 need a pragma that does not follow gcc syntax, add that pragma&#X2019;s name
 to <span style="font-family:monospace">no_parse_pragma</span> in <span style="font-family:monospace">src/frontc/clexer.mll</span> to indicate that
@@ -55,8 +54,7 @@ Therefore, it can&#X2019;t compute the size of any object that is larger
 than 2<sup>30</sup> bits (134 MB) on 32-bit computers, or 2<sup>62</sup> bits on
 64-bit computers.</li></ul>
 <h3 id="sec35" class="subsection">11.2&#X2003;Code that behaves differently under CIL</h3>
-<ul class="itemize"><li class="li-itemize">
-Without optimizations GCC generally does not use &#X201C;inline&#X201D; functions.
+<ul class="itemize"><li class="li-itemize">Without optimizations GCC generally does not use &#X201C;inline&#X201D; functions.
 With optimizations they might be inlined. CIL assumes optimization, and also
 assumes that &#X201C;inline&#X201D; functions are always inlined.</li><li class="li-itemize">GCC has a strange feature called &#X201C;extern inline&#X201D;. Such a function can
 be defined twice: first with the &#X201C;extern inline&#X201D; specifier and the second
@@ -90,8 +88,7 @@ after the assignment.</li><li class="li-itemize">Because CIL uses 64-bit floatin
 representation of floating point numbers, <span style="font-family:monospace">long double</span> constants
 are parsed as if they were <span style="font-family:monospace">double</span> constants.</li></ul>
 <h3 id="sec36" class="subsection">11.3&#X2003;Effects of the CIL translation</h3>
-<ul class="itemize"><li class="li-itemize">
-CIL cleans up C code in various ways that may suppress compiler
+<ul class="itemize"><li class="li-itemize">CIL cleans up C code in various ways that may suppress compiler
 warnings. For example, CIL will add casts where they are needed
 while <span style="font-family:monospace">gcc</span> might print a warning for the missing cast. It is
 not a goal of CIL to emit such warnings &#X2014; we support several

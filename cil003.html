@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<meta name="generator" content="hevea 2.35">
+<meta name="generator" content="hevea 2.36">
 
 <base target="main">
 <script language="JavaScript">
@@ -29,8 +29,7 @@ This example shows that the analysis is so much simpler because it has to
 handle only a few simple C constructs and also because it can leverage on CIL
 infrastructure such as visitors and pretty-printers.</p><p>In no particular order these are a few of the most significant ways in which
 C programs are compiled into CIL:
-</p><ol class="enumerate" type=1><li class="li-enumerate">
-CIL will eliminate all declarations for unused entities. This means that
+</p><ol class="enumerate" type=1><li class="li-enumerate">CIL will eliminate all declarations for unused entities. This means that
 just because your hello world program includes <span style="font-family:monospace">stdio.h</span> it does not mean
 that your analysis has to handle all the ugly stuff from <span style="font-family:monospace">stdio.h</span>.</li><li class="li-enumerate">Type specifiers are interpreted and normalized:
 <pre class="verbatim"><span style="color:blue">int long signed x;

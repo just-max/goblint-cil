@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<meta name="generator" content="hevea 2.35">
+<meta name="generator" content="hevea 2.36">
 
 <base target="main">
 <script language="JavaScript">
@@ -33,8 +33,7 @@ that you can move it to any place you want.</p><p>A simple use of the driver is:
 current directory. Otherwise, they&#X2019;ll be put in <span style="font-family:monospace">/tmp</span> and deleted
 automatically. Not that this is the only CIL-specific flag in the
 list &#X2013; the other flags use <span style="font-family:monospace">gcc</span>&#X2019;s syntax.</p><p>This performs the following actions:
-</p><ul class="itemize"><li class="li-itemize">
-preprocessing using the -D and -I arguments with the resulting
+</p><ul class="itemize"><li class="li-itemize">preprocessing using the -D and -I arguments with the resulting
 file left in <span style="font-family:monospace">hello.i</span>,
 </li><li class="li-itemize">the invocation of the <span style="font-family:monospace">cilly.native</span> application which parses <span style="font-family:monospace">hello.i</span>
 converts it to CIL and the pretty-prints it to <span style="font-family:monospace">hello.cil.c</span>
@@ -63,12 +62,9 @@ have to do is to pass the <span style="font-family:monospace">--merge</span> fla
 <span style="font-family:monospace">bar</span>. Those files will be compiled as usual and then linked in at the very
 end.</p><p>The sequence of actions performed by <span style="font-family:monospace">cilly</span> depends on whether merging
 is turned on or not:
-</p><ul class="itemize"><li class="li-itemize">
-If merging is off
-<ol class="enumerate" type=1><li class="li-enumerate">
-For every file <span style="font-family:monospace">file.c</span> to compile
-<ol class="enumerate" type=a><li class="li-enumerate">
-Preprocess the file with the given arguments to
+</p><ul class="itemize"><li class="li-itemize">If merging is off
+<ol class="enumerate" type=1><li class="li-enumerate">For every file <span style="font-family:monospace">file.c</span> to compile
+<ol class="enumerate" type=a><li class="li-enumerate">Preprocess the file with the given arguments to
 produce <span style="font-family:monospace">file.i</span>
 </li><li class="li-enumerate">Invoke <span style="font-family:monospace">cilly.native</span> to produce a <span style="font-family:monospace">file.cil.c</span>
 </li><li class="li-enumerate">Preprocess to <span style="font-family:monospace">file.cil.i</span>
@@ -77,10 +73,8 @@ produce <span style="font-family:monospace">file.i</span>
 </li><li class="li-enumerate">Link the resulting objects
 </li></ol>
 </li><li class="li-itemize">If merging is on
-<ol class="enumerate" type=1><li class="li-enumerate">
-For every file <span style="font-family:monospace">file.c</span> to compile
-<ol class="enumerate" type=a><li class="li-enumerate">
-Preprocess the file with the given arguments to
+<ol class="enumerate" type=1><li class="li-enumerate">For every file <span style="font-family:monospace">file.c</span> to compile
+<ol class="enumerate" type=a><li class="li-enumerate">Preprocess the file with the given arguments to
 produce <span style="font-family:monospace">file.i</span>
 </li><li class="li-enumerate">Save the preprocessed source as <span style="font-family:monospace">file.o</span>
 </li></ol>
@@ -88,7 +82,7 @@ produce <span style="font-family:monospace">file.i</span>
 file that must be linked and see if it actually
 contains preprocessed source. Pass all those files to a
 special merging application (described in
-Section&#X2004;&#X200D;<a href="merger.html#sec-merger">12</a>) to produce <span style="font-family:monospace">hello.exe_comb.c</span>
+Section&#XA0;<a href="merger.html#sec-merger">12</a>) to produce <span style="font-family:monospace">hello.exe_comb.c</span>
 </li><li class="li-enumerate">Invoke <span style="font-family:monospace">cilly.native</span> to produce a <span style="font-family:monospace">hello.exe_comb.cil.c</span>
 </li><li class="li-enumerate">Preprocess to <span style="font-family:monospace">hello.exe_comb.cil.i</span>
 </li><li class="li-enumerate">Invoke the underlying compiler to produce <span style="font-family:monospace">hello.exe_comb.cil.o</span>
@@ -102,21 +96,19 @@ system&#X2019;s include files:</p><pre class="verbatim">make CC="bin/cilly --inc
 (if it exists) whenever it encounters <span style="font-family:monospace">#include &lt;stdio.h&gt;</span>. The <span style="font-family:monospace">xxx</span> is
 a string that identifies the compiler version you are using. This modified
 include files should be produced with the patcher script (see
-Section&#X2004;&#X200D;<a href="patcher.html#sec-patcher">13</a>).</p>
+Section&#XA0;<a href="patcher.html#sec-patcher">13</a>).</p>
 <h3 id="sec15" class="subsection">6.1&#X2003;<span style="font-family:monospace">cilly</span> Options</h3>
 <p>Among the options for the <span style="font-family:monospace">cilly</span> you can put anything that can normally
 go in the command line of the compiler that <span style="font-family:monospace">cilly</span> is impersonating.
 <span style="font-family:monospace">cilly</span> will do its best to pass those options along to the appropriate
 subprocess. In addition, the following options are supported (a complete and
-up-to-date list can always be obtained by running <span style="font-family:monospace">cilly --help</span>):</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">--gcc=command</span> Tell <span style="font-family:monospace">cilly</span> to use <span style="font-family:monospace">command</span> to invoke
+up-to-date list can always be obtained by running <span style="font-family:monospace">cilly --help</span>):</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">--gcc=command</span> Tell <span style="font-family:monospace">cilly</span> to use <span style="font-family:monospace">command</span> to invoke
 gcc, e.g. <span style="font-family:monospace">--gcc=arm-elf-gcc</span> to use a cross-compiler. See also
 the <span style="font-family:monospace">--envmachine</span> option below that tells CIL to assume a
 different machine model.
 </li><li class="li-itemize"><span style="font-family:monospace">--mode=mode</span> This must be the first argument if present. It makes
 <span style="font-family:monospace">cilly</span> behave as a given compiled. The following modes are recognized:
-<ul class="itemize"><li class="li-itemize">
-GNUCC - the GNU C Compiler. This is the default.
+<ul class="itemize"><li class="li-itemize">GNUCC - the GNU C Compiler. This is the default.
 </li><li class="li-itemize">AR - the archiver <span style="font-family:monospace">ar</span>. Only the mode <span style="font-family:monospace">cr</span> is supported and
 the original version of the archive is lost.
 </li></ul>
@@ -127,12 +119,12 @@ is doing.
 </li><li class="li-itemize"><span style="font-family:monospace">--merge</span> This tells <span style="font-family:monospace">cilly</span> to first attempt to collect into one
 source file all of the sources that make your application, and then to apply
 <span style="font-family:monospace">cilly.native</span> on the resulting source. The sequence of actions in this case is
-described above and the merger itself is described in Section&#X2004;&#X200D;<a href="merger.html#sec-merger">12</a>.</li><li class="li-itemize"><span style="font-family:monospace">--leavealone=xxx</span>. Do not merge and do not present to CIL the files
+described above and the merger itself is described in Section&#XA0;<a href="merger.html#sec-merger">12</a>.</li><li class="li-itemize"><span style="font-family:monospace">--leavealone=xxx</span>. Do not merge and do not present to CIL the files
 whose basename is "xxx". These files are compiled as usual and linked in at
 the end.
 </li><li class="li-itemize"><span style="font-family:monospace">--includedir=xxx</span>. Override the include files with those in the given
 directory. The given directory is the same name that was given an an argument
-to the patcher (see Section&#X2004;&#X200D;<a href="patcher.html#sec-patcher">13</a>). In particular this means that
+to the patcher (see Section&#XA0;<a href="patcher.html#sec-patcher">13</a>). In particular this means that
 that directory contains subdirectories named based on the current compiler
 version. The patcher creates those directories.
 </li><li class="li-itemize"><span style="font-family:monospace">--usecabs</span>. Do not CIL, but instead just parse the source and print
@@ -151,9 +143,8 @@ named <span style="font-family:monospace">*.cil.c</span>.
 <span style="font-family:monospace">cilly.native</span> flags that both need to know
 about. The following options are supported. Many of these flags also
 have corresponding &#X201C;<span style="font-family:monospace">--no</span>*&#X201D; versions if you need to go back to
-the default, as in &#X201C;<span style="font-family:monospace">--nowarnall</span>&#X201D;.</p><p>&#X2003;&#X200D;&#X2003;&#X200D;&#X2003;&#X200D;&#X2003;&#X200D;&#X2002;&#X200D;&#X2005;&#X200D; <span style="font-weight:bold">General Options:</span>
-</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">--version</span> output version information and exit
+the default, as in &#X201C;<span style="font-family:monospace">--nowarnall</span>&#X201D;.</p><p>&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0;&#XA0; <span style="font-weight:bold">General Options:</span>
+</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">--version</span> output version information and exit
 </li><li class="li-itemize"><span style="font-family:monospace">--verbose</span> Print lots of random stuff. This is passed on from cilly
 </li><li class="li-itemize"><span style="font-family:monospace">--warnall</span> Show all warnings.
 </li><li class="li-itemize"><span style="font-family:monospace">--debug=xxx</span> turns on debugging flag xxx
@@ -186,7 +177,7 @@ To report only user-mode time, find the call to <span style="font-family:monospa
 compiled into CIL. Note that you should not pass gcc&#X2019;s 32/64-bit
 <span style="font-family:monospace">-m32</span> and <span style="font-family:monospace">-m64</span> options to <span style="font-family:monospace">cilly</span> if you use
 <span style="font-family:monospace">--envmachine</span> (they use <span style="font-family:monospace">--envmachine</span> under the hood).
-See Section&#X2004;&#X200D;<a href="#sec-cilmachine">6.4</a> for a description of <span style="font-family:monospace">CIL_MACHINE</span>&#X2019;s
+See Section&#XA0;<a href="#sec-cilmachine">6.4</a> for a description of <span style="font-family:monospace">CIL_MACHINE</span>&#X2019;s
 format.<p><span style="font-weight:bold">Lowering Options</span>
 </p></li><li class="li-itemize"><span style="font-family:monospace">--noLowerConstants</span> do not lower constant expressions.
 </li><li class="li-itemize"><span style="font-family:monospace">--noInsertImplicitCasts</span> do not insert implicit casts.
@@ -202,7 +193,7 @@ output by e.g. changing <span style="font-family:monospace">while(1)</span> into
 sets this for you.
 </li><li class="li-itemize"><span style="font-family:monospace">--mergedout=xxx</span> specify the name of the merged file
 </li><li class="li-itemize"><span style="font-family:monospace">--cabsonly=xxx</span> CABS output file name
-<p><span style="font-weight:bold">Selected features.</span> See Section&#X2004;&#X200D;<a href="ext.html#sec-Extension">7</a> for more information.
+<p><span style="font-weight:bold">Selected features.</span> See Section&#XA0;<a href="ext.html#sec-Extension">7</a> for more information.
 </p></li><li class="li-itemize"><span style="font-family:monospace">--domakeCFG</span>. Make the program look more like a CFG. Implemented
 in <span style="font-family:monospace">src/cil.ml</span>.<p>For an up-to-date list of available options, run <span style="font-family:monospace">cilly.native --help</span>.</p></li></ul>
 <h3 id="sec17" class="subsection">6.3&#X2003;Internal Options</h3>
@@ -212,8 +203,7 @@ programmatically &#X2013; see <span style="font-family:monospace">src/ciloptions
 extensions to see how. Some options should be set before parsing to
 be effective.</p><p>Additionally, a few CIL options have no command-line flag and can only
 be set programmatically. These options may be useful for certain
-analyses:</p><ul class="itemize"><li class="li-itemize">
-<span style="font-family:monospace">Cabs2cil.doCollapseCallCast</span>:This is false by default. Set
+analyses:</p><ul class="itemize"><li class="li-itemize"><span style="font-family:monospace">Cabs2cil.doCollapseCallCast</span>:This is false by default. Set
 to true to replicate the behavior of CIL 1.3.5 and earlier.<p>When false, all casts in the program are made explicit using the
 <span style="font-family:monospace">CastE</span> expression. Accordingly, the destination of a Call
 instruction will always have the same type as the function&#X2019;s return
@@ -267,8 +257,7 @@ keys are ignored. The following keys must be defined:
 <tr><td style="text-align:left;border:solid 1px;white-space:nowrap" > underscore_name</td><td style="text-align:left;border:solid 1px;white-space:nowrap" >true if generated symbols preceded by _ </td></tr>
 </table>
 </div><p>Some notes:
-</p><ul class="itemize"><li class="li-itemize">
-Values cannot contain spaces as spaces separate key/value pairs.
+</p><ul class="itemize"><li class="li-itemize">Values cannot contain spaces as spaces separate key/value pairs.
 </li><li class="li-itemize">The value of size_t is the text for the type defined as
 size_t, e.g. <span style="font-family:monospace">unsigned long</span>. As spaces are not allowed in values,
 CIL will replace underscores by spaces: <span style="font-family:monospace">size_t=unsigned_long</span>.
